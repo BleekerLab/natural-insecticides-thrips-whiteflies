@@ -13,11 +13,10 @@
 library(RColorBrewer)
 library("superheat") # download it from github
 
-setwd("~/surfdrive/BleekerLab/00.manuscripts/01.natural_insecticides_from_wild_tomatoes/01.Figures/_Figure5_heatmaps/")
+setwd("~/surfdrive/BleekerLab/00.manuscripts/01.natural_insecticides_from_wild_tomatoes/natural-insecticides-wild-tomatoes-paper/Figure5_heatmaps/")
 
-# result directory
-today = strsplit(x = format(Sys.time()),split = " ")[[1]][1]
-outdir = file.path(today,"results/")
+# result directory (use the working directory and the today's date)
+outdir = file.path(getwd(),strsplit(x = format(Sys.time()),split = " ")[[1]][1])
 dir.create(outdir,showWarnings = F,recursive = T)
 
 ############################################
@@ -30,18 +29,6 @@ acylsugars = read.delim("pheno_acylsugars.txt",header=T,stringsAsFactors = F,che
 # add row names
 row.names(terpenoids)=terpenoids$sample;terpenoids$sample <- NULL
 row.names(acylsugars)=acylsugars$sample;acylsugars$sample <- NULL
-
-# add 1 to the zeros
-# calculate log2 values
-#mat.terpenoids = as.matrix(terpenoids[,3:ncol(terpenoids)])
-#mat.terpenoids[mat.terpenoids == 0] <- 1
-#mat.terpenoids = log10(mat.terpenoids)
-
-# add 1 to the zeros
-# calculate log2 values
-#mat.acylsugars = as.matrix(acylsugars[,5:ncol(acylsugars)])
-#mat.acylsugars[mat.acylsugars == 0] <- 1
-#mat.acylsugars = log10(mat.acylsugars)
 
 #################################
 # Heatmap terpenoids and whitefly
