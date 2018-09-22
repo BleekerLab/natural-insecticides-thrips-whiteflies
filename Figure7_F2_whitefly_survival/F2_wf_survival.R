@@ -28,12 +28,13 @@ colorPalette <- color_func(length(plant_ranking))
 
 # plot
 df$line = factor(df$line,levels = plant_ranking)
-g <- ggplot(data = df,aes(x=line,y=percentage)) + 
+
+g <- ggplot(data = df,aes(x=line,y=percentage,fill=line)) + 
   geom_boxplot() +
   geom_point() +
   geom_jitter(width = 0,height = 0) +
   guides(fill=FALSE) +
-  scale_fill_manual(colorPalette) +
+  scale_fill_manual(values = colorPalette) +
   scale_y_continuous(limits = c(0,100)) +
   labs(x="Plant line id",y="Whitefly survival (%)") +
   theme(axis.text = element_text(color="black"),
