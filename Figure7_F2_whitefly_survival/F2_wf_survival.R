@@ -62,17 +62,15 @@ df$line = as.factor(df$line)
 df = df %>% 
   mutate(total=dead+alive)
 
-# Fit models
-
-# First model (all data)
+########### Fit models #########
 # -1 means no intercept
 # Generalized linear model for binomial distribution (dead / total - dead)
-fit1 = glm(cbind(dead,total-dead) ~ -1 + line, data=df, family = binomial(link = logit)) # model with F2 line
-
-# Second model (lines with zeros removed)
+# We first remove lines that have only 0s because they impair coefficient estimation 
 # Lines 294, 324, 373, 387, 396 have no surviving whiteflies
 zero_lines = df %>% group_by(line) %>% summarise(alive = sum(alive)) %>% filter(alive ==0) %>% select(line) %>% unlist(line)
 df.minus.lines.with.only.zeros = df[! df$line %in% zero_lines,]
+
+# We then fit a Generalized Linear Model (line is the only parameter with an influence. Cage number does not)
 fit2 = glm(cbind(dead,total-dead)~-1 + line,data=df.minus.lines.with.only.zeros,family = binomial(link=logit))
 
 

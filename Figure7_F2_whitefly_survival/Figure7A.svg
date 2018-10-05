@@ -36,9 +36,9 @@
      inkscape:window-height="855"
      id="namedview1098"
      showgrid="false"
-     inkscape:zoom="1.1942248"
-     inkscape:cx="222.25374"
-     inkscape:cy="180"
+     inkscape:zoom="1.6888889"
+     inkscape:cx="367.02348"
+     inkscape:cy="227.36842"
      inkscape:window-x="0"
      inkscape:window-y="1"
      inkscape:window-maximized="1"
@@ -3554,7 +3554,31 @@
   <polyline
      id="polyline5228"
      clip-path="url(#cpMzguNTczfDcxNC41MjF8MzEyLjQ0fDUuNDc5NDU=)"
-     style="fill:none;stroke:#000000;stroke-width:1.38375691;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:8.30254146,8.30254146;stroke-dashoffset:0;stroke-opacity:1"
+     style="fill:none;stroke:#000000;stroke-width:1.38375683;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:5.53502733,5.53502733;stroke-dashoffset:0;stroke-opacity:1"
      points="340.21,312.44 340.21,5.48 "
-     transform="matrix(1,0,0,1.0491026,9.2,-21.341622)" />
+     transform="matrix(1,0,0,1.0491026,9.2,-7.341622)" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Bold';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="160.46053"
+     y="-6.5131578"
+     id="text5249"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan5251"
+       x="160.46053"
+       y="-6.5131578"
+       style="font-size:12.5px">Toxic (p &lt; 0.05)</tspan></text>
+  <text
+     sodipodi:linespacing="125%"
+     id="text5253"
+     y="-6.5131578"
+     x="532.46051"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:50px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Bold';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     xml:space="preserve"><tspan
+       style="font-size:12.5px"
+       y="-6.5131578"
+       x="532.46051"
+       id="tspan5255"
+       sodipodi:role="line">Non-toxic (n.s.)</tspan></text>
 </svg>
