@@ -1,7 +1,7 @@
 # load libraries
 library(reshape2)
 library(ggplot2)
-library(dplyr)
+suppressMessages(library(dplyr))
 library(RColorBrewer)
 library(lme4)
 
@@ -63,25 +63,16 @@ df = df %>%
   mutate(total=dead+alive)
 
 # Fit models
-# dead / total - dead
-fit1 = glm(cbind(dead,total-dead) ~ 1,data = df,family = binomial(link = logit)) # intercept only model
-fit2 = glm(cbind(dead,total-dead) ~ 1 + line, data=df, family = binomial(link = logit)) # model with accession
-fit3 = glmer(cbind(dead,total-dead) ~ 1 + line + (1|cage),data = df,family=binomial(link = logit)) # random plant effects
 
-# AIC criteria and goodness of fit of the models
-fits_no_mixed = list(fit1,fit2)
-fit_mixed = list(fit3)
+# First model (all data)
+# -1 means no intercept
+# Generalized linear model for binomial distribution (dead / total - dead)
+fit1 = glm(cbind(dead,total-dead) ~ -1 + line, data=df, family = binomial(link = logit)) # model with F2 line
 
-AICs = cbind.data.frame(
-  models = sapply(c(fits_no_mixed,fits_mixed),function(x) {deparse(formula(x))}),
-  AIC = sapply(c(fits_no_mixed,fits_mixed),function(x) AIC(x)),
-  dAIC = as.vector(bbmle::AICtab(fit1,fit2,fit3)$dAIC)
-)
-AICs$models = c("model1","model2","model3")
+# Second model (lines with zeros removed)
+# Lines 294, 324, 373, 387, 396 have no surviving whiteflies
+zero_lines = df %>% group_by(line) %>% summarise(alive = sum(alive)) %>% filter(alive ==0) %>% select(line) %>% unlist(line)
+df.minus.lines.with.only.zeros = df[! df$line %in% zero_lines,]
+fit2 = glm(cbind(dead,total-dead)~-1 + line,data=df.minus.lines.with.only.zeros,family = binomial(link=logit))
 
-plotAIC = ggplot(AICs,aes(models,AIC)) + 
-  geom_bar(stat="identity") + 
-  theme(axis.text.x = element_text(angle=45,hjust=1)) +
-  ggtitle("AIC for each model")
-print(plotAIC)
 
