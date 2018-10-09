@@ -10,7 +10,7 @@ head(metabolites)
 
 
 # load whitefly data
-wf = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.txt",header = T,stringsAsFactors = F)
+wf = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.tsv",header = T,stringsAsFactors = F)
 
 
 ####### plot heatmap ########
@@ -34,7 +34,7 @@ metabolites.sorted.nosurvival$survival = NULL
 mat = as.matrix(metabolites.sorted.nosurvival[,2:ncol(metabolites.sorted.nosurvival)])
 row.names(mat)=metabolites.sorted.nosurvival$line
 mat[mat == 0] <- 1
-mat = log10(mat)
+mat = log2(mat)
 
 # superheatmap
 png(file.path("Figure8_volatiles_F2/","F2_volatiles_with_wf.png"),height=900,width=1600)
@@ -66,8 +66,7 @@ superheat(mat,
           pretty.order.cols = F,
           force.bottom.label = T,
           # legend
-          heat.lim = c(-2,6),
-          legend.breaks = c(-2,0,2,4,6),
+          legend.breaks = c(-5,0,5,10,15,20),
           legend.text.size = 20
 )
 dev.off()
