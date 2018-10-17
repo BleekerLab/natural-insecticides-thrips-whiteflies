@@ -9,7 +9,7 @@ library(lme4)
 resdir = file.path(getwd(),"Figure7_F2_whitefly_survival/")
 
 # load dataset
-df = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.txt",header = T,stringsAsFactors = F)
+df = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.tsv",header = T,stringsAsFactors = F)
 
 ######## Plot of whitefly survival per plant line #######
 # percentage per plant line
@@ -68,6 +68,8 @@ zero_lines = df %>% group_by(line) %>% summarise(alive = sum(alive)) %>% filter(
 df.minus.lines.with.only.zeros = df[! df$line %in% zero_lines,]
 
 # We then fit a Generalized Linear Model (line is the only parameter with an influence. Cage number does not)
-fit2 = glm(cbind(dead,total-dead)~-1 + line,data=df.minus.lines.with.only.zeros,family = binomial(link=logit))
+fit = glm(cbind(dead,total-dead)~-1 + line,data=df.minus.lines.with.only.zeros,family = binomial(link=logit))
 
-
+# extract coefficients from fitted model
+stats.model = as.data.frame(coefficients(summary(fit)))
+write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = F,sep = "\t")
