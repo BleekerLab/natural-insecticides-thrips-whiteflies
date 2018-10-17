@@ -72,4 +72,6 @@ fit = glm(cbind(dead,total-dead)~-1 + line,data=df.minus.lines.with.only.zeros,f
 
 # extract coefficients from fitted model
 stats.model = as.data.frame(coefficients(summary(fit)))
-write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = F,sep = "\t")
+write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = T,sep = "\t")
+
+######### Extracts F2 lines with a 
