@@ -4,6 +4,7 @@ library(ggplot2)
 suppressMessages(library(dplyr))
 library(RColorBrewer)
 library(lme4)
+library(tibble)
 
 # where to save results?
 resdir = file.path(getwd(),"Figure7_F2_whitefly_survival/")
@@ -72,6 +73,12 @@ fit = glm(cbind(dead,total-dead)~-1 + line,data=df.minus.lines.with.only.zeros,f
 
 # extract coefficients from fitted model
 stats.model = as.data.frame(coefficients(summary(fit)))
-write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = T,sep = "\t")
+lines = gsub("line","",x = row.names(stats.model)) # extract line numbers
+stats.model = tibble::add_column(stats.model,lines,.before = "Estimate")
+write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = F,sep = "\t")
 
-######### Extracts F2 lines with a 
+######### Extracts F2 lines and make a table with "toxic" and "non-toxic" effects  
+
+
+### Session info
+writeLines(capture.output(sessionInfo()), "Figure7_F2_whitefly_survival/sessionInfo.txt")
