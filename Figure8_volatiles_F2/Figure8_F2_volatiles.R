@@ -6,12 +6,9 @@ library(superheat) # install the dev version >> devtools::install_github("rlbart
 
 # load metabolites data
 metabolites = read.delim("Figure8_volatiles_F2/20180625_F2metabolite_table.tsv",header=T,stringsAsFactors = F,check.names = F)
-head(metabolites)
-
 
 # load whitefly data
 wf = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.tsv",header = T,stringsAsFactors = F)
-
 
 ####### plot heatmap ########
 
@@ -71,36 +68,5 @@ superheat(mat,
 )
 dev.off()
 
-
-# pdf(file.path("Figure8_volatiles_F2/","F2_volatiles_with_wf.pdf"))
-# superheat(mat,
-#           scale=F,
-#           smooth.heat = F,
-#           # metabolites
-#           bottom.label.text.angle = 90,
-#           bottom.label.text.size = 2,
-#           column.title = "Volatiles",
-#           # colors
-#           heat.pal=brewer.pal(9,"OrRd"),
-#           grid.hline = F,
-#           grid.vline = F,
-#           # scatterplot on the side ()
-#           yr=metabolites.sorted$survival,
-#           yr.axis.name = "Whitefly survival (%)",
-#           yr.axis.size = 10,
-#           yr.axis.name.size = 10,
-#           yr.plot.type = "scatterline",
-#           yr.obs.col = rep("grey",nrow(mat)),
-#           yr.point.size = 5,
-#           yr.num.ticks = 9,
-#           # genotype info
-#           left.label.text.alignment = "left",
-#           row.title = "Genotype",
-#           legend = T,
-#           pretty.order.rows = F,
-#           pretty.order.cols = T,
-#           force.bottom.label = T,
-#           heat.lim = c(-2,6),
-#           legend.breaks = c(-2,0,2,4,6)
-# )
-# dev.off()
+# write table
+write.table(metabolites.sorted.nosurvival,file = "Figure8_volatiles_F2/volatiles_sorted.tsv",quote = F,row.names = F,sep = "\t")
