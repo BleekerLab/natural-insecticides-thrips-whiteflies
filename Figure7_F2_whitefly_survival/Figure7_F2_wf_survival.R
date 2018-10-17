@@ -78,7 +78,17 @@ stats.model = tibble::add_column(stats.model,lines,.before = "Estimate")
 write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = F,sep = "\t")
 
 ######### Extracts F2 lines and make a table with "toxic" and "non-toxic" effects  
+colnames(stats.model) = c("lines","coef","stderr","z-value","pvalue")
 
+# toxic lines = significant coefs & positively contribute (coef>0) to death probability 
+toxic = stats.model %>% 
+  filter(pvalue < 0.05 & coef > 0) %>% 
+  write.table(.,file = "Figure7_F2_whitefly_survival/toxic_lines.tsv",sep = "\t",quote = F,row.names = F)
+
+# non-toxic lines = unsignificant coefs & negatively contribute (coef<0) to death probability = increase chance to survive 
+nontoxic = stats.model %>% 
+  filter(pvalue > 0.05 & coef < 0) %>% 
+  write.table(.,file = "Figure7_F2_whitefly_survival/nontoxic_lines.tsv",sep = "\t",quote = F,row.names = F)
 
 ### Session info
 writeLines(capture.output(sessionInfo()), "Figure7_F2_whitefly_survival/sessionInfo.txt")
