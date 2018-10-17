@@ -5,9 +5,6 @@ suppressMessages(library(dplyr))
 library(RColorBrewer)
 library(lme4)
 
-# load .Rprofile file
-source("./.custom_R_profile")
-
 # where to save results?
 resdir = file.path(getwd(),"Figure7_F2_whitefly_survival/")
 
