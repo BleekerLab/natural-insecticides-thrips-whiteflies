@@ -78,17 +78,24 @@ stats.model = tibble::add_column(stats.model,lines,.before = "Estimate")
 write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = F,sep = "\t")
 
 ######### Extracts F2 lines and make a table with "toxic" and "non-toxic" effects  
-colnames(stats.model) = c("lines","coef","stderr","z-value","pvalue")
+colnames(stats.model) = c("line","coef","stderr","zvalue","pvalue")
 
 # toxic lines = significant coefs & positively contribute (coef>0) to death probability 
 toxic = stats.model %>% 
-  filter(pvalue < 0.05 & coef > 0) %>% 
-  write.table(.,file = "Figure7_F2_whitefly_survival/toxic_lines.tsv",sep = "\t",quote = F,row.names = F)
+  filter(pvalue < 0.05 & coef > 0) 
 
-# non-toxic lines = unsignificant coefs & negatively contribute (coef<0) to death probability = increase chance to survive 
-nontoxic = stats.model %>% 
-  filter(pvalue > 0.05 & coef < 0) %>% 
-  write.table(.,file = "Figure7_F2_whitefly_survival/nontoxic_lines.tsv",sep = "\t",quote = F,row.names = F)
+# adding the lines with the "supertoxic zero survivors" phenotype
+# these lines were not included in the GLM regression model but are toxic (no surviving whiteflies!)
+supertoxic = data.frame(line = as.character(zero_lines),coef="NA",stderr="NA",zvalue="NA",pvalue="NA",stringsAsFactors = F)
+
+# combine toxic with the "supertoxic zero survivors" lines
+supertoxic_with_toxic = rbind(supertoxic,toxic,stringsAsFactors = F) 
+write.table(supertoxic_with_toxic,file = "Figure7_F2_whitefly_survival/toxic_lines.tsv",sep = "\t",quote = F,row.names = F)
+
+# non-toxic lines = all other lines with a coefficient < 0 
+nontoxic = stats.model[which(! stats.model$line %in% toxic$line),]
+nontoxic = nontoxic %>% filter(coef < 0)
+write.table(nontoxic,file = "Figure7_F2_whitefly_survival/nontoxic_lines.tsv",sep = "\t",quote = F,row.names = F)
 
 ### Session info
 writeLines(capture.output(sessionInfo()), "Figure7_F2_whitefly_survival/sessionInfo.txt")
