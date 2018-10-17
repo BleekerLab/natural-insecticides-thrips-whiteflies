@@ -26,7 +26,7 @@ df = inner_join(metabolites,all_lines_with_pheno_class,by="line")
 
 # feature_vector
 feature_vector = as.data.frame(df$class)
-write.table(feature_vector,file = "Table3_RF_F2_wf_volatiles_candidates/feature_vector.txt",sep = "\t",quote = F,row.names = F)
+write.table(feature_vector,file = "Table3_RF_F2_wf_volatiles_candidates/feature_vector.txt",sep = "\t",quote = F,row.names = F,col.names = F)
 
 # feature matrix 
 feature_matrix = select(df,-c(class))
