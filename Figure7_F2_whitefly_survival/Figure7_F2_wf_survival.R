@@ -6,9 +6,6 @@ library(RColorBrewer)
 library(lme4)
 library(tibble)
 
-# where to save results?
-resdir = file.path(getwd(),"Figure7_F2_whitefly_survival/")
-
 # load dataset
 df = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.tsv",header = T,stringsAsFactors = F)
 
