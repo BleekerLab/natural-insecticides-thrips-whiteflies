@@ -70,3 +70,6 @@ dev.off()
 
 # write table
 write.table(metabolites.sorted.nosurvival,file = "Figure8_volatiles_F2/volatiles_sorted.tsv",quote = F,row.names = F,sep = "\t")
+
+### Session info
+writeLines(capture.output(sessionInfo()), "Figure8_volatiles_F2/sessionInfo.txt")
