@@ -1,0 +1,62 @@
+---
+title: "Draw maps and plot locations"
+author: "Marc Galland"
+date: "`r Sys.Date()`"
+output:
+    html_document:
+        number_sections: yes
+        toc: yes
+        toc_depth: 2
+        keep_md: true
+---
+Draw maps
+
+# Setup
+
+## Knitr
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+```{r cars}
+library(ggmap)
+library(ggrepel)
+```
+
+## import data
+```{r}
+data = read.delim(file = "accessions2geolocations.txt",header=TRUE,na.strings = "NA")
+```
+
+# Plots
+
+## Get desired map
+```{r pressure, echo=FALSE}
+# google map
+#map <- get_map(location=c(lon=-80,lat=-10),zoom=5,maptype = "hybrid",source = "google")
+
+# get stamen map open street map
+south_america <- c(left=-96.218,bottom=-17.455,right=-63.809,top=2.241)
+map <- get_stamenmap(south_america,zoom=5)
+ggmap(map)
+```
+
+## plot
+```{r}
+# plot
+p <- ggmap(map) +
+  # add points specifying the locations
+  geom_point(data = data,mapping = aes(x = lon,y=lat,colour=species),size=3) +
+  # add accession names
+  geom_text_repel(data = data,aes(x = lon,y = lat,label=data$accession),segment.color = "white",colour="white") +
+  labs(x = "Longitude",y="Latitude")
+print(p)
+
+# save plot
+ggsave(filename = "map.png",width = 7,height = 7,dpi=600)
+
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
