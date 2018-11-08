@@ -7,7 +7,7 @@ library(lme4)
 library(tibble)
 
 # load dataset
-df = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.tsv",header = T,stringsAsFactors = F)
+df = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.25lines.tsv",header = T,stringsAsFactors = F)
 
 ######## Plot of whitefly survival per plant line #######
 # percentage per plant line
@@ -42,8 +42,8 @@ g <- ggplot(data = df,aes(x=line,y=percentage,fill=line)) +
 print(g)
 
 # save plot
-ggsave(filename = file.path(resdir,"Figure7A.png"),plot = g,width=10,height=5,dpi = 400)
-ggsave(filename = file.path(resdir,"Figure7A.svg"),plot = g,width=10,height=5)
+ggsave(filename = "Figure7_F2_whitefly_survival/Figure7A.png",plot = g,width=10,height=5,dpi = 400)
+ggsave(filename = "Figure7_F2_whitefly_survival/Figure7A.svg",plot = g,width=10,height=5)
 
 ######### Logistic regressions (Generalized Linear Models and Generalized Linear Mixed Models) ##########
 # remove missing values
@@ -72,7 +72,7 @@ fit = glm(cbind(dead,total-dead)~-1 + line,data=df.minus.lines.with.only.zeros,f
 stats.model = as.data.frame(coefficients(summary(fit)))
 lines = gsub("line","",x = row.names(stats.model)) # extract line numbers
 stats.model = tibble::add_column(stats.model,lines,.before = "Estimate")
-write.table(x = stats.model,file = "./Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = F,sep = "\t")
+write.table(x = stats.model,file = "Figure7_F2_whitefly_survival/stats.model.tsv",quote = F,row.names = F,sep = "\t")
 
 ######### Extracts F2 lines and make a table with "toxic" and "non-toxic" effects  
 colnames(stats.model) = c("line","coef","stderr","zvalue","pvalue")
