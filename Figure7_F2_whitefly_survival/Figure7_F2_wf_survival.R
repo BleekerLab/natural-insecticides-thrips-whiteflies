@@ -42,8 +42,8 @@ g <- ggplot(data = df,aes(x=line,y=percentage,fill=line)) +
 print(g)
 
 # save plot
-ggsave(filename = "Figure7_F2_whitefly_survival/Figure7A.png",plot = g,width=10,height=5,dpi = 400)
-ggsave(filename = "Figure7_F2_whitefly_survival/Figure7A.svg",plot = g,width=10,height=5)
+ggsave(filename = "Figure7_F2_whitefly_survival/Figure7.png",plot = g,width=10,height=5,dpi = 400)
+ggsave(filename = "Figure7_F2_whitefly_survival/Figure7.svg",plot = g,width=10,height=5)
 
 ######### Logistic regressions (Generalized Linear Models and Generalized Linear Mixed Models) ##########
 # remove missing values

@@ -13,10 +13,6 @@
 library(RColorBrewer)
 library(gplots)
 library(ggplot2)
-library("superheat") # download it from github
-
-# result directory (use the working directory and the today's date)
-outdir = file.path(getwd(),"Figure5_heatmaps/")
 
 ############################################
 # load input dataframe and convert to logs  
