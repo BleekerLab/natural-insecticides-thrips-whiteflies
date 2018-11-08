@@ -7,7 +7,7 @@ library(lme4)
 library(tibble)
 
 # load dataset
-df = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.25lines.tsv",header = T,stringsAsFactors = F)
+df = read.delim("Figure7_F2_whitefly_survival/20170912_wf_bioassay_F2.tsv",header = T,stringsAsFactors = F)
 
 ######## Plot of whitefly survival per plant line #######
 # percentage per plant line
