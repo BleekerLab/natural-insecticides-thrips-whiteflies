@@ -41,7 +41,7 @@ counts.F2$name = factor(counts.F2$name,levels = counts.F2$name)
 ##########
 p1 = ggplot(data = counts.19accessions,aes(x = name,y=occurence)) +
   geom_bar(stat = "identity",width = 0.7) +
-  theme(axis.text.x = element_text(angle = 90,hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 40,hjust = 1,size = 6)) +
   labs(x = "Volatile compound",y="Number of compound occurences") +
   scale_y_continuous(limits=c(0,20)) +
   ggtitle("Occurences of volatiles in the selected 19 genotypes")
@@ -49,12 +49,12 @@ p1
 
 p2 = ggplot(data = counts.F2,aes(x = name,y=occurence)) +
   geom_bar(stat = "identity",width = 0.7) +
-  theme(axis.text.x = element_text(angle = 90,hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 90,hjust = 1,size = 8)) +
   labs(x = "Volatile compound",y="Number of compound occurences") +
   scale_y_continuous(limits=c(0,30)) +
   ggtitle("Occurences of volatiles in the 22 F2 lines, their parents and their F1 (n=25)")
 p2
 
-pdf("FigureSX_volatiles_19acc_vs_F2/occurences.pdf",width = 7,height = 10)
+pdf("FigureS2_volatiles_19acc_vs_F2/occurences.pdf",width = 7,height = 10)
 grid.arrange(p1,p2)
 dev.off()
