@@ -56,7 +56,9 @@ fits = list()
 compound.dfs=list()
 for (i in seq_along(compounds)){
   metabolite = compounds[i]
-  compound.dfs[[i]] = filter(thrips,compound == metabolite) # a dataframe for one compound
+  # create a dataframe with only one compound
+  compound.dfs[[i]] = filter(thrips,compound == metabolite) 
+  # fit a survival curve on that single dataframe
   fits[[i]] = with(compound.dfs[[i]],survfit(formula = Surv(time,status) ~ dose,se.fit=T))
 }
 
@@ -64,8 +66,12 @@ for (i in seq_along(compounds)){
 list_of_plots = list()
 for (i in seq_along(compounds)){
   metabolite = compounds[i] # name of the compound
+  # extract one fit
   fit = fits[[i]]
-  df = compound.dfs[[i]] # a dataframe for one compound
+  # remove the 'dose=' label
+  names(fit$strata) = gsub(pattern = "dose=",replacement = "",x = names(fit$strata))
+  # a dataframe with one single ccompound
+  df = compound.dfs[[i]] 
   # one plot per compound with all doses indicated
   p = ggsurvplot(fit,
                  data = df,
@@ -81,9 +87,14 @@ for (i in seq_along(compounds)){
     facet_wrap(~strata,nrow = 1) +
     theme(axis.title.y = element_blank(),legend.position = "none")
   list_of_plots[[i]]=g
-  # save plots
+  # save svg plot
   svg(filename = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".svg",sep = ''),width = 10,height = 5)
+  print(g)
+  dev.off()
+  # save pdf plot
   pdf(file = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".pdf",sep = ''),width = 10,height = 5)
+  print(g)
+  dev.off()
 }
 
 
