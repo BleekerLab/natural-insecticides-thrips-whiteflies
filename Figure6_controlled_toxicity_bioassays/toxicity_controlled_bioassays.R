@@ -63,8 +63,10 @@ for (i in seq_along(compounds)){
 # plots
 list_of_plots = list()
 for (i in seq_along(compounds)){
+  metabolite = compounds[i] # name of the compound
   fit = fits[[i]]
   df = compound.dfs[[i]] # a dataframe for one compound
+  # one plot per compound with all doses indicated
   p = ggsurvplot(fit,
                  data = df,
                  size=1,
@@ -79,6 +81,9 @@ for (i in seq_along(compounds)){
     facet_wrap(~strata,nrow = 1) +
     theme(axis.title.y = element_blank(),legend.position = "none")
   list_of_plots[[i]]=g
+  # save plots
+  svg(filename = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".svg",sep = ''),width = 10,height = 5)
+  pdf(file = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".pdf",sep = ''),width = 10,height = 5)
 }
 
 
