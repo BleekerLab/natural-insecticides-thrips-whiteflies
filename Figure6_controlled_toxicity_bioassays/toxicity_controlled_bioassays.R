@@ -32,7 +32,6 @@ p <- ggplot(wf,mapping = aes(x = dose,y = percentage,fill=compound)) +
   labs(x = "Dose",y="Whitefly survival after 48h (%)") +
   scale_fill_brewer(palette = "Set1") +
   theme(axis.text = element_text(colour = "black",size = 8),axis.text.x = element_text(angle = 0))
-p
 
 svg(filename = "Figure6_controlled_toxicity_bioassays/Figure6A.svg",width = 10,height = 5)
 print(p)
@@ -63,7 +62,6 @@ for (i in seq_along(compounds)){
 }
 
 # plots
-list_of_plots = list()
 for (i in seq_along(compounds)){
   metabolite = compounds[i] # name of the compound
   # extract one fit
@@ -85,14 +83,14 @@ for (i in seq_along(compounds)){
     theme_bw() + 
     ggtitle(compounds[[i]]) +
     facet_wrap(~strata,nrow = 1) +
-    theme(axis.title.y = element_blank(),legend.position = "none")
-  list_of_plots[[i]]=g
+    theme(axis.title.y = element_blank(),legend.position = "none") +
+    labs(y="Survival probability",x="Time (days)")
   # save svg plot
-  svg(filename = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".svg",sep = ''),width = 10,height = 5)
+  svg(filename = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".svg",sep = ''),width = 7,height = 4)
   print(g)
   dev.off()
   # save pdf plot
-  pdf(file = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".pdf",sep = ''),width = 10,height = 5)
+  pdf(file = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".pdf",sep = ''),width = 7,height = 4)
   print(g)
   dev.off()
 }
