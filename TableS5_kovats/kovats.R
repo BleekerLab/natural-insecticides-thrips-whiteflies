@@ -59,8 +59,10 @@ to_print2 = paste("y = ",a,".x + ",b,".x^2 +",c,sep = '')
 # plot
 p2 = p1 + geom_line(aes(x = rt,y=predict(mod,x)),colour="red")
 p2 = p2 + annotate("text",x = 500,y=1800,label=to_print1)
-p2 = p2 + annotate("text",x = 500,y=1500,label=to_print2)
+p2 = p2 + annotate("text",x = 500,y=1500,label=to_print2) +
+  labs(y="Theoretical Kovats Index",x="Retention Time (seconds)")
 print(p2)
 
+ggsave(plot = p2,filename = "TableS5_kovats/RT_vs_KI.pdf",width = 7,height = 5)
 
 
