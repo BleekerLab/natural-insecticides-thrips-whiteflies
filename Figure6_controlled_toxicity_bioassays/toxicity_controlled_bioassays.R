@@ -46,9 +46,6 @@ dev.off()
 ##############################################################
 thrips = ldply(thrips.dfs,data.frame)
 
-# reorder levels for dose
-thrips$dose = factor(thrips$dose,levels = unique(thrips$dose))
-
 # fit a survival curve for each individual compound
 compounds = unique(thrips$compound)
 fits = list()
@@ -57,6 +54,8 @@ for (i in seq_along(compounds)){
   metabolite = compounds[i]
   # create a dataframe with only one compound
   compound.dfs[[i]] = filter(thrips,compound == metabolite) 
+  # reorder dose levels for the compound
+  compound.dfs[[i]]$dose = factor(compound.dfs[[i]]$dose,levels = unique(compound.dfs[[i]]$dose))
   # fit a survival curve on that single dataframe
   fits[[i]] = with(compound.dfs[[i]],survfit(formula = Surv(time,status) ~ dose,se.fit=T))
 }
@@ -78,13 +77,12 @@ for (i in seq_along(compounds)){
                  conf.int=TRUE,
                  ggtheme = theme_bw()
                  ) 
-  p <- ggpar(p,legend = "none")
+  p <- ggpar(p,legend = "none",ylab = "Survival probability",xlab = "Time (days)")
   g <- p$plot + 
     theme_bw() + 
     ggtitle(compounds[[i]]) +
     facet_wrap(~strata,nrow = 1) +
-    theme(axis.title.y = element_blank(),legend.position = "none") +
-    labs(y="Survival probability",x="Time (days)")
+    theme(axis.title.y = element_blank(),legend.position = "none")
   # save svg plot
   svg(filename = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".svg",sep = ''),width = 7,height = 4)
   print(g)
