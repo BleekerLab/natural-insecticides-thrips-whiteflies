@@ -65,4 +65,12 @@ print(p2)
 
 ggsave(plot = p2,filename = "TableS5_kovats/RT_vs_KI.pdf",width = 7,height = 5)
 
-
+#######################
+# import real rt values
+#######################
+rt = read.delim("TableS5_kovats/20160223_rt.tsv",header = T,stringsAsFactors = F)
+colnames(rt)=c("rt_min","x")
+# predict Kovats Index based on the model
+ki_predicted = predict(mod,rt)
+rt$ki_predicted = round(ki_predicted,digits = 0)
+write.table(rt,file = "TableS5_kovats/KI_predicted.tsv",sep = "\t",quote = F,row.names = F)
