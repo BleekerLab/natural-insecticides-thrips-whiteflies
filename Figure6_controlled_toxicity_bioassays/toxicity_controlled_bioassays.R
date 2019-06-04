@@ -6,6 +6,7 @@ library(tidyverse)
 library("survival") # to fit a survival curve
 library("survminer") # to draw plots
 library("RColorBrewer")
+library("ggfortify")
 
 
 ###############
@@ -46,51 +47,72 @@ dev.off()
 ##############################################################
 thrips = ldply(thrips.dfs,data.frame)
 
-# fit a survival curve for each individual compound
-compounds = unique(thrips$compound)
-fits = list()
-compound.dfs=list()
-for (i in seq_along(compounds)){
-  metabolite = compounds[i]
-  # create a dataframe with only one compound
-  compound.dfs[[i]] = filter(thrips,compound == metabolite) 
-  # reorder dose levels for the compound
-  compound.dfs[[i]]$dose = factor(compound.dfs[[i]]$dose,levels = unique(compound.dfs[[i]]$dose))
-  # fit a survival curve on that single dataframe
-  fits[[i]] = with(compound.dfs[[i]],survfit(formula = Surv(time,status) ~ dose,se.fit=T))
-}
+# # fit a survival curve for each individual compound
+# compounds = unique(thrips$compound)
+# fits = list()
+# compound.dfs=list()
+# for (i in seq_along(compounds)){
+#   metabolite = compounds[i]
+#   # create a dataframe with only one compound
+#   compound.dfs[[i]] = filter(thrips,compound == metabolite) 
+#   # reorder dose levels for the compound
+#   compound.dfs[[i]]$dose = factor(compound.dfs[[i]]$dose,levels = unique(compound.dfs[[i]]$dose))
+#   # fit a survival curve on that single dataframe
+#   df = compound.dfs[[i]] 
+#   fits[[i]] = survfit(formula = Surv(time,status) ~ dose,se.fit=TRUE,data = df)
+# 
+#   # extract one fit
+#   fit = fits[[i]]
+#   # remove the 'dose=' label
+#   names(fit$strata) = gsub(pattern = "dose=",replacement = "",x = names(fit$strata))
+#   
+#   # one plot per compound with all doses indicated
+#   p = ggsurvplot(fit,
+#                  data = df,
+#                  palette=brewer.pal(n = length(unique(df$dose)),"Set2"),
+#                  conf.int=TRUE)
+#   p <- ggpar(p,legend = "none",ylab = "Survival probability",xlab = "Time (days)")
+#   g <- p$plot + 
+#     theme_bw() + 
+#     ggtitle(compounds[[i]]) +
+#     facet_wrap(~strata,nrow = 1) +
+#     theme(axis.title.y = element_blank(),legend.position = "none")
+#   # save svg plot
+#   svg(filename = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".svg",sep = ''),width = 7,height = 4)
+#   print(g)
+#   dev.off()
+#   # save pdf plot
+#   pdf(file = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".pdf",sep = ''),width = 7,height = 4)
+#   print(g)
+#   dev.off()
+# }
 
-# plots
-for (i in seq_along(compounds)){
-  metabolite = compounds[i] # name of the compound
-  # extract one fit
-  fit = fits[[i]]
-  # remove the 'dose=' label
-  names(fit$strata) = gsub(pattern = "dose=",replacement = "",x = names(fit$strata))
-  # a dataframe with one single ccompound
-  df = compound.dfs[[i]] 
-  # one plot per compound with all doses indicated
-  p = ggsurvplot(fit,
-                 data = df,
-                 size=1,
-                 palette=brewer.pal(n = length(unique(df$dose)),"Set2"),
-                 conf.int=TRUE,
-                 ggtheme = theme_bw()
-                 ) 
-  p <- ggpar(p,legend = "none",ylab = "Survival probability",xlab = "Time (days)")
-  g <- p$plot + 
-    theme_bw() + 
-    ggtitle(compounds[[i]]) +
-    facet_wrap(~strata,nrow = 1) +
-    theme(axis.title.y = element_blank(),legend.position = "none")
+##### to fix issue: "f(...) cannot change aethetics while plotting ######
+##### maybe it has to do with the confidence intervals...   #############
+
+# helper function
+plot_survival_curve <- function(df="thrips",compoundName,destDirectory="Figure6_controlled_toxicity_bioassays/"){
+  # filters the complete dataset and create a survival curve
+  df = filter(thrips,compound == compoundName) 
+  # reorder dose levels for the compound
+  df$dose = factor(df$dose,levels = unique(df$dose))
+  
+  p = ggsurvplot(fit,data = df,
+                 palette=brewer.pal(n = length(unique(phe$dose)),"Set2"),
+                 conf.int=TRUE)
+  g = p$plot + theme_bw() + ggtitle(compoundName) + facet_wrap(~strata,nrow=1) + theme(axis.title.y = element_blank(),legend.position = "none")
   # save svg plot
-  svg(filename = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".svg",sep = ''),width = 7,height = 4)
+  svg(filename = paste(destDirectory,compoundName,".svg",sep = ''),width = 7,height = 4)
   print(g)
   dev.off()
   # save pdf plot
-  pdf(file = paste("Figure6_controlled_toxicity_bioassays/",metabolite,".pdf",sep = ''),width = 7,height = 4)
+  pdf(file = paste(destDirectory,compoundName,".pdf",sep = ''),width = 7,height = 4)
   print(g)
   dev.off()
 }
 
-
+# get list of compounds
+compounds = unique(thrips$compound)
+for (i in seq_along(compounds)){
+  plot_survival_curve(df = thrips,compoundName = compounds[i])
+}
