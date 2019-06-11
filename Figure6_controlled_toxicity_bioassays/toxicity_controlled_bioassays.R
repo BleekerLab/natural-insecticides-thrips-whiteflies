@@ -30,6 +30,7 @@ plot_wf_survival <- function(df,color){
     geom_boxplot(fill=color) +
     labs(x = "Dose",y="Whitefly survival after 48h (%)") +
     ggtitle(unique(df$compound)) + 
+    ylim(0,100) +
     theme(axis.text = element_text(colour = "black",size = 8),axis.text.x = element_text(angle = 0))
   return(p)
 }
