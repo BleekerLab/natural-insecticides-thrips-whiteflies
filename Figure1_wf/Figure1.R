@@ -4,7 +4,7 @@ library(lme4)
 
 ############ Data import and wrangling #########
 # import whitefly no-choice data
-df = read.delim("Figure2_wf/whitefly_no-choice_19_accessions.txt",header = T,stringsAsFactors = F)
+df = read.delim("Figure1_wf/whitefly_no-choice_19_accessions.txt",header = T,stringsAsFactors = F)
 
 # remove unecessary variables
 df$alive = NULL
