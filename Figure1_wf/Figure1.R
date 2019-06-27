@@ -15,7 +15,7 @@ df$total = NULL
 df = df %>% group_by(accession,plant) %>% summarise(average = mean(percentage,na.rm = T))
 
 # import accession to species
-accession2species = read.delim("Figure2_wf/accession2species.txt",header = T,stringsAsFactors=F)
+accession2species = read.delim("accession2species.txt",header = T,stringsAsFactors=F)
 df = dplyr::left_join(x = df,y = accession2species)
 
 # extract ordering by increasing median survival values
