@@ -5,6 +5,8 @@ library("tidyverse")
 ###########################
 # import data
 df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
+species.info = read.delim("accession2species.txt",header = T,stringsAsFactors = F)
+separate(data = species.info,col = sample,sep = " ",into=c("genus","species","genotype"),remove = F)
 
 # make it tidy
 df = gather(df,key = "type",value = "counts",-genotype,-plant,-leaf.side,-leaf.disc,-name,-date)
@@ -57,19 +59,20 @@ df = ungroup(df)
 ###########
 # Leaf side
 ###########
+df$type = factor(df$type,levels = unique(df$type))
 
 # plots
 p.leafside = df %>%
   ggplot(aes(x = leaf.side,y=counts,fill=leaf.side)) + 
   geom_violin() + 
-  geom_jitter(width = 0.1) +
+  geom_jitter(width = 0.2) +
   ggtitle("Trichome counts on each leaf side (all trichome types)") +
   mytheme()
 
 p.leafside.per.type = df %>%
   ggplot(aes(x = leaf.side,y=counts,fill=leaf.side)) + 
   geom_violin() + 
-  geom_jitter(width = 0.1) +
+  geom_jitter(width = 0.2) +
   ggtitle("Trichome counts on each leaf side per trichome type") +
   facet_wrap(~ type,scales = "free") +
   mytheme()
@@ -79,18 +82,36 @@ p.leafside.per.genotype = df %>%
   geom_violin() + 
   geom_jitter(width = 0.2) +
   facet_wrap(~ genotype,scales = "free") +
-  mytheme()
+  mytheme() +
+  ggtitle("Trichome counts per genotype and per leaf side")
+
+p.adaxial = df %>%
+  filter(leaf.side == "adaxial") %>%
+  ggplot(aes(x = type,y=counts,fill=type)) + 
+  geom_boxplot() + 
+  geom_jitter(width = 0.2) +
+  mytheme() +
+  ggtitle("Trichome counts on the adaxial leaf side")
 
 p.leafside
 p.leafside.per.type
 p.leafside.per.genotype
+p.adaxial
 
 # is there a difference between leaf side depending on the type of trichomes? 
 types.of.trichomes = unique(df$type)
 models <- sapply(types.of.trichomes, function(type) {
   lm(counts ~ leaf.side, data=df, type==type)
 }, simplify=FALSE)
-ANOVA.tables <- sapply(models, anova, simplify=FALSE) # they are all significant: leaf sides 
+anova.tables.type <- sapply(models, anova, simplify=FALSE) # they are all significant: leaf sides 
+
+# is there a difference between leaf side depending on the genotype? 
+genotypes = unique(df$genotype)
+models <- sapply(genotypes, function(genotype) {
+  lm(counts ~ leaf.side, data=df, genotype==genotype)
+}, simplify=FALSE)
+anova.tables.genotype <- sapply(models, anova, simplify=FALSE) # they are all significant: leaf sides 
+
 
 
 # are leaf sides different?
@@ -157,23 +178,17 @@ p.type6_counts_per_scientist = df %>%
 ###############
 # Desired plots
 ###############
-types_to_keep = c("typeIandIV","typeVI","non.glandular")
+types_to_keep = c("non.glandular","typeIandIV","typeVI","typeVII")
 
 
 
+df = df[which(df$type %in% types_to_keep),] %>%
+  ggplot(.,aes(x=genotype,y=counts,fill=genotype)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.2) +
+  theme(axis.text.x = element_text(angle=90)) + 
+  ggtitle("type 6 trichome counts per scientist & genotype")
+  
 
-##### adaxial side 
-p1 = df %>% 
-  filter(side == "adaxial") %>%
-  ggplot(.,aes(genotype,counts,fill=genotype)) +
-  geom_boxplot() +
-  facet_wrap(~ type,scales = "free") +
-  theme(axis.text.x = element_text(angle=90)) 
 
 
-nMeasures = filter(df,side =="adaxial") %>% with(data = .,table(genotype,type)) %>% as.data.frame()
-# add variables
-#df = mutate(df,percent.glandular = round(Glandular / All * 100,digits = 1))
-#df = mutate(df,disc.area = pi*2^2) 
-
-anova.adaxial = df %>% filter(side == "adaxial") %>% aov(data = .,formula = counts ~ type + genotype)
