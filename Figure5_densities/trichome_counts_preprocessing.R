@@ -5,7 +5,7 @@ library("tidyverse")
 ###########################
 # import data
 df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
-species.info = read.delim("accession2species.txt",header = T,stringsAsFactors = F)
+species.info = read.delim("Figure3_scatterplot/data4scatterplot.txt",header = T,stringsAsFactors = F)
 separate(data = species.info,col = sample,sep = " ",into=c("genus","species","genotype"),remove = F)
 
 # make it tidy
