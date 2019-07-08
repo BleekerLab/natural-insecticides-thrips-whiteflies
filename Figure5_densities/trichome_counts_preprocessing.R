@@ -1,12 +1,13 @@
 library("tidyverse")
+library("ggpubr") # publication-ready plots
+
 
 ###########################
 # Data import and wrangling
 ###########################
 # import data
 df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
-species.info = read.delim("accession2species.txt",header = T,stringsAsFactors = F)
-separate(data = species.info,col = sample,sep = " ",into=c("genus","species","genotype"),remove = F)
+species.info = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
 
 # make it tidy
 df = gather(df,key = "type",value = "counts",-genotype,-plant,-leaf.side,-leaf.disc,-name,-date)
@@ -22,7 +23,7 @@ mytheme <- function(){
   theme_grey(base_size = 12) +
     theme(
       text = element_text(colour="black"),
-      plot.title = element_text(size=20)
+      plot.title = element_text(size=18)
     )
 }
 
@@ -67,7 +68,9 @@ p.leafside = df %>%
   geom_violin() + 
   geom_jitter(width = 0.2) +
   ggtitle("Trichome counts on each leaf side (all trichome types)") +
-  mytheme()
+  mytheme() +
+  stat_compare_means(method = "t.test",label.x = 1.5)
+
 
 p.leafside.per.type = df %>%
   ggplot(aes(x = leaf.side,y=counts,fill=leaf.side)) + 
@@ -75,7 +78,9 @@ p.leafside.per.type = df %>%
   geom_jitter(width = 0.2) +
   ggtitle("Trichome counts on each leaf side per trichome type") +
   facet_wrap(~ type,scales = "free") +
-  mytheme()
+  mytheme() +
+  stat_compare_means(method = "t.test",label.x.npc = "center",label.y.npc = "top")
+
 
 p.leafside.per.genotype = df %>%
   ggplot(aes(x = leaf.side,y=counts,fill=leaf.side)) + 
@@ -83,7 +88,9 @@ p.leafside.per.genotype = df %>%
   geom_jitter(width = 0.2) +
   facet_wrap(~ genotype,scales = "free") +
   mytheme() +
-  ggtitle("Trichome counts per genotype and per leaf side")
+  ggtitle("Trichome counts per genotype and per leaf side")  +
+  stat_compare_means(method="t.test",label.x.npc = "center",label.y.npc =1)
+
 
 p.adaxial = df %>%
   filter(leaf.side == "adaxial") %>%
@@ -93,32 +100,24 @@ p.adaxial = df %>%
   mytheme() +
   ggtitle("Trichome counts on the adaxial leaf side")
 
-p.leafside
-p.leafside.per.type
-p.leafside.per.genotype
-p.adaxial
+ggsave(filename = "Figure5_densities/plots/leafside.png",plot = p.leafside,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/leafside.per.type.png",plot = p.leafside.per.type,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.png",plot = p.leafside.per.genotype,width = 10,height = 6)
+
+ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/leafside.per.type.svg",plot = p.leafside.per.type,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
+
 
 # is there a difference between leaf side depending on the type of trichomes? 
-types.of.trichomes = unique(df$type)
-models <- sapply(types.of.trichomes, function(type) {
-  lm(counts ~ leaf.side, data=df, type==type)
+types.of.trichomes = as.vector(unique(df$type))
+models <- sapply(types.of.trichomes, function(x) {
+  lm(counts ~ leaf.side, data=df, type==x)
 }, simplify=FALSE)
-anova.tables.type <- sapply(models, anova, simplify=FALSE) # they are all significant: leaf sides 
-
-# is there a difference between leaf side depending on the genotype? 
-genotypes = unique(df$genotype)
-models <- sapply(genotypes, function(genotype) {
-  lm(counts ~ leaf.side, data=df, genotype==genotype)
-}, simplify=FALSE)
-anova.tables.genotype <- sapply(models, anova, simplify=FALSE) # they are all significant: leaf sides 
-
-
-
-# are leaf sides different?
-leaf.side.1 = df %>% filter(leaf.side == "abaxial") %>% select(counts)  
-leaf.side.2 = df %>% filter(leaf.side == "adaxial") %>% select(counts) 
-t.test(leaf.side.1$counts,leaf.side.2$counts,paired = T,var.equal = F) # highly significant so they are different
-
+anova.tables.type = sapply(models, anova, simplify=FALSE)       # One-way ANOVA for each trichome type    
+anova.tables.type = plyr::ldply(anova.tables.type)              # converts list into one dataframe
+colnames(anova.tables.type)[6] = "pval"
+type.aov = filter(anova.tables.type,Df == 1 & pval < 0.05)     # keeps only leaf side factor (degree freedom == 1)
 
 
 ##############################
@@ -182,12 +181,11 @@ types_to_keep = c("non.glandular","typeIandIV","typeVI","typeVII")
 
 
 
-df = df[which(df$type %in% types_to_keep),] %>%
-  ggplot(.,aes(x=genotype,y=counts,fill=genotype)) + 
-  geom_violin() + 
-  geom_jitter(width = 0.2) +
-  theme(axis.text.x = element_text(angle=90)) + 
-  ggtitle("type 6 trichome counts per scientist & genotype")
+#df = df[which(df$type %in% types_to_keep),] %>%
+#  ggplot(.,aes(x=genotype,y=counts,fill=genotype)) + 
+# geom_violin() + 
+#  geom_jitter(width = 0.2) +
+#  theme(axis.text.x = element_text(angle=90)) 
   
 
 
