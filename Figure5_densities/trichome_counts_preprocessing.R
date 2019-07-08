@@ -7,15 +7,10 @@ library("ggpubr") # publication-ready plots
 ###########################
 # import data
 df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
-<<<<<<< HEAD
-species.info = read.delim("Figure3_scatterplot/data4scatterplot.txt",header = T,stringsAsFactors = F)
-separate(data = species.info,col = sample,sep = " ",into=c("genus","species","genotype"),remove = F)
-=======
 species.info = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
->>>>>>> 7a1ca7dcc2ebd4dbee1a325e97877ccf193eb3c2
 
 # make it tidy
-df = gather(df,key = "type",value = "counts",-genotype,-plant,-leaf.side,-leaf.disc,-name,-date)
+df = gather(df,key = "type",value = "counts",-genotype,-accession,-plant,-leaf.side,-leaf.disc,-name,-date)
 
 # remove date (not necessary)
 df$date = NULL
@@ -105,9 +100,9 @@ p.adaxial = df %>%
   mytheme() +
   ggtitle("Trichome counts on the adaxial leaf side")
 
-ggsave(filename = "Figure5_densities/plots/leafside.png",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/leafside.per.type.png",plot = p.leafside.per.type,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.png",plot = p.leafside.per.genotype,width = 10,height = 6)
+ggsave(filename = "Figure5_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/leafside.per.type.pdf",plot = p.leafside.per.type,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
 
 ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
 ggsave(filename = "Figure5_densities/plots/leafside.per.type.svg",plot = p.leafside.per.type,width = 7,height = 5)
