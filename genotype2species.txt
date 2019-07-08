@@ -1,20 +1,20 @@
-genotype	species	name4plot
-LA1840	chmielewskii	S. chm LA1840
-LA1777	habrochaites	S. hab LA1777
-LA2133	neorickii	S. neo LA2133
-LA1278	peruvianum	S. per LA1278
-LA0716	pennellii	S. pen LA0716
-LA1718	habrochaites	S. hab LA1718
-LA2172	arcanum	S. arc LA2172
-LYC4	habrochaites	S. hab LYC4
-PI134418	habrochaites	S. hab PI134418
-PI127826	habrochaites	S. hab PI127826
-LA1578	pimpinellifolium	S. pim LA1578
-LA0735	neorickii	S. neo LA0735
-LA1401	cheesmaniae	S. che LA1401
-LA0407	habrochaites	S. hab LA0407
-LA2695	chmielewskii	S. chm LA2695
-LA1364	huaylasense	S. hua LA1364
-LA1954	peruvianum	S. per LA1954
-MM	lycopersicum	S. lyc MM
-LA4024	lycopersicum	S. lyc LA4024
+sample	species	color	genotype
+S.  arc LA2172	arcanum	#F8766D	LA2172
+S.  ches LA1401	cheesmaniae	#D89000	LA1401
+S.  chm LA1840	chmielewskii	#A3A500	LA1840
+S.  chm LA2695	chmielewskii	#A3A500	LA2695
+S.  hab LA0407	habrochaites	#39B600	LA0407
+S.  hab LA1718	habrochaites	#39B600	LA1718
+S.  hab LA1777	habrochaites	#39B600	LA1777
+S.  hab PI134418	habrochaites	#39B600	PI134418
+S.  hab LYC4	habrochaites	#39B600	LYC4
+S.  hab PI127826	habrochaites	#39B600	PI127826
+S.  hua LA1364	huaylasense 	#00BF7D	LA1364
+S.  lyc MM	lycopersicum	#00BFC4	MM
+S.  lyc LA4024	lycopersicum	#00BFC4	LA4024
+S.  neo LA2133	neorickii	#00B0F6	LA2133
+S.  neo LA0735	neorickii	#00B0F6	LA0735
+S.  pen LA0716	pennellii	#9590FF	LA0716
+S.  per LA1278	peruvianum	#e76bf3	LA1278
+S.  per LA1954	peruvianum	#e76bf3	LA1954
+S.  pim LA1578	pimpinellifolium 	#FF62BC	LA1578
