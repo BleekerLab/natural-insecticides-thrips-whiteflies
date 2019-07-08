@@ -6,15 +6,16 @@ library("ggpubr") # publication-ready plots
 # Data import and wrangling
 ###########################
 # import data
-df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
-species.info = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
-
 # make it tidy
-df = gather(df,key = "type",value = "counts",-genotype,-accession,-plant,-leaf.side,-leaf.disc,-name,-date)
-
 # remove date (not necessary)
+df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
+df = gather(df,key = "type",value = "counts",-genotype,-accession,-plant,-leaf.side,-leaf.disc,-name,-date)
 df$date = NULL
 
+
+# add species and corresponding color for species
+species.info = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
+df = left_join(df,species.info[,c("species","color","accession")],by="accession")
 
 #######################
 # custom theme for plot 
@@ -53,7 +54,7 @@ shortest <- min(length(leaf.disc.1$counts), length(leaf.disc.2$counts))
 leaf.disc.1 <- tail(leaf.disc.1$counts, shortest)
 leaf.disc.2 <- tail(leaf.disc.2$counts, shortest)
 t.test(leaf.disc.1,leaf.disc.2) # p-value > 0.05 so we can treat leaf discs as equivalent and average
-df = df %>% group_by(genotype,leaf.side,name,type) %>% summarise(counts = mean(counts)) # average leaf discs
+df = df %>% group_by(genotype,accession,leaf.side,name,type) %>% summarise(counts = mean(counts)) # average leaf discs
 df = ungroup(df)
 
 
@@ -101,7 +102,7 @@ p.adaxial = df %>%
   ggtitle("Trichome counts on the adaxial leaf side")
 
 ggsave(filename = "Figure5_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/leafside.per.type.pdf",plot = p.leafside.per.type,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/leafside.per.type.pdf",plot = p.leafside.per.type,width = 10,height = 7)
 ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
 
 ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
@@ -173,19 +174,40 @@ p.type6_counts_per_scientist = df %>%
   theme(axis.text.x = element_text(angle=90)) + 
   ggtitle("type 6 trichome counts per scientist & genotype")
 
+p.ng_counts_per_scientist = df %>% 
+  filter(type == "non.glandular") %>% 
+  ggplot(.,aes(x=name,y=counts,fill=name)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.2) +
+  theme(axis.text.x = element_text(angle=90)) + 
+  ggtitle("non-glandular trichome counts per scientist & genotype")
+
 
 ###############
 # Desired plots
 ###############
 types_to_keep = c("non.glandular","typeIandIV","typeVI","typeVII")
 
+p.adaxial = df %>% 
+  filter(type %in% types_to_keep) %>% # only keep the trichomes of interest 
+  filter(leaf.side == "adaxial") %>%
+  ggplot(.,aes(x=genotype,y=counts,fill=species)) + 
+  geom_boxplot() + 
+  geom_jitter(width = 0.1) +
+  theme(axis.text.x = element_text(angle=90))  +
+  facet_wrap(~ type,scales = "free") 
+
+p.abaxial = df %>% 
+  filter(type %in% types_to_keep) %>% # only keep the trichomes of interest 
+  filter(leaf.side == "abaxial") %>%
+  ggplot(.,aes(x=genotype,y=counts,fill=species)) + 
+  geom_boxplot() + 
+  geom_jitter(width = 0.1) +
+  theme(axis.text.x = element_text(angle=90))  +
+  facet_wrap(~ type,scales = "free") 
 
 
-#df = df[which(df$type %in% types_to_keep),] %>%
-#  ggplot(.,aes(x=genotype,y=counts,fill=genotype)) + 
-# geom_violin() + 
-#  geom_jitter(width = 0.2) +
-#  theme(axis.text.x = element_text(angle=90)) 
+gridExtra::grid.arrange(p.adaxial,p.abaxial,nrow=2)
   
 
 
