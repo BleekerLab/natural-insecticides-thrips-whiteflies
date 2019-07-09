@@ -1,5 +1,6 @@
 library("tidyverse")
-library("ggpubr") # publication-ready plots
+library("ggpubr") # publication-ready plots + add pvalues on graphs
+library("gridExtra")
 
 
 ###########################
@@ -11,11 +12,6 @@ library("ggpubr") # publication-ready plots
 df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
 df = gather(df,key = "type",value = "counts",-genotype,-accession,-plant,-leaf.side,-leaf.disc,-name,-date)
 df$date = NULL
-
-
-# add species and corresponding color for species
-species.info = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
-df = left_join(df,species.info[,c("species","color","accession")],by="accession")
 
 #######################
 # custom theme for plot 
@@ -62,53 +58,6 @@ df = ungroup(df)
 # Leaf side
 ###########
 df$type = factor(df$type,levels = unique(df$type))
-
-# plots
-p.leafside = df %>%
-  ggplot(aes(x = leaf.side,y=counts,fill=leaf.side)) + 
-  geom_violin() + 
-  geom_jitter(width = 0.2) +
-  ggtitle("Trichome counts on each leaf side (all trichome types)") +
-  mytheme() +
-  stat_compare_means(method = "t.test",label.x = 1.5)
-
-
-p.leafside.per.type = df %>%
-  ggplot(aes(x = leaf.side,y=counts,fill=leaf.side)) + 
-  geom_violin() + 
-  geom_jitter(width = 0.2) +
-  ggtitle("Trichome counts on each leaf side per trichome type") +
-  facet_wrap(~ type,scales = "free") +
-  mytheme() +
-  stat_compare_means(method = "t.test",label.x.npc = "center",label.y.npc = "top")
-
-
-p.leafside.per.genotype = df %>%
-  ggplot(aes(x = leaf.side,y=counts,fill=leaf.side)) + 
-  geom_violin() + 
-  geom_jitter(width = 0.2) +
-  facet_wrap(~ genotype,scales = "free") +
-  mytheme() +
-  ggtitle("Trichome counts per genotype and per leaf side")  +
-  stat_compare_means(method="t.test",label.x.npc = "center",label.y.npc =1)
-
-
-p.adaxial = df %>%
-  filter(leaf.side == "adaxial") %>%
-  ggplot(aes(x = type,y=counts,fill=type)) + 
-  geom_boxplot() + 
-  geom_jitter(width = 0.2) +
-  mytheme() +
-  ggtitle("Trichome counts on the adaxial leaf side")
-
-ggsave(filename = "Figure5_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/leafside.per.type.pdf",plot = p.leafside.per.type,width = 10,height = 7)
-ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
-
-ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/leafside.per.type.svg",plot = p.leafside.per.type,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
-
 
 # is there a difference between leaf side depending on the type of trichomes? 
 types.of.trichomes = as.vector(unique(df$type))
@@ -186,29 +135,91 @@ p.ng_counts_per_scientist = df %>%
 ###############
 # Desired plots
 ###############
-types_to_keep = c("non.glandular","typeIandIV","typeVI","typeVII")
+# add density column
+leaf.disc.radius = 2 # mm2
+leaf.disc.area = pi * leaf.disc.radius^2
+df = mutate(df,density = counts / leaf.disc.area)
+
+# add species and corresponding color for species
+species.info = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
+df = left_join(df,species.info[,c("species","color","accession")],by="accession")
+
+# what trichomes?
+types_to_keep = c("non.glandular","typeIandIV","typeVI")
+df = filter(.data = df,type %in% types_to_keep) # only keep the trichomes of interest 
+
+###########
+# Figure 5A
+############
+p.leafside = df %>%
+  ggplot(aes(x = leaf.side,y=density,fill=leaf.side)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.2) +
+  ggtitle("Trichome density on each leaf side (all trichome types)") +
+  mytheme() +
+  stat_compare_means(method = "t.test",label.x = 1.5)
+
+
+p.leafside.per.type = df %>%
+  ggplot(aes(x = leaf.side,y=density,fill=leaf.side)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.2) +
+  ggtitle("Trichome density on each leaf side per trichome type") +
+  facet_wrap(~ type,scales = "free") +
+  mytheme() +
+  stat_compare_means(method = "t.test",label.x.npc = "center",label.y.npc = "top")
+
+
+p.leafside.per.genotype = df %>%
+  ggplot(aes(x = leaf.side,y=density,fill=leaf.side)) + 
+  geom_violin() + 
+  geom_jitter(width = 0.2) +
+  facet_wrap(~ genotype,scales = "free") +
+  mytheme() +
+  ggtitle("Trichome density per genotype and per leaf side")  +
+  stat_compare_means(method="t.test",label.x.npc = "center",label.y.npc =1)
+
+#ggsave(filename = "Figure5_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
+#ggsave(filename = "Figure5_densities/plots/leafside.per.type.pdf",plot = p.leafside.per.type,width = 10,height = 7)
+#ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
+
+#ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
+#ggsave(filename = "Figure5_densities/plots/leafside.per.type.svg",plot = p.leafside.per.type,width = 7,height = 5)
+#ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
+
+
+############
+# Figure 5B
+############
+
 
 p.adaxial = df %>% 
-  filter(type %in% types_to_keep) %>% # only keep the trichomes of interest 
   filter(leaf.side == "adaxial") %>%
-  ggplot(.,aes(x=genotype,y=counts,fill=species)) + 
+  ggplot(.,aes(x=genotype,y=density,fill=species)) + 
   geom_boxplot() + 
-  geom_jitter(width = 0.1) +
+  geom_point() +
   theme(axis.text.x = element_text(angle=90))  +
-  facet_wrap(~ type,scales = "free") 
+  facet_wrap(~ type,scales = "free") +
+  labs(y = "Trichome density (trichomes/mm2)")
 
 p.abaxial = df %>% 
-  filter(type %in% types_to_keep) %>% # only keep the trichomes of interest 
   filter(leaf.side == "abaxial") %>%
-  ggplot(.,aes(x=genotype,y=counts,fill=species)) + 
+  ggplot(.,aes(x=genotype,y=density,fill=species)) + 
   geom_boxplot() + 
-  geom_jitter(width = 0.1) +
+  geom_point() +
   theme(axis.text.x = element_text(angle=90))  +
-  facet_wrap(~ type,scales = "free") 
+  facet_wrap(~ type,scales = "free") +
+  labs(y = "Trichome density (trichomes/mm2)")
 
+svg("Figure5_densities/plots/Figure5B.svg",width = 10,height = 7)
+grid.arrange(p.adaxial,p.abaxial,nrow=2)
+dev.off()
 
-gridExtra::grid.arrange(p.adaxial,p.abaxial,nrow=2)
-  
+pdf("Figure5_densities/plots/Figure5B.pdf",width = 10,height = 7)
+grid.arrange(p.adaxial,p.abaxial,nrow=2)
+dev.off()
 
-
-
+#################
+# session info
+##################
+writeLines(capture.output(sessionInfo()), "Figure5_densities/sessionInfo.txt")
