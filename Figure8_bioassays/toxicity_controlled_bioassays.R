@@ -10,7 +10,7 @@ library(gridExtra)         # to arrange plots in a grid
 ###########################################
 # creates a directory where plots are saved
 ###########################################
-dir.create(file.path("Figure6_controlled_toxicity_bioassays/plots/"), showWarnings = FALSE)
+dir.create(file.path("Figure8_bioassays/plots/"), showWarnings = FALSE)
 
 ##################
 # helper functions
@@ -36,7 +36,6 @@ plot_wf_survival <- function(df,color){
 }
 
 # thrips plotting function
-
 plot_thrips_survival_curve <- function(fit,df,color){
   # reorder dose levels for the compound
   df$dose = factor(df$dose,levels = unique(df$dose))
@@ -50,6 +49,7 @@ plot_thrips_survival_curve <- function(fit,df,color){
     theme_bw() + 
     ggtitle(unique(df$compound)) + 
     theme(axis.title.y = element_blank(),legend.position = "none",text = element_text(colour="black"))
+  return(g)
 }
 
 
@@ -78,13 +78,13 @@ plot_thrips_survival_curve <- function(fit,df,color){
 
 # reads the whitefly data tables and place them in a list
 wf.dfs = lapply(
-  X = list.files(path = "Figure6_controlled_toxicity_bioassays",pattern = "*wf*",full.names = T),
+  X = list.files(path = "Figure8_bioassays/",pattern = "*wf*",full.names = T),
   FUN = function(x){read.delim(x,header = T,stringsAsFactors = F,row.names = NULL)}
   )
 
 # reads the thrips data tables and place them in a list
 thrips.dfs = lapply(
-  X = list.files(path = "Figure6_controlled_toxicity_bioassays",pattern = "*thrips*",full.names = T),
+  X = list.files(path = "Figure8_bioassays/",pattern = "*thrips*",full.names = T),
   FUN = function(x){read.delim(x,header = T,stringsAsFactors = F,row.names = NULL)}
   )
   
@@ -106,11 +106,11 @@ wf_plots  = map2(
 
 # use gridExtra to arrange them
 nCol <- 3
-pdf(file = file.path("Figure6_controlled_toxicity_bioassays/plots/Figure6A.pdf"),width = 10,height = 7)
+pdf(file = file.path("Figure8_bioassays/plots/Figure8A.pdf"),width = 10,height = 7)
 do.call("grid.arrange", c(wf_plots, ncol=nCol))
 dev.off()
 
-svg(file = file.path("Figure6_controlled_toxicity_bioassays/plots/Figure6A.svg"),width = 10,height = 7)
+svg(file = file.path("Figure8_bioassays/plots/Figure8A.svg"),width = 10,height = 7)
 do.call("grid.arrange", c(wf_plots, ncol=nCol))
 dev.off()
 
@@ -131,11 +131,11 @@ thrips_plots = pmap(.l = list(fits,thrips.dfs,brewerColors),.f = plot_thrips_sur
 # use gridExtra to arrange them
 n <- length(thrips_plots)
 nCol <- floor(sqrt(n))
-pdf(file = file.path("Figure6_controlled_toxicity_bioassays/plots/Figure6B.pdf"),width = 10,height = 7)
+pdf(file = file.path("Figure8_bioassays/plots/Figure8B.pdf"),width = 10,height = 7)
 do.call("grid.arrange", c(thrips_plots, ncol=nCol))
 dev.off()
 
-svg(file = file.path("Figure6_controlled_toxicity_bioassays/plots/Figure6B.svg"),width = 10,height = 7)
+svg(file = file.path("Figure8_bioassays/plots/Figure8B.svg"),width = 10,height = 7)
 do.call("grid.arrange", c(thrips_plots, ncol=nCol))
 dev.off()
 
