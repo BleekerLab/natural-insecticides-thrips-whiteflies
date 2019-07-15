@@ -200,7 +200,7 @@ p.adaxial = df %>%
   geom_point() +
   theme(axis.text.x = element_text(angle=90))  +
   facet_wrap(~ type,scales = "free") +
-  labs(y = "Trichome density (trichomes/mm2)")
+  labs(y = "Adaxial trichome density (trichomes/mm2)")
 
 p.abaxial = df %>% 
   filter(leaf.side == "abaxial") %>%
@@ -209,7 +209,7 @@ p.abaxial = df %>%
   geom_point() +
   theme(axis.text.x = element_text(angle=90))  +
   facet_wrap(~ type,scales = "free") +
-  labs(y = "Trichome density (trichomes/mm2)")
+  labs(y = "Abaxial trichome density (trichomes/mm2)")
 
 svg("Figure5_densities/plots/Figure5B.svg",width = 10,height = 7)
 grid.arrange(p.adaxial,p.abaxial,nrow=2)
