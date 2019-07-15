@@ -1,7 +1,9 @@
 library("tidyverse")
 library("ggpubr") # publication-ready plots + add pvalues on graphs
 library("gridExtra")
-
+library("agricolae")
+library("qdapTools")
+library("purrr")
 
 ###########################
 # Data import and wrangling
@@ -155,7 +157,7 @@ p.leafside = df %>%
   ggplot(aes(x = leaf.side,y=density,fill=leaf.side)) + 
   geom_violin() + 
   geom_jitter(width = 0.2) +
-  ggtitle("Trichome density on each leaf side (all trichome types)") +
+  ggtitle("Trichome density (trichomes/mm2) on each leaf side (all trichome types)") +
   mytheme() +
   stat_compare_means(method = "t.test",label.x = 1.5)
 
@@ -164,7 +166,7 @@ p.leafside.per.type = df %>%
   ggplot(aes(x = leaf.side,y=density,fill=leaf.side)) + 
   geom_violin() + 
   geom_jitter(width = 0.2) +
-  ggtitle("Trichome density on each leaf side per trichome type") +
+  ggtitle("Trichome density (trichomes/mm2) on each leaf side per trichome type") +
   facet_wrap(~ type,scales = "free") +
   mytheme() +
   stat_compare_means(method = "t.test",label.x.npc = "center",label.y.npc = "top")
@@ -176,23 +178,60 @@ p.leafside.per.genotype = df %>%
   geom_jitter(width = 0.2) +
   facet_wrap(~ genotype,scales = "free") +
   mytheme() +
-  ggtitle("Trichome density per genotype and per leaf side")  +
+  ggtitle("Trichome density (trichomes/mm2) per genotype and per leaf side")  +
   stat_compare_means(method="t.test",label.x.npc = "center",label.y.npc =1)
 
 #ggsave(filename = "Figure5_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
-#ggsave(filename = "Figure5_densities/plots/leafside.per.type.pdf",plot = p.leafside.per.type,width = 10,height = 7)
+ggsave(filename = "Figure5_densities/plots/Figure5A.pdf",plot = p.leafside.per.type,width = 10,height = 7)
 #ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
 
 #ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
-#ggsave(filename = "Figure5_densities/plots/leafside.per.type.svg",plot = p.leafside.per.type,width = 7,height = 5)
+ggsave(filename = "Figure5_densities/plots/Figure5A..svg",plot = p.leafside.per.type,width = 7,height = 5)
 #ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
 
+
+
+
+##########################
+# ANOVA and post-hoc tests
+##########################
+# helper function
+add_row_names <- function(df){
+  data.table::setDT(df,keep.rownames = "genotype")[]
+}
+
+### adaxial (upper panel)
+adaxial = df %>% filter(leaf.side == "adaxial")
+types.of.trichomes = as.vector(unique(adaxial$type))
+models.adaxial <- sapply(types.of.trichomes, function(x) {
+  lm(density ~ genotype, data=filter(adaxial,type == x))
+}, simplify=FALSE)
+models.adaxial = sapply(models.adaxial, aov, simplify=FALSE)       # One-way ANOVA for each trichome type    
+models.adaxial = lapply(X = models.adaxial,FUN = function(x){HSD.test(x,trt = "genotype",alpha = 0.05,group = TRUE)$groups})
+models.adaxial = map(.x = models.adaxial,.f = add_row_names)
+models.adaxial = bind_rows(models.adaxial$non.glandular,
+                           models.adaxial$typeIandIV,
+                           models.adaxial$typeVI)
+
+### abaxial (lower panel)
+abaxial = df %>% filter(leaf.side == "abaxial")
+models.abaxial <- sapply(types.of.trichomes, function(x) {
+  lm(density ~ genotype, data=filter(abaxial,type == x))
+}, simplify=FALSE)
+models.abaxial = sapply(models.abaxial, aov, simplify=FALSE)       # One-way ANOVA for each trichome type    
+models.abaxial = lapply(X = models.abaxial,FUN = function(x){HSD.test(x,trt = "genotype",alpha = 0.05,group = TRUE)$groups})
+models.abaxial = map(.x = models.abaxial,.f = add_row_names)
+models.abaxial = bind_rows(models.abaxial$non.glandular,
+                           models.abaxial$typeIandIV,
+                           models.abaxial$typeVI)
+
+# write to file
+write.table(models.adaxial,file = "Figure5_densities/hsd.adaxial.tsv",sep = "\t",row.names = F,quote = F)
+write.table(models.abaxial,file = "Figure5_densities/hsd.abaxial.tsv",sep = "\t",row.names = F,quote = F)
 
 ############
 # Figure 5B
 ############
-
-
 p.adaxial = df %>% 
   filter(leaf.side == "adaxial") %>%
   ggplot(.,aes(x=genotype,y=density,fill=species)) + 
