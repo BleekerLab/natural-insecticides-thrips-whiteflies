@@ -208,18 +208,13 @@ models.adaxial <- sapply(types.of.trichomes, function(x) {
 }, simplify=FALSE)
 models.adaxial = sapply(models.adaxial, aov, simplify=FALSE)       # One-way ANOVA for each trichome type    
 models.adaxial = lapply(X = models.adaxial,FUN = function(x){HSD.test(x,trt = "genotype",alpha = 0.05,group = TRUE)$groups})
-
 models.adaxial$non.glandular$genotype = row.names(models.adaxial$non.glandular)
 models.adaxial$typeIandIV$genotype = row.names(models.adaxial$typeIandIV)
 models.adaxial$typeVI$genotype = row.names(models.adaxial$typeVI)
-for (i in seq_along(models.adaxial)){
-  row.names(models.adaxial[[i]]) = NULL
-  models.adaxial[[i]]$density = NULL
-}
-
-#models.adaxial = bind_rows(models.adaxial$non.glandular,
- #                          models.adaxial$typeIandIV,
-  #                         models.adaxial$typeVI)
+#for (i in seq_along(models.adaxial)){
+#  row.names(models.adaxial[[i]]) = NULL
+#  models.adaxial[[i]]$density = NULL
+#}
 
 ### abaxial (lower panel)
 abaxial = df %>% filter(leaf.side == "abaxial")
@@ -228,10 +223,12 @@ models.abaxial <- sapply(types.of.trichomes, function(x) {
 }, simplify=FALSE)
 models.abaxial = sapply(models.abaxial, aov, simplify=FALSE)       # One-way ANOVA for each trichome type    
 models.abaxial = lapply(X = models.abaxial,FUN = function(x){HSD.test(x,trt = "genotype",alpha = 0.05,group = TRUE)$groups})
-models.abaxial = map(.x = models.abaxial,.f = add_row_names)
-models.abaxial = bind_rows(models.abaxial$non.glandular,
-                           models.abaxial$typeIandIV,
-                           models.abaxial$typeVI)
+
+models.abaxial$non.glandular$genotype = row.names(models.abaxial$non.glandular)
+models.abaxial$typeIandIV$genotype = row.names(models.abaxial$typeIandIV)
+models.abaxial$typeVI$genotype = row.names(models.abaxial$typeVI)
+
+
 
 # write to file
 write.table(models.adaxial,file = "Figure5_densities/hsd.adaxial.tsv",sep = "\t",row.names = F,quote = F)
