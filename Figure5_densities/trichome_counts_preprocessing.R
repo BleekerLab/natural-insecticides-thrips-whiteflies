@@ -2,7 +2,7 @@ library("tidyverse")
 library("ggpubr") # publication-ready plots + add pvalues on graphs
 library("gridExtra")
 library("agricolae")
-library("qdapTools")
+#library("qdapTools")
 library("purrr")
 
 ###########################
@@ -208,10 +208,18 @@ models.adaxial <- sapply(types.of.trichomes, function(x) {
 }, simplify=FALSE)
 models.adaxial = sapply(models.adaxial, aov, simplify=FALSE)       # One-way ANOVA for each trichome type    
 models.adaxial = lapply(X = models.adaxial,FUN = function(x){HSD.test(x,trt = "genotype",alpha = 0.05,group = TRUE)$groups})
-models.adaxial = map(.x = models.adaxial,.f = add_row_names)
-models.adaxial = bind_rows(models.adaxial$non.glandular,
-                           models.adaxial$typeIandIV,
-                           models.adaxial$typeVI)
+
+models.adaxial$non.glandular$genotype = row.names(models.adaxial$non.glandular)
+models.adaxial$typeIandIV$genotype = row.names(models.adaxial$typeIandIV)
+models.adaxial$typeVI$genotype = row.names(models.adaxial$typeVI)
+for (i in seq_along(models.adaxial)){
+  row.names(models.adaxial[[i]]) = NULL
+  models.adaxial[[i]]$density = NULL
+}
+
+#models.adaxial = bind_rows(models.adaxial$non.glandular,
+ #                          models.adaxial$typeIandIV,
+  #                         models.adaxial$typeVI)
 
 ### abaxial (lower panel)
 abaxial = df %>% filter(leaf.side == "abaxial")
@@ -237,7 +245,7 @@ p.adaxial = df %>%
   ggplot(.,aes(x=genotype,y=density,fill=species)) + 
   geom_boxplot() + 
   geom_point() +
-  theme(axis.text.x = element_text(angle=90))  +
+  theme(axis.text.x = element_text(angle=90,vjust=0.5, hjust=1))  +
   facet_wrap(~ type,scales = "free") +
   labs(y = "Adaxial trichome density (trichomes/mm2)")
 
@@ -246,7 +254,7 @@ p.abaxial = df %>%
   ggplot(.,aes(x=genotype,y=density,fill=species)) + 
   geom_boxplot() + 
   geom_point() +
-  theme(axis.text.x = element_text(angle=90))  +
+  theme(axis.text.x = element_text(angle=90,vjust=0.5, hjust=1))  +
   facet_wrap(~ type,scales = "free") +
   labs(y = "Abaxial trichome density (trichomes/mm2)")
 
