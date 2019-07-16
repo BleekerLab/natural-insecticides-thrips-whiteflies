@@ -1,9 +1,7 @@
 library("tidyverse")
-library("ggpubr") # publication-ready plots + add pvalues on graphs
+library("ggpubr")
 library("gridExtra")
 library("agricolae")
-#library("qdapTools")
-library("purrr")
 
 ###########################
 # Data import and wrangling
@@ -208,13 +206,15 @@ models.adaxial <- sapply(types.of.trichomes, function(x) {
 }, simplify=FALSE)
 models.adaxial = sapply(models.adaxial, aov, simplify=FALSE)       # One-way ANOVA for each trichome type    
 models.adaxial = lapply(X = models.adaxial,FUN = function(x){HSD.test(x,trt = "genotype",alpha = 0.05,group = TRUE)$groups})
+
 models.adaxial$non.glandular$genotype = row.names(models.adaxial$non.glandular)
 models.adaxial$typeIandIV$genotype = row.names(models.adaxial$typeIandIV)
 models.adaxial$typeVI$genotype = row.names(models.adaxial$typeVI)
-#for (i in seq_along(models.adaxial)){
-#  row.names(models.adaxial[[i]]) = NULL
-#  models.adaxial[[i]]$density = NULL
-#}
+
+models.adaxial$non.glandular$type = "non.glandular"
+models.adaxial$typeIandIV$type = "typeIandIV"
+models.adaxial$typeVI$type = "typeVI"
+
 
 ### abaxial (lower panel)
 abaxial = df %>% filter(leaf.side == "abaxial")
@@ -228,11 +228,36 @@ models.abaxial$non.glandular$genotype = row.names(models.abaxial$non.glandular)
 models.abaxial$typeIandIV$genotype = row.names(models.abaxial$typeIandIV)
 models.abaxial$typeVI$genotype = row.names(models.abaxial$typeVI)
 
+models.abaxial$non.glandular$type = "non.glandular"
+models.abaxial$typeIandIV$type = "typeIandIV"
+models.abaxial$typeVI$type = "typeVI"
 
+# combine HSD group results into two dataframes
+adaxial = with(data = models.adaxial,rbind.data.frame(non.glandular,typeIandIV,typeVI))
+abaxial = with(data = models.abaxial,rbind.data.frame(non.glandular,typeIandIV,typeVI))
+
+# merge into one unique dataframe containing both leaf side info
+adaxial$leaf.side = "adaxial"
+abaxial$leaf.side = "abaxial"
+
+
+adaxial
+test = left_join(adaxial,species.info,by="genotype")
+
+
+#adaxial_and_abaxial = rbind.data.frame(adaxial,abaxial)                              
 
 # write to file
-write.table(models.adaxial,file = "Figure5_densities/hsd.adaxial.tsv",sep = "\t",row.names = F,quote = F)
-write.table(models.abaxial,file = "Figure5_densities/hsd.abaxial.tsv",sep = "\t",row.names = F,quote = F)
+write.table(x = adaxial_and_abaxial,file = "Figure5_densities/hsd.groups.tsv",sep = "\t",row.names = F,quote = F)
+
+# add info to main dataframe
+#df = left_join(df,adaxial_and_abaxial,by = c(
+#  "genotype" = "genotype",
+# "type" = "type",
+#  "leaf.side" = "leaf.side"
+#))
+
+
 
 ############
 # Figure 5B
@@ -245,6 +270,7 @@ p.adaxial = df %>%
   theme(axis.text.x = element_text(angle=90,vjust=0.5, hjust=1))  +
   facet_wrap(~ type,scales = "free") +
   labs(y = "Adaxial trichome density (trichomes/mm2)")
+p.adaxial + geom_text(data = adaxial,label="groups")
 
 p.abaxial = df %>% 
   filter(leaf.side == "abaxial") %>%
@@ -262,6 +288,9 @@ dev.off()
 pdf("Figure5_densities/plots/Figure5B.pdf",width = 10,height = 7)
 grid.arrange(p.adaxial,p.abaxial,nrow=2)
 dev.off()
+
+ggsave(filename = "Figure5_densities/plots/Figure5B.adaxial.pdf",plot = p.adaxial,width = 10,height = 5)
+ggsave(filename = "Figure5_densities/plots/Figure5B.abaxial.pdf",plot = p.abaxial,width = 10,height = 5)
 
 #################
 # session info
