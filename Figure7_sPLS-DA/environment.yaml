@@ -1,0 +1,14 @@
+name: plsda
+channels:
+  - r
+  - anaconda-cloud
+  - menpo
+  - defaults
+  - bioconda
+  - conda-forge
+dependencies:
+  - notebook=5.7.4 # Plain and simple Jupyter Notebooks
+  - python=3.7.1
+  - scikit-learn=0.20.1
+  - pandas=0.24.2
+  - matplotlib=3.1.1
