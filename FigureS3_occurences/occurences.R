@@ -59,7 +59,7 @@ p.bars.volatiles = ggplot(data = classes.occurences.terpenes,aes(x = class.occur
   geom_bar(stat="identity") +
   theme(axis.text.x = element_text(angle = 0)) +
   ylim(c(0,40)) +
-  labs(x = "Number of times a volatile compound is occuring in the N = 19 tomato genotype collection",y = "Percentage of occurence (%, 100% corresponds to N=19 genotypes)") +
+  labs(x = "Number of times a volatile is occuring in the N = 19 tomato genotype collection",y = "Percentage of occurence (%, 100% corresponds to N=19 genotypes)") +
   geom_label(size=3) +
   theme(axis.text = element_text(color = "black"))
 
@@ -67,7 +67,7 @@ p.bars.as = ggplot(data = classes.occurences.acylsugars,aes(x = class.occurence,
   geom_bar(stat="identity") +
   theme(axis.text.x = element_text(angle = 0)) +
   ylim(c(0,60)) +
-  labs(x = "Number of times a volatile compound is occuring in the N = 19 tomato genotype collection",y = "Percentage of occurence (%, 100% corresponds to N=19 genotypes)") +
+  labs(x = "Number of times an acylsugar is occuring in the N = 19 tomato genotype collection",y = "Percentage of occurence (%, 100% corresponds to N=19 genotypes)") +
   geom_label(size=3) + 
   theme(axis.text = element_text(color = "black"))
 
@@ -75,8 +75,8 @@ p.bars.as = ggplot(data = classes.occurences.acylsugars,aes(x = class.occurence,
 #################
 # Save plots
 #################
-ggsave(filename = "FigureSX_occurences/FigureS2A.volatiles.barplot.pdf",plot = p.bars.volatiles,width = 10,height = 5)
-ggsave(filename = "FigureSX_occurences/FigureS2B.acylsugars.barplot.pdf",plot = p.bars.as,width = 10,height = 5)
+ggsave(filename = "FigureS3_occurences/FigureS2A.volatiles.barplot.pdf",plot = p.bars.volatiles,width = 10,height = 5)
+ggsave(filename = "FigureS3_occurences/FigureS2B.acylsugars.barplot.pdf",plot = p.bars.as,width = 10,height = 5)
 
 ##################################
 # Make heatmaps of sparse matrices
@@ -86,7 +86,7 @@ row.names(terpenes) = terpenes$sample
 terpenes = terpenes[,4:ncol(terpenes)] # keep only compound abundances
 terpenes[terpenes > 0] <- 1
 
-png("FigureSX_occurences/FigS2C.volatiles.heatmap.png",height = 900,width=800)
+png("FigureS3_occurences/FigS2C.volatiles.heatmap.png",height = 900,width=800)
 superheat(terpenes,bottom.label = "none")
 dev.off()
 
@@ -95,11 +95,11 @@ row.names(acylsugars)=acylsugars$sample
 acylsugars = acylsugars[,4:ncol(acylsugars)]
 acylsugars[acylsugars > 0] <- 1
 
-png("FigureSX_occurences/FigS2D.acylsugars.heatmap.png",height = 900,width=800)
+png("FigureS3_occurences/FigS2D.acylsugars.heatmap.png",height = 900,width=800)
 superheat(acylsugars,bottom.label = "none")
 dev.off()
 
 #################
 # session info
 ##################
-writeLines(capture.output(sessionInfo()), "FigureSX_occurences/sessionInfo.txt")
+writeLines(capture.output(sessionInfo()), "FigureS3_occurences/sessionInfo.txt")
