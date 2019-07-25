@@ -3,7 +3,6 @@
 ### Heatmaps and hierarchical clustering on metabolites and phenotypic classes
 # author: marc galland
 # contact: m.galland@uva.nl
-# version 1.0 created on February 13, 2017
 #####################################################################
 
 
@@ -18,8 +17,8 @@ library(ggplot2)
 # load input dataframe and convert to logs  
 ############################################
 
-terpenoids = read.delim("Figure5_heatmaps/pheno_terpenoids.tsv",header=T,stringsAsFactors = F,check.names = F)
-acylsugars = read.delim("Figure5_heatmaps/pheno_acylsugars.tsv",header=T,stringsAsFactors = F,check.names = F)
+terpenoids = read.delim("Figure6_heatmaps/pheno_terpenoids.tsv",header=T,stringsAsFactors = F,check.names = F)
+acylsugars = read.delim("Figure6_heatmaps/pheno_acylsugars.tsv",header=T,stringsAsFactors = F,check.names = F)
 
 # add row names
 row.names(terpenoids)=terpenoids$sample;terpenoids$sample <- NULL
@@ -53,7 +52,7 @@ mat.acylsugars.thripsOrdered = log10(mat.acylsugars.thripsOrdered)
 ###################################
 
 ## whitefly / terpenoids heatmap
-pdf(file = "Figure5_heatmaps/terpenoids.wf.pdf",width = 7,height = 5)
+pdf(file = "Figure6_heatmaps/Figure5A.terpenoids.wf.pdf",width = 7,height = 5)
 heatmap.2(x = mat.terpenoids.wf.ordered,Rowv = F,Colv = F,scale = "none",revC = T,col=brewer.pal(9,"OrRd"),dendrogram = "none",margins = c(10,10),density.info = "none",cexCol = 0.3,cexRow = 0.8,key.title = "Scaled metabolite abundance (AU)",
           rowsep = 1:nrow(mat.terpenoids.wf.ordered),
           trace="none",
@@ -61,7 +60,7 @@ heatmap.2(x = mat.terpenoids.wf.ordered,Rowv = F,Colv = F,scale = "none",revC = 
 dev.off()
 
 ## whitefly / acylsugars
-pdf(file = "Figure5_heatmaps/acylsugars.wf.pdf",width = 7,height = 5)
+pdf(file = "Figure6_heatmaps/Figure5B.acylsugars.wf.pdf",width = 7,height = 5)
 heatmap.2(x = mat.acylsugars.wf.Ordered,Rowv = F,Colv = F,scale = "none",revC = T,col=brewer.pal(9,"BuPu"),
           trace = "none",dendrogram = "none",margins = c(10,10),density.info = "none",cexCol = 0.3,cexRow = 0.8,key.title = "Scaled metabolite abundance (AU)",
           rowsep = 1:nrow(mat.acylsugars.wf.Ordered),
@@ -76,7 +75,7 @@ wf = acylsugars.wf.Ordered[,"wf"]
 tmp.df = data.frame(genos=genos,wf=wf,stringsAsFactors = F)
 tmp.df$genos = factor(tmp.df$genos,levels = tmp.df$genos)
 tmp.df = tmp.df[order(tmp.df$wf,decreasing = F),]
-pdf(file = "Figure5_heatmaps/lineplot.wf.pdf",width = 4,height = 8)
+pdf(file = "Figure6_heatmaps/lineplot.wf.pdf",width = 4,height = 8)
 ggplot(tmp.df,aes(x = genos,y = wf)) +
   geom_point(size=6) +
   coord_flip() +
@@ -86,7 +85,7 @@ ggplot(tmp.df,aes(x = genos,y = wf)) +
 dev.off()
 
 ########## thrips / volatiles
-pdf(file = "Figure5_heatmaps/terpenoids.thrips.pdf",width = 7,height = 5)
+pdf(file = "Figure6_heatmaps/Fig5C.terpenoids.thrips.pdf",width = 7,height = 5)
 heatmap.2(x = mat.terpenoids.thripsOrdered,Rowv = F,Colv = F,scale = "none",revC = T,col=brewer.pal(9,"OrRd"),dendrogram = "none",margins = c(10,10),density.info = "none",cexCol = 0.3,cexRow = 0.8,key.title = "Scaled metabolite abundance (AU)",
           rowsep = 1:nrow(mat.terpenoids.thripsOrdered),
           trace="none",
@@ -94,7 +93,7 @@ heatmap.2(x = mat.terpenoids.thripsOrdered,Rowv = F,Colv = F,scale = "none",revC
 dev.off()
 
 ########## thrips / acylsugars
-pdf(file = "Figure5_heatmaps/acylsugars.thrips.pdf",width = 7,height = 5)
+pdf(file = "Figure6_heatmaps/Fig5D.acylsugars.thrips.pdf",width = 7,height = 5)
 heatmap.2(x = mat.acylsugars.thripsOrdered,Rowv = F,Colv = F,scale = "none",revC = T,col=brewer.pal(9,"BuPu"),
           trace = "none",dendrogram = "none",margins = c(10,10),density.info = "none",cexCol = 0.3,cexRow = 0.8,key.title = "Scaled metabolite abundance (AU)",
           rowsep = 1:nrow(mat.acylsugars.wf.Ordered),
@@ -109,7 +108,7 @@ thrips = acylsugars.thripsOrdered[,"thrips"]
 tmp.df = data.frame(genos=genos,thrips=thrips,stringsAsFactors = F)
 tmp.df$genos = factor(tmp.df$genos,levels = tmp.df$genos)
 tmp.df = tmp.df[order(tmp.df$thrips,decreasing = F),]
-pdf(file = "Figure5_heatmaps/lineplot.thrips.pdf",width = 4,height = 8)
+pdf(file = "Figure6_heatmaps/lineplot.thrips.pdf",width = 4,height = 8)
 ggplot(tmp.df,aes(x = genos,y = thrips)) +
   geom_point(size=6) +
   coord_flip() +
@@ -122,9 +121,10 @@ dev.off()
 #####################################################
 # Write used matrices to make the supplemental tables
 #####################################################
-write.table(x = mat.terpenoids.wf.ordered,   file = "Figure5_heatmaps/tables/TableS1_terpenoids_wf.tsv",quote = F,row.names = T,sep = "\t")
-write.table(x = mat.terpenoids.thripsOrdered,file = "Figure5_heatmaps/tables/TableS2_terpenoids_thrips.tsv",quote = F,row.names = T,sep = "\t")
-write.table(x = mat.acylsugars.wf.Ordered,   file = "Figure5_heatmaps/tables/TableS3_acylsugars_wf.tsv",quote = F,row.names = T,sep = "\t")
-write.table(x = mat.acylsugars.thripsOrdered,file = "Figure5_heatmaps/tables/TableS4_acylsugars_thrips.tsv",quote = F,row.names = T,sep = "\t")
+write.table(x = mat.terpenoids.wf.ordered,   file = "Figure6_heatmaps/tables/TableS1_terpenoids_wf.tsv",quote = F,row.names = T,sep = "\t")
+write.table(x = mat.terpenoids.thripsOrdered,file = "Figure6_heatmaps/tables/TableS2_terpenoids_thrips.tsv",quote = F,row.names = T,sep = "\t")
+write.table(x = mat.acylsugars.wf.Ordered,   file = "Figure6_heatmaps/tables/TableS3_acylsugars_wf.tsv",quote = F,row.names = T,sep = "\t")
+write.table(x = mat.acylsugars.thripsOrdered,file = "Figure6_heatmaps/tables/TableS4_acylsugars_thrips.tsv",quote = F,row.names = T,sep = "\t")
 
 
+mat.terpenoids.wf.ordered
