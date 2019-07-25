@@ -102,4 +102,4 @@ dev.off()
 #################
 # session info
 ##################
-writeLines(capture.output(sessionInfo()), "FigureS2_volatiles_19acc_vs_F2/sessionInfo.txt")
+writeLines(capture.output(sessionInfo()), "FigureSX_occurences/sessionInfo.txt")
