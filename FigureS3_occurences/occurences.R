@@ -75,8 +75,8 @@ p.bars.as = ggplot(data = classes.occurences.acylsugars,aes(x = class.occurence,
 #################
 # Save plots
 #################
-ggsave(filename = "FigureS3_occurences/FigureS2A.volatiles.barplot.pdf",plot = p.bars.volatiles,width = 10,height = 5)
-ggsave(filename = "FigureS3_occurences/FigureS2B.acylsugars.barplot.pdf",plot = p.bars.as,width = 10,height = 5)
+ggsave(filename = "FigureS3_occurences/FigureS3A.volatiles.barplot.pdf",plot = p.bars.volatiles,width = 10,height = 5)
+ggsave(filename = "FigureS3_occurences/FigureS3B.acylsugars.barplot.pdf",plot = p.bars.as,width = 10,height = 5)
 
 ##################################
 # Make heatmaps of sparse matrices
