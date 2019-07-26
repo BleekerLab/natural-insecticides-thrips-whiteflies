@@ -148,6 +148,10 @@ df = left_join(df,species.info[,c("species","color","accession")],by="accession"
 types_to_keep = c("non.glandular","typeIandIV","typeVI")
 df = filter(.data = df,type %in% types_to_keep) # only keep the trichomes of interest 
 
+# write table
+write.table(x = df,file = "Figure5_densities/trichome.counts.processed.tsv",quote = F,sep = "\t",row.names = F)
+
+
 ###########
 # Figure 5A
 ############
@@ -186,8 +190,6 @@ ggsave(filename = "Figure5_densities/plots/Figure5A.pdf",plot = p.leafside.per.t
 #ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
 ggsave(filename = "Figure5_densities/plots/Figure5A..svg",plot = p.leafside.per.type,width = 7,height = 5)
 #ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
-
-
 
 
 ##########################
