@@ -42,7 +42,7 @@ survival <- ggplot(data = df,aes(x = accession,y = average,fill=species)) +
 print(survival)
 
 # save plot into a file
-ggsave(filename = file.path("Figure2_wf/","wf_survival_19_accessions.png"),plot = survival,width=10,height=5,dpi = 400)
-ggsave(filename = file.path("Figure2_wf/","wf_survival_19_accessions.svg"),plot = survival,width=10,height=5)
+ggsave(filename = file.path("Figure1_wf/","wf_survival_19_accessions.png"),plot = survival,width=10,height=5,dpi = 400)
+ggsave(filename = file.path("Figure1_wf/","wf_survival_19_accessions.svg"),plot = survival,width=10,height=5)
 
 ################################################
