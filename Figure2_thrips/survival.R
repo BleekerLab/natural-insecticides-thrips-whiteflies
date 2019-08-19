@@ -83,7 +83,7 @@ colnames(df)[ncol(df)]="accession"
 df = dplyr::left_join(df,accession2species,by="accession")
 
 # reorder by increasing survival time
-df$genotype = factor(x = df$genotype,levels = df$genotype)
+df$genotype = factor(x = df$genotype,levels = unique(df$genotype))
 
 # plot
 ggplot(data = df, aes(x = time, y = surv, color = color)) +
