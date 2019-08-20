@@ -4,4 +4,4 @@
 .Ruserdata
 *.DS_Store
 *svg
-*.ipynb*
+.ipynb_checkpoints/
