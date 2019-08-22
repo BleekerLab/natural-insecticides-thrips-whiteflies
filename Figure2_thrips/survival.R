@@ -1,7 +1,8 @@
 #########
 # Library
 #########
-# survminer
+
+### survminer
 if (is.element('survminer', installed.packages()[,1]))
 {
   suppressPackageStartupMessages(require('survminer'));
@@ -11,7 +12,7 @@ if (is.element('survminer', installed.packages()[,1]))
   suppressPackageStartupMessages(library('survminer'));
 }
 
-# survival 
+### survival 
 if (is.element('survival', installed.packages()[,1]))
 {
   suppressPackageStartupMessages(require('survival'));
@@ -21,7 +22,7 @@ if (is.element('survival', installed.packages()[,1]))
   suppressPackageStartupMessages(library('survival'));
 }
 
-# tidyverse
+### tidyverse
 if (is.element('tidyverse', installed.packages()[,1]))
 {
   suppressPackageStartupMessages(require('tidyverse'));
@@ -31,14 +32,24 @@ if (is.element('tidyverse', installed.packages()[,1]))
   suppressPackageStartupMessages(library('tidyverse'));
 }
 
-# svglite
+### svglite
 if (is.element('svglite', installed.packages()[,1]))
 {
   suppressPackageStartupMessages(require('svglite'));
 } else
 {
-  install.packages('dplyr');
+  install.packages('svglite');
   suppressPackageStartupMessages(library('svglite'));
+}
+
+### ggfortify
+if (is.element('ggfortify', installed.packages()[,1]))
+{
+  suppressPackageStartupMessages(require('ggfortify'));
+} else
+{
+  install.packages('ggfortify');
+  suppressPackageStartupMessages(library('ggfortify'));
 }
 
 #############
@@ -57,6 +68,7 @@ fit <- with(survData,survfit(formula = Surv(time,status) ~ accession))
 
 # extract result into a dataframe
 df = fortify(fit)
+
 # extract accession order by increasing survival time to reorder factor
 df.medians = surv_median(fit)
 df.medians = mutate(df.medians,strata = gsub("accession=",replacement = "",strata))
@@ -96,3 +108,31 @@ ggplot(data = df, aes(x = time, y = surv, color = color)) +
   guides(shape = "none") +
   facet_wrap(~ genotype) +
   xlim(0,20)
+
+
+###############
+# Fit Cox model
+###############
+# fit a Cox PH model
+fit.cox = coxph(formula = Surv(time,status) ~ accession -1 ,data = survData)
+
+# Get coefficients and p-values
+coefs = as.data.frame(unclass(summary(fit.cox))$coefficients)
+
+colnames(coefs)=c("coef","exp(coef)","se(coef)","z","pval")
+coefs$accession = row.names(coefs$accession);
+
+coefs$accession = sub("^accession",replacement = "",x = row.names(coefs))
+
+# which conditions have the significant pvalues?
+coefs$text = NA
+coefs[which(coefs$pval > 0.001),]$text <- "ns"
+coefs[which(coefs$pval < 0.001),]$text <- "***"
+
+# write to table
+write.table(x = coefs,file = "TableS2_Cox/TableS2_Cox_model_coefs.tsv",quote = F,sep = "\t",row.names = F)
+
+#################
+# session info
+##################
+writeLines(capture.output(sessionInfo()), "Figure2_thrips/sessionInfo.txt")
