@@ -95,20 +95,64 @@ colnames(df)[ncol(df)]="accession"
 df = dplyr::left_join(df,accession2species,by="accession")
 
 # reorder by increasing survival time
-df$genotype = factor(x = df$genotype,levels = unique(df$genotype))
+df$genotype = factor(x = df$genotype,levels = unique(df.medians$genotype))
 
 # plot
-ggplot(data = df, aes(x = time, y = surv, color = color)) +
-  geom_line() + 
-  # plot censor marks
-  geom_point(aes(shape = factor(ifelse(n.censor >= 1, 1, NA)))) + 
-  # format censor shape as "+"
-  scale_shape_manual(values = 3) + 
-  # hide censor legend 
-  guides(shape = "none") +
-  facet_wrap(~ genotype) +
-  xlim(0,20)
+# ggplot(data = df, aes(x = time, y = surv, color = color)) +
+#   geom_line(size=1) + 
+#   # plot censor marks
+#   geom_point(aes(shape = factor(ifelse(n.censor >= 1, 1, NA))),size=3) + 
+#   # format censor shape as "+"
+#   scale_shape_manual(values = 3) + 
+#   # hide censor legend 
+#   guides(shape = "none") +
+#   facet_wrap(~ genotype) +
+#   xlim(0,20)
 
+
+ggsurvplot_group_by(fit = with(survData,survfit(formula = Surv(time,status) ~ accession)),
+           data = survData,group.by = c("accession")
+           )
+
+# # define helper function to plot survival curve
+# plotSurvival = function(df,confidence=0.95,xmin=0,xmax = 19){
+#   # calculate survival object
+#   survObject = with(df,Surv(time = time,event = status))
+#   # fit model
+#   fit <- survfit(formula = survObject ~ accession,data = df,conf.int=confidence)
+#   # plot model
+#   g <- ggsurvplot(
+#     fit,                      # survfit object with calculated statistics.
+#     risk.table = FALSE,        # show risk table.
+#     pval = TRUE,              # show p-value of log-rank test.
+#     conf.int = TRUE,          # show confidence intervals for 
+#     # point estimaes of survival curves.
+#     xlim = c(xmin,xmax),           # present narrower X axis, but not affect
+#     # survival estimates.
+#     break.time.by = 1,        # break X axis in time intervals by 500.
+#     ggtheme = theme_bw(),  # customize plot and risk table with a theme.
+#     risk.table.y.text.col = T,  # colour risk table text annotations.
+#     risk.table.y.text = FALSE, # show bars instead of names in text annotations in legend of risk table
+#     font.main = 18,              # title font size
+#     font.x = 16,                 # font x axis 
+#     font.y = 16                 # font y axis
+#   )
+#   return(g)
+# }
+# 
+# 
+# # empty list for plots
+# l = list()
+# 
+# # make plots
+# genotypes = unique(df.with.species$genotype)
+# for (i in seq_along(genotypes)){
+#   tmp_df = dplyr::filter(df,genotype == genotypes[i])
+#   l[[i]] = plotSurvival(tmp_df)
+#   plot_title = genotypes[i]
+#   gg = l[[i]]$plot + ggtitle(plot_title)
+#   ggsave(filename = file.path("Figure2_thrips/plots/",paste(genotypes[i],".png",sep = "")),plot = gg,width = 7,height = 5,dpi = 400)
+# }
 
 ###############
 # Fit Cox model
