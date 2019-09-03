@@ -8,9 +8,9 @@ output:
         toc: yes
         toc_depth: 2  
 params:
-  data: "~/SURFdrive/BleekerLab/06.raw_data_from_xp/bioassays/thrips/20161216_survival/survival_data.txt"
+  data: "survival_data.tsv"
   resdir: "results"
-  accession2species: "~/SURFdrive/trichome_team/07.data/accession2species.txt"
+  accession2species: "../genotype2species.txt"
 ---
 
 # Background
@@ -78,21 +78,17 @@ if (is.element('svglite', installed.packages()[,1]))
 }
 ```
 
-## Working directory
-```{r working dir}
-setwd("/Users/mgalland/SURFdrive/BleekerLab/00.manuscripts/01.natural_insecticides_from_wild_tomatoes/01.Figures/_Figure3_thrips/thrips/")
-```
-
 ## Data import
 ```{r data import}
 # check file extension to load file
-survData = read.delim("~/SURFdrive/BleekerLab/06.raw_data_from_xp/bioassays/thrips/20161216_survival/survival_data.txt",header = T,stringsAsFactors = F)
+print(getwd())
+survData = read.delim("survival_data.tsv",header = T,stringsAsFactors = F)
 
 # change column names
 colnames(survData) = c("accession","time","status")
 
 # import accessions to species correspondence
-accession2species = read.delim("accession2species.txt",header = T,sep = "\t",stringsAsFactors = F)
+accession2species = read.delim("../genotype2species.txt",header = T,sep = "\t",stringsAsFactors = F)
 ```
 
 ## Directories 
@@ -122,12 +118,13 @@ fit
 
 
 # add species
-df = read.delim("medians.txt",header=T,stringsAsFactors = F)
+df = read.delim("medians.tsv",header=T,stringsAsFactors = F)
 df = dplyr::left_join(df,accession2species,by="accession")
 df = df[which(!is.na(df$species)),]
 
 # order by biggest median survival time
 df = df[order(df$median,decreasing = F),]
+knitr::kable(df)
 
 # plot
 g <- ggplot(df,mapping = aes(x=accession,y=median,fill=species)) +
