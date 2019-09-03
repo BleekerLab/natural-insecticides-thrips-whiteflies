@@ -48,8 +48,6 @@ def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000
     # Initialise a Random Forest classifier with the specified number of trees and using class weights. 
     # Random state is fixed so that results are reproducible from run to run.
     for train_index, test_index in kfold.split(X,y):
-        print("train index:",train_index)
-        print("test index:",test_index)
         nt = 1/sum(stratify_info[train_index]==0) # calculates a weight for the non-toxic class (corrects for class imbalance)
         tx = 1/sum(stratify_info[train_index]==1) # calculates a weight for the toxic class (corrects for class imbalance)   
         rf = RandomForestClassifier(n_estimators=nb_of_trees,
@@ -84,6 +82,66 @@ def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000
     return [variableImportance,yhat,accuracyScore] # two dataframes and one float number
 
 
- ############################################
- # Extracts variable importance and predicted 
- ############################################
+############################################
+# Extracts variable importance and predicted 
+############################################
+
+def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
+        X,
+        y,
+        nb_of_splits=6,
+        nb_of_trees=1000,
+        nb_of_runs=5
+        ):
+    """
+    This function runs the single_random_forest_run multiple times to assess the effect 
+    of the different splits on each feature importance.
+    It returns a dataframe with the average and standard deviation for each feature importance.
+
+    Arguments:
+    X: a pandas dataframe (index contains rows id, columns contains variable values). 
+    y: a list containing the labels 
+    nb_of_splits: the number of splits used for stratified K-folds cross-validator.
+    nb_of_trees: number of trees in each single RandomForest model.
+    nb_of_runs: the number of times the single random forest will be run (with the specified number of splits)
+
+    Returned value: a dataframe containing each feature importance for each single run 
+    and the average and standard deviation.
+    The dataframe has nb_of_runs columns (+ 2 columns for average and std)
+    The dataframe has X.shape[1] rows (one row per feature).
+
+
+    """
+    # creating column names for the result dataframe
+    colNames = ["run" + str(i) for i in range(nb_of_runs)] 
+
+    # initialize two dataframe that will accomodate each run feature importance averages and standard deviations.
+    feature_importance_averages = pd.DataFrame(
+        index=X.columns.tolist(),
+        columns=colNames)
+    feature_importance_sd = pd.DataFrame(
+        index=X.columns.tolist(),
+        columns=colNames)
+
+    # For each run:
+    #  1) A single random forest is computed. 
+    #  2) Each feature has nb_of_splits importances. 
+    #  3) Average and standard deviation are computed and added in their final dataframes. 
+    for i in range(nb_of_runs):
+        single_run = single_random_forest_run(
+            X,y,rs=i,disp=False,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees)[0]
+        
+        averages = single_run.mean(axis=1)
+        standard_deviations = single_run.std(axis=1)
+        
+        feature_importance_averages.iloc[:,i] = averages
+        feature_importance_sd.iloc[:,i] = standard_deviations
+
+    return [feature_importance_averages,feature_importance_sd]
+
+
+
+
+
+
+
