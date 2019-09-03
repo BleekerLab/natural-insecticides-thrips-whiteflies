@@ -34,7 +34,7 @@ def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000
     variableImportance = pd.DataFrame(np.zeros([X.shape[1],nb_of_splits]))    
     dfy = pd.DataFrame(y,columns=['tox'])
     yhat = pd.DataFrame(['']*len(y),columns=['predict_tox'],dtype=np.str)
-    accuracyScores = pd.DataFrame(['']*nb_of_splits,columns=["normalised_accuracy"],dtype=np.str)
+    accuracyScores = pd.DataFrame(np.zeros([nb_of_splits,1]),columns=["normalised_accuracy"])
 
     
     # Stratified K-fold cross validator: provides train/test indices to split data in train/test sets
