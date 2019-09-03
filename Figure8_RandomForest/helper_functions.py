@@ -67,7 +67,7 @@ def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000
         variableImportance.iloc[:,splitnr] = rf.feature_importances_
 
         # extracts accuracy score for each run
-        accuracyScores.iloc[test_index[j]] = accuracy_score(y_pred, dfy.iloc[test_index,:])
+        accuracyScores.iloc[splitnr] = accuracy_score(y_pred, dfy.iloc[test_index,:])
 
         splitnr+=1
 
