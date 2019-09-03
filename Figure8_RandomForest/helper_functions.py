@@ -126,16 +126,13 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
     # For each run:
     #  1) A single random forest is computed. 
     #  2) Each feature has nb_of_splits importances. 
-    #  3) Average and standard deviation are computed and added in their final dataframes. 
+    #  3) Average and standard deviation are computed and added in their corresponding final dataframes. 
     for i in range(nb_of_runs):
         single_run = single_random_forest_run(
             X,y,rs=i,disp=False,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees)[0]
         
-        averages = single_run.mean(axis=1)
-        standard_deviations = single_run.std(axis=1)
-        
-        feature_importance_averages.iloc[:,i] = averages
-        feature_importance_sd.iloc[:,i] = standard_deviations
+        feature_importance_averages.loc[:,"run" + str(i)] = single_run.mean(axis=1).tolist()    
+        feature_importance_sd.loc[:,"run" + str(i)] = single_run.std(axis=1).tolist()     
 
     return [feature_importance_averages,feature_importance_sd]
 
