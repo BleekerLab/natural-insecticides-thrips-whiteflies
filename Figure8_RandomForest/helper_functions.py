@@ -10,6 +10,7 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
+import random
 
 
 ###################################
@@ -136,6 +137,76 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
 
     return [feature_importance_averages,feature_importance_sd]
 
+
+######################
+# Permutation function
+######################
+
+def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,randomNumber=random.SystemRandom(),nb_of_splits=6,nb_of_trees=1000):
+    """
+    This function runs a single random forest analysis for the specified number of permutations. 
+    It does the shuffling of the y label for the specified number of 
+    It returns
+
+    Arguments:
+    X: a pandas dataframe (index contains rows id, columns contains variable values). 
+    y: a list containing the labels.
+    n_perm: number of permutations.
+    randomNumber: this has to be a number used to suffle  
+    nb_of_splits: the number of splits used for stratified K-folds cross-validator.
+    nb_of_trees:  number of trees in each single RandomForest model.
+
+
+    """
+
+    # functions used to create a generator of permutations
+    def perm_generator(seq):
+        """
+        Returns a generator that can be used to iterate over possible permutations.
+        It takes a Python list as an input
+        """
+        seen = set()
+        length = len(seq)
+        while True:
+            perm = tuple(random.sample(seq, length)) # produces a random draw of same length as initial list
+            if perm not in seen:
+                seen.add(perm)
+                yield perm
+
+    def get_perms(seq, N=nperm):
+        """
+        This function encapsulate the previous one (perm_generator)
+        It returns a list with all possible permutations given a list + a number of permutations
+        """
+        rand_perms = perm_generator(seq)
+        return [next(rand_perms) for _ in range(N)]
+
+    ##################################
+    # Random Forest runs on permuted y
+    ##################################
+
+    # Make a dataframe to accomodate the permuted feature importance
+    colNames = ["perm" + str(perm) for perm in range(nperm)]
+    permuted_feature_importance_df = pd.DataFrame(columns = colNames, index=X.columns.tolist())
+
+    # generate nperm y permutations and run a single Random Forest on it
+    y_permutations = list(get_perms(y,N=nperm))
+
+    for i in range(nperm):
+        # get one of the possible permutations
+        y_permuted = list(y_permutations[i])
+
+        # run a single Random Forest analysis (arbitrarily fixed the random state)
+        feature_importance_from_permuted_y = single_random_forest_run(X,y_permuted,rs=1234,nb_of_splits=nb_of_splits,nb_of_trees=nb_of_trees)[0]
+        # The feature importances from the different split are averaged. 
+        # This average feature importance is added to the dataframe as column nperm
+
+        print(feature_importance_from_permuted_y)
+        print(feature_importance_from_permuted_y.mean(axis=1))
+
+        permuted_feature_importance_df["perm" + str(i)] = feature_importance_from_permuted_y.mean(axis=1).tolist()
+
+    return permuted_feature_importance_df
 
 
 
