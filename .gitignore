@@ -5,3 +5,13 @@
 *.DS_Store
 *svg
 .ipynb_checkpoints/
+
+
+# Byte-compiled / optimized / DLL files
+*__pycache__/**
+*.py[cod]
+
+Figure8_RandomForest/__pycache__/
+
+# ignore .idea folder
+*.idea/Figure8_RandomForest/__pycache__*
