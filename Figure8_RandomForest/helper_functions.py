@@ -201,9 +201,6 @@ def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,
         # The feature importances from the different split are averaged. 
         # This average feature importance is added to the dataframe as column nperm
 
-        print(feature_importance_from_permuted_y)
-        print(feature_importance_from_permuted_y.mean(axis=1))
-
         permuted_feature_importance_df["perm" + str(i)] = feature_importance_from_permuted_y.mean(axis=1).tolist()
 
     return permuted_feature_importance_df
