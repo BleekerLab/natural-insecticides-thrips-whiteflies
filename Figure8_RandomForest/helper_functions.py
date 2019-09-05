@@ -100,7 +100,7 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
     It returns a dataframe with the average and standard deviation for each feature importance.
 
     Arguments:
-    X: a pandas dataframe (index contains rows id, columns contains variable values). 
+    X: A Pandas dataframe containing the feature values (index contains rows id, columns contains variable values). 
     y: a list containing the labels 
     nb_of_splits: the number of splits used for stratified K-folds cross-validator.
     nb_of_trees: number of trees in each single RandomForest model.
@@ -149,7 +149,7 @@ def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,
     It returns
 
     Arguments:
-    X: a pandas dataframe (index contains rows id, columns contains variable values). 
+    X: A Pandas dataframe containing the feature values (index contains rows id, columns contains variable values). 
     y: a list containing the labels.
     n_perm: number of permutations.
     randomNumber: this has to be a number used to suffle  
@@ -206,7 +206,56 @@ def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,
     return permuted_feature_importance_df
 
 
+###############################################################################
+# Get a dataframe of features with a significant p-value (based on permutations)
+###############################################################################
+
+
+# routine to determine pvalue of average value (x) based on results scored by random generated data (X)
+def iperc(x,X):
+    
+    df = pd.DataFrame(index=X.index,columns=['p-value'])
+    
+    for i in range(len(x)):            
+        pn = sum(X.iloc[i,:]<x.iloc[i])/X.shape[0]
+        pp = sum(X.iloc[i,:]>=x.iloc[i])/X.shape[0]
+    
+        df.iloc[i] = min(pn,pp)
+            
+    return df
+
+
+# 
+def get_significant_features(X,feature_importances,permuted_feature_importance_df,pval=0.05):
+    """
+
+    Arguments:
+    X: A Pandas dataframe containing the feature values (index contains rows id, columns contains variable values).
+    feature_importances: the output of the extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs function.
+    permuted_feature_importance_df: the output of the extract_feature_importances_from_random_forests_on_permuted_y function.
+    pval: a p-value threshold to filter the features based on the computed p-values.
+
+    Returns a pandas dataframe with only the significant features (pvalue < pval) and 
+    with additional metrics useful for filtering (average, standard deviation and pooled standard deviation)
+    """
+    
+    # average feature importance from original dataset
+    mean_varimportance = feature_importances[0].mean(axis=1)
+
+    # how many times this original feature importance was lower or higher than a set of random feature importances?
+    df = iperc(x=mean_varimportance,X=permuted_feature_importance_df)
+
+    # add the average en std deviations to the dataframe
+    df["average"] = mean_varimportance.tolist()
+    pooled_std = np.sqrt((feature_importances[1]**2).mean(axis=1))
+    df["sd"] = pooled_std.tolist()
+    df["rsd"] = pooled_std/mean_varimportance
+
+    # create panda for convenience
+    #yerr = pd.concat([mean_varimportance-2*pooled_std, mean_varimportance,mean_varimportance+2*pooled_std],axis=1)
 
 
 
+   # if nothing significant then return NAs
 
+    return df
