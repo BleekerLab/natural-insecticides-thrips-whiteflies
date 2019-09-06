@@ -17,7 +17,7 @@ import random
 # define main random forest routine 
 ###################################
 
-def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000):
+def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000,njobs=2):
     """
     This function takes a feature matrix (X) and a label array (y) and fits 
     a number of random forest classifiers based on the specified number of splits and trees.
@@ -53,7 +53,9 @@ def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000
         tx = 1/sum(stratify_info[train_index]==1) # calculates a weight for the toxic class (corrects for class imbalance)   
         rf = RandomForestClassifier(n_estimators=nb_of_trees,
                                     class_weight={"toxic":tx,"non-toxic":nt},
-                                    random_state=rs)
+                                    random_state=rs,
+                                    n_jobs=njobs
+                                    )
 
         # train the Random Forest model 
         rf = rf.fit(X.iloc[train_index,:],dfy.iloc[train_index].values.ravel())
@@ -92,7 +94,8 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
         y,
         nb_of_splits=6,
         nb_of_trees=1000,
-        nb_of_runs=5
+        nb_of_runs=5,
+        njobs=2
         ):
     """
     This function runs the single_random_forest_run multiple times to assess the effect 
@@ -130,7 +133,7 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
     #  3) Average and standard deviation are computed and added in their corresponding final dataframes. 
     for i in range(nb_of_runs):
         single_run = single_random_forest_run(
-            X,y,rs=i,disp=False,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees)[0]
+            X,y,rs=i,disp=False,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees,njobs=njobs)[0]
         
         feature_importance_averages.loc[:,"run" + str(i)] = single_run.mean(axis=1).tolist()    
         feature_importance_sd.loc[:,"run" + str(i)] = single_run.std(axis=1).tolist()     
@@ -142,7 +145,7 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
 # Permutation function
 ######################
 
-def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,randomNumber=random.SystemRandom(),nb_of_splits=6,nb_of_trees=1000):
+def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,randomNumber=random.SystemRandom(),nb_of_splits=6,nb_of_trees=1000,njobs=2):
     """
     This function runs a single random forest analysis for the specified number of permutations. 
     It does the shuffling of the y label for the specified number of 
@@ -197,7 +200,7 @@ def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,
         y_permuted = list(y_permutations[i])
 
         # run a single Random Forest analysis (arbitrarily fixed the random state)
-        feature_importance_from_permuted_y = single_random_forest_run(X,y_permuted,rs=1234,nb_of_splits=nb_of_splits,nb_of_trees=nb_of_trees)[0]
+        feature_importance_from_permuted_y = single_random_forest_run(X,y_permuted,rs=1234,nb_of_splits=nb_of_splits,nb_of_trees=nb_of_trees,njobs=njobs)[0]
         # The feature importances from the different split are averaged. 
         # This average feature importance is added to the dataframe as column nperm
 
@@ -211,14 +214,24 @@ def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,
 ###############################################################################
 
 
-# routine to determine pvalue of average value (x) based on results scored by random generated data (X)
-def iperc(x,X):
+def iperc(feature_importance_original,feature_importance_permuted):
+    """
+    Function to determine pvalues of average feature importance values based on results from permuted feature importance values.
+
+    Arguments:
+    feature_importance_original: a 1D numpy array (Pandas series) containing the averaged feature importance values (original dataset)
+    feature_importance_permuted: a Pandas dataframe containing each feature importances from each permutations.
+
+    Returns a Pandas dataframe with variables as index and one column containing the p-values.
+    """
     
-    df = pd.DataFrame(index=X.index,columns=['p-value'])
+
+
+    df = pd.DataFrame(index=feature_importance_permuted.index,columns=['p-value'])
     
-    for i in range(len(x)):            
-        pn = sum(X.iloc[i,:]<x.iloc[i])/X.shape[0]
-        pp = sum(X.iloc[i,:]>=x.iloc[i])/X.shape[0]
+    for i in range(len(feature_importance_original)):            
+        pn = sum(feature_importance_permuted.iloc[i,:] < feature_importance_original.iloc[i]) / feature_importance_permuted.shape[0]
+        pp = sum(feature_importance_permuted.iloc[i,:] >= feature_importance_original.iloc[i]) / feature_importance_permuted.shape[0]
     
         df.iloc[i] = min(pn,pp)
             
@@ -243,7 +256,7 @@ def get_significant_features(X,feature_importances,permuted_feature_importance_d
     mean_varimportance = feature_importances[0].mean(axis=1)
 
     # how many times this original feature importance was lower or higher than a set of random feature importances?
-    df = iperc(x=mean_varimportance,X=permuted_feature_importance_df)
+    df = iperc(feature_importance_original=mean_varimportance,feature_importance_permuted=permuted_feature_importance_df)
 
     # add the average en std deviations to the dataframe
     df["average"] = mean_varimportance.tolist()
