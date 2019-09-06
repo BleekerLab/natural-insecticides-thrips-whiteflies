@@ -9,7 +9,7 @@ library(dplyr)
 
 # load data
 # remove unncessary columns
-df = read.delim("Figure7_sPLS-DA/pheno_terpenoids.tsv",header = T,stringsAsFactors = F,check.names = F)
+df = read.delim("Figure7_PLS-DA/pheno_terpenoids.tsv",header = T,stringsAsFactors = F,check.names = F)
 row.names(df)=df$sample
 
 ##############
