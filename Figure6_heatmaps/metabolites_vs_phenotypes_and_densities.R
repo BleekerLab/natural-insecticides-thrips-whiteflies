@@ -4,7 +4,7 @@ library(ggrepel)
 library(ggplot2)
 library(Rmisc)
 
-#Load Trichome density data + Whitefly / Thrips ranked phenotypes
+#Load trichome density data + Whitefly / Thrips ranked phenotypes
 density = read.delim("Figure5_densities/trichome.counts.processed.tsv", header =T)
 pheno = read.delim("Figure3_scatterplot/data4scatterplot.txt", header = T)
 pheno = separate(pheno, col = sample, into = c("x", "y", "accession")) %>% #separate "sample" into accession names only so it can be used for fusing the datasets
