@@ -57,7 +57,7 @@ acylsugars.pheno = left_join(density.pheno, acylsugars, by = "accession")
 p.acylsugars.wf =
 acylsugars.pheno %>% filter(., type == "Non glandular" & metabolite == "summed_total") %>% #also filter on trichome type because of data redundancy due to the tidy format
   ggplot()+
-  geom_point(aes(x = wf, y = value),fill="grey",color="black",shape=21,size=3) +
+  geom_point(aes(x = wf, y = value),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
   geom_label_repel(aes(x = wf, y= value,label=accession, fill=species),
                    size = 2,
@@ -71,7 +71,7 @@ acylsugars.pheno %>% filter(., type == "Non glandular" & metabolite == "summed_t
 p.acylsugars.thrips =
   acylsugars.pheno %>% filter(., type == "Non glandular" & metabolite == "summed_total") %>% #also filter on trichome type because of data redundancy due to the tidy format
   ggplot()+
-  geom_point(aes(x = thrips, y = value),fill="grey",color="black",shape=21,size=3) +
+  geom_point(aes(x = thrips, y = value),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
   geom_label_repel(aes(x = thrips, y= value,label=accession, fill=species),
                    size = 2,
@@ -88,7 +88,7 @@ p.acylsugars.thrips =
 p.acylsugars.densities =
 acylsugars.pheno %>% filter(metabolite == "summed_total" & type == "Type I/IV") %>% 
   ggplot()+
-  geom_point(aes(x = density, y = value),fill="grey",color="black",shape=21,size=3) +
+  geom_point(aes(x = density, y = value),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
   geom_label_repel(aes(x = density, y= value,label=accession, fill=species),
                    size = 2,
@@ -119,7 +119,7 @@ str(volatiles.pheno)
 p.volatiles.wf =
   volatiles.pheno %>% filter(type == "Non glandular") %>% # filter on trichome type because of data redundancy due to the tidy format
   ggplot()+
-  geom_point(aes(x = wf, y = summed_volatiles),fill="grey",color="black",shape=21,size=3) +
+  geom_point(aes(x = wf, y = summed_volatiles),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
   geom_label_repel(aes(x = wf, y= summed_volatiles,label=accession, fill=species),
                    size = 2,
@@ -133,7 +133,7 @@ p.volatiles.wf =
 p.volatiles.thrips =
   volatiles.pheno %>% filter(type == "Non glandular") %>% #filter on trichome type because of data redundancy due to the tidy format
   ggplot()+
-  geom_point(aes(x = thrips, y = summed_volatiles),fill="grey",color="black",shape=21,size=3) +
+  geom_point(aes(x = thrips, y = summed_volatiles),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
   geom_label_repel(aes(x = thrips, y= summed_volatiles,label=accession, fill=species),
                    size = 2,
