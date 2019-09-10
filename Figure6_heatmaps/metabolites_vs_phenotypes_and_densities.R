@@ -59,6 +59,7 @@ p.acylsugars.thrips =
   labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Summed acylsugars (ion counts / mg leaf)") +
   scale_x_continuous(breaks=seq(0,19,1))
 
+
 ## Acylsugars VS densitites
 acylsugars.pheno %>% filter(metabolite == "summed_total") %>%
   ggplot()+
@@ -73,9 +74,6 @@ acylsugars.pheno %>% filter(metabolite == "summed_total") %>%
                    segment.size = 0.2) +
   facet_wrap(~type, scale = "free", ncol = 1)+
   labs(x = "Trichome density (trichomes / mm2 leaf)",y = "Summed acylsugars (ion counts / mg leaf)")
-
-
-
 
 
 #Load volatiles + make it tidy
