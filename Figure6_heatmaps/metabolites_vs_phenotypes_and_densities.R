@@ -59,7 +59,11 @@ p.acylsugars.thrips =
   labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Summed acylsugars (ion counts / mg leaf)") +
   scale_x_continuous(breaks=seq(0,19,1))
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+>>>>>>> c05bfd541c8868926bc90d50d1ba180e1c9ed89d
 ## Acylsugars VS densitites
 acylsugars.pheno %>% filter(metabolite == "summed_total") %>%
   ggplot()+
@@ -76,6 +80,14 @@ acylsugars.pheno %>% filter(metabolite == "summed_total") %>%
   labs(x = "Trichome density (trichomes / mm2 leaf)",y = "Summed acylsugars (ion counts / mg leaf)")
 
 
+<<<<<<< HEAD
+=======
+
+=======
+>>>>>>> 7eb9db3633ac8c52b8c3c4f9ca919fa7af987233
+
+
+>>>>>>> c05bfd541c8868926bc90d50d1ba180e1c9ed89d
 #Load volatiles + make it tidy
 volatiles = read.delim("figure6_heatmaps/pheno_terpenoids.tsv", header = T)
 volatiles = separate(volatiles, col = sample, into = c("x", "y", "accession"))
