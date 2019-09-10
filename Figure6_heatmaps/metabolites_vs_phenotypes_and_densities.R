@@ -33,6 +33,7 @@ acylsugars.pheno = left_join(density.pheno, acylsugars, by = "accession")
 
 ## Acylsugars VS PHENOTYPES
 
+p.acylsugars.wf =
 acylsugars.pheno %>% filter(., type == "non.glandular" & metabolite %in% c("summed_glucose", "summed_sucrose", "summed_total")) %>%
   ggplot()+
   geom_point(aes(x = wf, y = value),fill="grey",color="black",shape=21,size=3) +
@@ -41,14 +42,40 @@ acylsugars.pheno %>% filter(., type == "non.glandular" & metabolite %in% c("summ
                    label.size = 0.05,
                    label.padding = 0.1,
                    show.legend = FALSE) +
-  geom_smooth(aes(x = wf, y = value),
-              method = lm,
-              alpha = 0.25,
-              linetype = "dotted",
-              size = 1)+
   facet_wrap(~metabolite, scale = "free", ncol = 1)+
-  labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
+  labs(x = "Tomato genotype rank for whitefly survival (low to high survival)",y = "Summed acylsugars (ion counts / mg leaf)") +
   scale_x_continuous(breaks=seq(0,19,1))
+
+p.acylsugars.thrips =
+  acylsugars.pheno %>% filter(., type == "non.glandular" & metabolite %in% c("summed_glucose", "summed_sucrose", "summed_total")) %>%
+  ggplot()+
+  geom_point(aes(x = thrips, y = value),fill="grey",color="black",shape=21,size=3) +
+  theme_bw() +
+  geom_label_repel(aes(x = thrips, y= value,label=accession, fill=species),
+                   label.size = 0.05,
+                   label.padding = 0.1,
+                   show.legend = FALSE) +
+  facet_wrap(~metabolite, scale = "free", ncol = 1)+
+  labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Summed acylsugars (ion counts / mg leaf)") +
+  scale_x_continuous(breaks=seq(0,19,1))
+
+## Acylsugars VS densitites
+acylsugars.pheno %>% filter(metabolite == "summed_total") %>%
+  ggplot()+
+  geom_point(aes(x = density, y = value),fill="grey",color="black",shape=21,size=3) +
+  theme_bw() +
+  geom_label_repel(aes(x = density, y= value,label=accession, fill=species),
+                   size = 2,
+                   label.size = 0.05,
+                   label.padding = 0.1,
+                   show.legend = FALSE,
+                   alpha = 1,
+                   segment.size = 0.2) +
+  facet_wrap(~type, scale = "free", ncol = 1)+
+  labs(x = "Trichome density (trichomes / mm2 leaf)",y = "Summed acylsugars (ion counts / mg leaf)")
+
+
+
 
 
 #Load volatiles + make it tidy
