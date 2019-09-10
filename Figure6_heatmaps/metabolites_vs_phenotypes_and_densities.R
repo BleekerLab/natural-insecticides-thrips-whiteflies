@@ -14,34 +14,39 @@ pheno = separate(pheno, col = sample, into = c("x", "y", "accession")) %>% #sepa
 density.avg = summarySE(density, measurevar = "density", groupvars = c("genotype", "accession", "species" ,"type", "color"))
 
 #Fuse the two datasets to a new one
-density.pheno  = left_join(density.avg, pheno, by = "accession")
+density.pheno  = left_join(density.avg, pheno, by = "accession") %>% select(., -c("genotype", "N", "sd", "se", "ci"))
 density.pheno$accession = as.factor(density.pheno$accession)
 
 
 #Load acylsugars + make data tidy
-acylsugars = read.delim("Figure6_heatmaps/pheno_acylsugars.tsv", header = T) 
-acylsugars = separate(acylsugars, col = sample, into = c("x", "y", "accession"))
-acylsugars = acylsugars %>% select(., -c("x", "y", "wf", "thrips")) #remove unwanted columns
-acylsugars = gather(acylsugars,
-                    key = "acylsugar",
-                    value = "acylsugar_value",
-                    -accession)
-acylsugars.pheno = left_join(acylsugars, density.pheno, by = "accession") %>% select(., c("accession", "acylsugar", "acylsugar_value", "species", "type", "density", "wf", "thrips"))
+acylsugars = read.delim("Figure6_heatmaps/acylsugars_normalised.tsv", header = T)
+acylsugars = separate(acylsugars, col = accession, into = c("accession", "x"))  %>% select(., -c("x", "species")) #remove unwanted names
 
-acylsugars.pheno %>%
+acylsugars = gather(acylsugars,
+                    key = "metabolite",
+                    value = "value",
+                    -accession)
+
+#fuse phenotype + acylsugar dataset
+acylsugars.pheno = left_join(density.pheno, acylsugars, by = "accession")
+
+
+## Acylsugars VS PHENOTYPES
+
+acylsugars.pheno %>% filter(., type == "non.glandular" & metabolite %in% c("summed_glucose", "summed_sucrose", "summed_total")) %>%
   ggplot()+
-  geom_point(aes(x = thrips, y = acylsugar_value),fill="grey",color="black",shape=21,size=3) +
+  geom_point(aes(x = wf, y = value),fill="grey",color="black",shape=21,size=3) +
   theme_bw() +
-  geom_label_repel(aes(x = thrips, y= acylsugar_value,label=accession, fill=species),
+  geom_label_repel(aes(x = wf, y= value,label=accession, fill=species),
                    label.size = 0.05,
                    label.padding = 0.1,
                    show.legend = FALSE) +
-  geom_smooth(aes(x = thrips, y = acylsugar_value),
+  geom_smooth(aes(x = wf, y = value),
               method = lm,
               alpha = 0.25,
               linetype = "dotted",
               size = 1)+
-  facet_wrap(~type, scale = "free", ncol = 1)+
+  facet_wrap(~metabolite, scale = "free", ncol = 1)+
   labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
   scale_x_continuous(breaks=seq(0,19,1))
 
