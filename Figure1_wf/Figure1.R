@@ -33,10 +33,11 @@ df$accession = factor(df$accession,levels = newOrder)
 survival <- ggplot(data = df,aes(x = accession,y = average,fill=species)) +
   geom_boxplot() +
   stat_summary(fun.y="mean",geom="point",shape=23,size=2,fill="white") +
+  theme_bw()+
   theme(axis.text.x = element_text(angle=30,hjust=1,vjust=1)) + 
   ggtitle("Whitefly survival after five days") +
   labs(x="Tomato genotype",y="Whitefly survival (%)") +
-  theme(plot.title = element_text(size=18),axis.text = element_text(colour = "black"))
+  theme(plot.title = element_text(size=12),axis.text = element_text(colour = "black"))
 
 # print the plot in the final document
 print(survival)
