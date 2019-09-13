@@ -83,10 +83,11 @@ df.medians$accession = factor(df.medians$accession,levels = df.medians$accession
 p <- ggplot(data=df.medians,aes(x=accession,y=median,fill=species)) +
   geom_bar(stat="identity",color="black") +
   theme_bw()+
-  theme(axis.text.x = element_text(angle=90))
+  theme(axis.text.x = element_text(angle=30, hjust = 1, vjust = 1),
+        axis.text = element_text(colour = "black"))
 
-ggsave(filename = "Figure2_thrips/Figure2B.pdf",plot = p,width = 7,height = 5)
-ggsave(filename = "Figure2_thrips/Figure2B.svg",plot = p,width = 7,height = 5)
+ggsave(filename = "Figure2_thrips/Figure2B.pdf",plot = p,width = 7,height = 3)
+ggsave(filename = "Figure2_thrips/Figure2B.svg",plot = p,width = 7,height = 3)
 
 ######################
 # Plot survival curves
