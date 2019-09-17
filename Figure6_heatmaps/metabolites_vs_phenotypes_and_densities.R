@@ -103,8 +103,7 @@ acylsugars.pheno %>% filter(metabolite == "summed_total" & type == "Type I/IV") 
 
 # Spearman coeficcient
 acyl.parsed = acylsugars.pheno %>% filter(metabolite == "summed_total" & type == "Type I/IV")
-cor(acyl.parsed$density, acyl.parsed$value, method  = "spearman")
-
+cor.test(acyl.parsed$density, acyl.parsed$value, method  = "spearman")
 
 
 #############
@@ -170,7 +169,7 @@ p.volatiles.densities =
 
 # Spearman coeficient 
 volatiles.parsed = volatiles.pheno %>% filter(., type == "Type VI")
-cor(volatiles.parsed$density, volatiles.parsed$summed_volatiles, method = "spearman")
+cor.test(volatiles.parsed$density, volatiles.parsed$summed_volatiles, method = "spearman")
 
 ##############
 # SAVE PLOTS #
