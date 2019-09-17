@@ -97,8 +97,15 @@ acylsugars.pheno %>% filter(metabolite == "summed_total" & type == "Type I/IV") 
                    show.legend = FALSE,
                    alpha = 1,
                    segment.size = 0.2) +
+  geom_smooth(aes(x = density, y = value), method = "lm")+
   labs(x = "Type-I/IV trichome density (trichomes / mm2 leaf)",y = "Summed acylsugars (ion counts / mg leaf)")+
   my.theme
+
+# Spearman coeficcient
+acyl.parsed = acylsugars.pheno %>% filter(metabolite == "summed_total" & type == "Type I/IV")
+cor(acyl.parsed$density, acyl.parsed$value, method  = "spearman")
+
+
 
 #############
 # Volatiles #
@@ -113,7 +120,6 @@ volatiles$summed_volatiles = rowSums(volatiles[,2:ncol(volatiles)])
 
 #fuse phenotype + acylsugar dataset
 volatiles.pheno = left_join(density.pheno, volatiles, by = "accession") %>% select(., "accession", "species", "type", "color", "density", "wf", "thrips", "summed_volatiles")
-str(volatiles.pheno)
 
 ## Volatiles vs phenotypes
 p.volatiles.wf =
@@ -158,8 +164,13 @@ p.volatiles.densities =
                    show.legend = FALSE,
                    alpha = 1,
                    segment.size = 0.2) +
+  geom_smooth(aes(x= density, y = summed_volatiles), method = "lm")+
   labs(x = "Type-VI trichome density (trichomes / mm2 leaf)",y = "Summed volatiles (ion counts / mg trichomes)")+
   my.theme
+
+# Spearman coeficient 
+volatiles.parsed = volatiles.pheno %>% filter(., type == "Type VI")
+cor(volatiles.parsed$density, volatiles.parsed$summed_volatiles, method = "spearman")
 
 ##############
 # SAVE PLOTS #
