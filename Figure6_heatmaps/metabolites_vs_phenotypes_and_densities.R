@@ -105,6 +105,9 @@ acylsugars.pheno %>% filter(metabolite == "summed_total" & type == "Type I/IV") 
 acyl.parsed = acylsugars.pheno %>% filter(metabolite == "summed_total" & type == "Type I/IV")
 cor.test(acyl.parsed$density, acyl.parsed$value, method  = "spearman")
 
+# linear model
+acylsugar.model = lm(acyl.parsed$density ~ acyl.parsed$value)
+summary(acylsugar.model)
 
 #############
 # Volatiles #
@@ -170,6 +173,11 @@ p.volatiles.densities =
 # Spearman coeficient 
 volatiles.parsed = volatiles.pheno %>% filter(., type == "Type VI")
 cor.test(volatiles.parsed$density, volatiles.parsed$summed_volatiles, method = "spearman")
+
+# Linear model
+volatiles.model = lm(volatiles.parsed$density ~ volatiles.parsed$summed_volatiles)
+summary(volatiles.model)
+
 
 ##############
 # SAVE PLOTS #
