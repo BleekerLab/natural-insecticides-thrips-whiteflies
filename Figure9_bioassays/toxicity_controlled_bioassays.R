@@ -78,7 +78,7 @@ plot_thrips_survival_curve <- function(fit,df,color){
 
 # reads the whitefly data tables and place them in a list
 wf.dfs = lapply(
-  X = list.files(path = "Figure8_bioassays/",pattern = "*wf*",full.names = T),
+  X = list.files(path = "Figure9_bioassays/",pattern = "*wf*",full.names = T),
   FUN = function(x){read.delim(x,header = T,stringsAsFactors = F,row.names = NULL)}
   )
 
@@ -106,11 +106,11 @@ wf_plots  = map2(
 
 # use gridExtra to arrange them
 nCol <- 3
-pdf(file = file.path("Figure8_bioassays/plots/Figure8A.pdf"),width = 10,height = 7)
+pdf(file = file.path("Figure9_bioassays/plots/Figure8A.pdf"),width = 10,height = 7)
 do.call("grid.arrange", c(wf_plots, ncol=nCol))
 dev.off()
 
-svg(file = file.path("Figure8_bioassays/plots/Figure8A.svg"),width = 10,height = 7)
+svg(file = file.path("Figure9_bioassays/plots/Figure8A.svg"),width = 10,height = 7)
 do.call("grid.arrange", c(wf_plots, ncol=nCol))
 dev.off()
 
