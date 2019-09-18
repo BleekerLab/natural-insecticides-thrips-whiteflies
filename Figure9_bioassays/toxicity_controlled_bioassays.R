@@ -84,7 +84,7 @@ wf.dfs = lapply(
 
 # reads the thrips data tables and place them in a list
 thrips.dfs = lapply(
-  X = list.files(path = "Figure8_bioassays/",pattern = "*thrips*",full.names = T),
+  X = list.files(path = "Figure9_bioassays/",pattern = "*thrips*",full.names = T),
   FUN = function(x){read.delim(x,header = T,stringsAsFactors = F,row.names = NULL)}
   )
   
@@ -131,11 +131,11 @@ thrips_plots = pmap(.l = list(fits,thrips.dfs,brewerColors),.f = plot_thrips_sur
 # use gridExtra to arrange them
 n <- length(thrips_plots)
 nCol <- floor(sqrt(n))
-pdf(file = file.path("Figure8_bioassays/plots/Figure8B.pdf"),width = 10,height = 7)
+pdf(file = file.path("Figure9_bioassays/plots/Figure8B.pdf"),width = 10,height = 7)
 do.call("grid.arrange", c(thrips_plots, ncol=nCol))
 dev.off()
 
-svg(file = file.path("Figure8_bioassays/plots/Figure8B.svg"),width = 10,height = 7)
+svg(file = file.path("Figure9_bioassays/plots/Figure8B.svg"),width = 10,height = 7)
 do.call("grid.arrange", c(thrips_plots, ncol=nCol))
 dev.off()
 
