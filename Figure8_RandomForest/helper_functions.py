@@ -238,14 +238,14 @@ def iperc(feature_importance_original,feature_importance_permuted):
     return df
 
 
-# 
-def get_significant_features(X,feature_importances,permuted_feature_importance_df,pval=0.05):
+ 
+def get_significant_features(X,original_feature_importances,permuted_feature_importances,pval=0.05):
     """
 
     Arguments:
     X: A Pandas dataframe containing the feature values (index contains rows id, columns contains variable values).
-    feature_importances: the output of the extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs function.
-    permuted_feature_importance_df: the output of the extract_feature_importances_from_random_forests_on_permuted_y function.
+    original_feature_importances: the output of the extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs function.
+    permuted_feature_importances: the output of the extract_feature_importances_from_random_forests_on_permuted_y function.
     pval: a p-value threshold to filter the features based on the computed p-values.
 
     Returns a pandas dataframe with only the significant features (pvalue < pval) and 
@@ -253,22 +253,18 @@ def get_significant_features(X,feature_importances,permuted_feature_importance_d
     """
     
     # average feature importance from original dataset
-    mean_varimportance = feature_importances[0].mean(axis=1)
+    mean_varimportance = original_feature_importances[0].mean(axis=1)
 
     # how many times this original feature importance was lower or higher than a set of random feature importances?
-    df = iperc(feature_importance_original=mean_varimportance,feature_importance_permuted=permuted_feature_importance_df)
+    df = iperc(
+    	feature_importance_original = original_feature_importances[0].mean(axis=1),
+    	feature_importance_permuted = permuted_feature_importances
+    	)
 
     # add the average en std deviations to the dataframe
-    df["average"] = mean_varimportance.tolist()
-    pooled_std = np.sqrt((feature_importances[1]**2).mean(axis=1))
+    df["average"] = original_feature_importances[0].mean(axis=1).tolist()
+    pooled_std = np.sqrt((original_feature_importances[1].mean(axis=1)**2))
     df["sd"] = pooled_std.tolist()
     df["rsd"] = pooled_std/mean_varimportance
-
-    # create panda for convenience
-    #yerr = pd.concat([mean_varimportance-2*pooled_std, mean_varimportance,mean_varimportance+2*pooled_std],axis=1)
-
-
-
-   # if nothing significant then return NAs
 
     return df
