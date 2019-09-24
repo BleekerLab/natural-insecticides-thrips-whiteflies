@@ -271,9 +271,9 @@ def get_significant_features(X,original_feature_importances,permuted_feature_imp
     return df
 
 
-#######################
-# Sum by class function
-#######################
+####################
+# Plotting functions
+####################
 
 def plot_candidate_heatmap(df,class_col = "wf", significant="signif.index.values",log=True):
     """
@@ -281,8 +281,8 @@ def plot_candidate_heatmap(df,class_col = "wf", significant="signif.index.values
     with the phenotypic class and the other columns containing the measured variables.
 
     Arguments: 
-    df: a Pandas dataframe with the index values being the X-axis labels.
-    class_col: the name of the column from which a new index will be made.
+    df: a Pandas dataframe with the first column containing the pheno class and the rest being measured variables.
+    class_col: the name of the category column from which a new index will be made.
     significant: the index values from the dataframe returned by the get_significant_features function.
     log: True or False. If True, 
 
@@ -295,10 +295,11 @@ def plot_candidate_heatmap(df,class_col = "wf", significant="signif.index.values
     df_sorted = df_sorted.set_index(df_sorted["new_index"])
     
     # remove column with class info
-    df_sorted = df_sorted.drop(class_col,axis=1)
     # remove new_index column
+    df_sorted = df_sorted.drop(class_col,axis=1)
     df_sorted = df_sorted.drop("new_index",axis=1)
 
+    # log correction
     if log ==  True:
         # replace 0 by 1
         df_sorted_replaced = df_sorted.replace(0,1) # log2(1) = 0
@@ -311,10 +312,42 @@ def plot_candidate_heatmap(df,class_col = "wf", significant="signif.index.values
     # keep only significant variables
     df_final = df_sorted_replaced_logged.loc[:,significant]
 
-    # log correction
-
+    # final plot
     return sns.heatmap(df_final,cmap="Blues")
 
+def plot_candidate_sum_by_class(df,class_col="wf",significant="signif.index.values",ax=None):
+    """
+    Plots the summed abundance per class of the selected candidates.
 
+    df: df: a Pandas dataframe with the first column containing the class info and the rest being measured variables.
+    class_col: the name of the column from which the sums will be computed (sum over class A // sum over class B)
+    significant: the index values from the dataframe returned by the get_significant_features function. 
+    """
+    # how many unique class levels?
+    classes = list(set(df.loc[:,class_col].tolist()))
 
+    # filters out the non-significant variables
+    df_filt = df.loc[:,significant]
+
+    # add the class column as the last column
+    df_filt[class_col] = df[class_col]
+
+ 	# sum over each category (ignoring the last column that contains the class info)
+    if len(classes) == 2:
+    	classA= classes[0]
+    	classB = classes[1]
+    	classA_sum = df_filt.iloc[:,:-1][df_filt[class_col] == classA].sum() 
+    	classB_sum = df_filt.iloc[:,:-1][df_filt[class_col] == classB].sum()
+    else:
+    	print("no more than two levels for a category implemented at this time")
+
+    # prepare a dataframe for plotting
+    sumByClass = pd.DataFrame({classA:classA_sum, classB:classB_sum})
+    sumByClass = sumByClass.reset_index()
+    sumByClass.columns.values[0]="candidate"
+    sumByClass = sumByClass.melt(id_vars="candidate",var_name="class",value_name="value")
+
+    fig, ax = plt.subplots(figsize=(12,10))
+    ax.set_xscale("log",basex=2)
+    return sns.barplot(x="value",y="candidate",hue="class",data=sumByClass,ax=ax)
 
