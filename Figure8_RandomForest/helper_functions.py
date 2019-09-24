@@ -11,6 +11,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 import random
+import seaborn as sns
 
 
 ###################################
@@ -141,9 +142,9 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
     return [feature_importance_averages,feature_importance_sd]
 
 
-######################
-# Permutation function
-######################
+#######################
+# Permutation functions
+#######################
 
 def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,randomNumber=random.SystemRandom(),nb_of_splits=6,nb_of_trees=1000,njobs=2):
     """
@@ -268,3 +269,52 @@ def get_significant_features(X,original_feature_importances,permuted_feature_imp
     df["rsd"] = pooled_std/mean_varimportance
 
     return df
+
+
+#######################
+# Sum by class function
+#######################
+
+def plot_candidate_heatmap(df,class_col = "wf", significant="signif.index.values",log=True):
+    """
+    Plots a heatmap from a dataframe containing a column
+    with the phenotypic class and the other columns containing the measured variables.
+
+    Arguments: 
+    df: a Pandas dataframe with the index values being the X-axis labels.
+    class_col: the name of the column from which a new index will be made.
+    significant: the index values from the dataframe returned by the get_significant_features function.
+    log: True or False. If True, 
+
+    """
+    # sort dataframe by the column class to separate categories
+    df_sorted = df.sort_values(by=[class_col])
+
+    # make a new column to host the new index + reindex
+    df_sorted["new_index"] = df_sorted.index.values + "_" + df_sorted[class_col]
+    df_sorted = df_sorted.set_index(df_sorted["new_index"])
+    
+    # remove column with class info
+    df_sorted = df_sorted.drop(class_col,axis=1)
+    # remove new_index column
+    df_sorted = df_sorted.drop("new_index",axis=1)
+
+    if log ==  True:
+        # replace 0 by 1
+        df_sorted_replaced = df_sorted.replace(0,1) # log2(1) = 0
+        # apply log2 function to every value
+        log_function = lambda x: np.log2(x)
+        df_sorted_replaced_logged = df_sorted_replaced.apply(log_function)
+    else: 
+        pass # do nothing
+
+    # keep only significant variables
+    df_final = df_sorted_replaced_logged.loc[:,significant]
+
+    # log correction
+
+    return sns.heatmap(df_final,cmap="Blues")
+
+
+
+
