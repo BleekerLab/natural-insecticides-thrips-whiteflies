@@ -351,3 +351,36 @@ def plot_candidate_sum_by_class(df,class_col="wf",significant="signif.index.valu
     ax.set_xscale("log",basex=2)
     return sns.barplot(x="value",y="candidate",hue="class",data=sumByClass,ax=ax)
 
+def get_sum_by_class_df(df,class_col="wf",significant="signif.index.values",ax=None):
+    """
+    Plots the summed abundance per class of the selected candidates.
+
+    df: df: a Pandas dataframe with the first column containing the class info and the rest being measured variables.
+    class_col: the name of the column from which the sums will be computed (sum over class A // sum over class B)
+    significant: the index values from the dataframe returned by the get_significant_features function. 
+    """
+    # how many unique class levels?
+    classes = list(set(df.loc[:,class_col].tolist()))
+
+    # filters out the non-significant variables
+    df_filt = df.loc[:,significant]
+
+    # add the class column as the last column
+    df_filt[class_col] = df[class_col]
+
+ 	# sum over each category (ignoring the last column that contains the class info)
+    if len(classes) == 2:
+    	classA= classes[0]
+    	classB = classes[1]
+    	classA_sum = df_filt.iloc[:,:-1][df_filt[class_col] == classA].sum() 
+    	classB_sum = df_filt.iloc[:,:-1][df_filt[class_col] == classB].sum()
+    else:
+    	print("no more than two levels for a category implemented at this time")
+
+    # prepare a dataframe for plotting
+    sumByClass = pd.DataFrame({classA:classA_sum, classB:classB_sum})
+    sumByClass = sumByClass.reset_index()
+    sumByClass.columns.values[0]="candidate"
+    sumByClass = sumByClass.melt(id_vars="candidate",var_name="class",value_name="value")
+
+    return sumByClass
