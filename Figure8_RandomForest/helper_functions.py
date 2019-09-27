@@ -383,4 +383,7 @@ def get_sum_by_class_df(df,class_col="wf",significant="signif.index.values",ax=N
     sumByClass.columns.values[0]="candidate"
     sumByClass = sumByClass.melt(id_vars="candidate",var_name="class",value_name="value")
 
-    return sumByClass
+    # first pivoting (unmelting) the sumByClass dataframe
+    sumByClass_reshaped = sumByClass.pivot(index="candidate",columns="class",values="value")
+
+    return sumByClass_reshaped
