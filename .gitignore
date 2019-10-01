@@ -11,12 +11,10 @@
 *__pycache__/**
 *.py[cod]
 
-Figure8_RandomForest/__pycache__/
-Figure8_RandomForest/__pycache__*
-
+Figure5/__pycache__/
 
 # ignore .idea folder
-*.idea/
+.idea/
 
 
 

@@ -73,7 +73,7 @@ def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000
 
     # For each dataset split, calculate the accuracy score 
     # predict the accuracy score: takes a vector of y_true and compares to y_pred
-    accuracyScore = round(accuracy_score(yhat["predicted"],y),ndigits=2)
+    accuracyScore = round(accuracy_score(y_pred=yhat["predicted"],y_true=y),ndigits=2)
 
     if disp:
         print(classification_report(y, yhat))
@@ -120,6 +120,9 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
     # creating column names for the result dataframe
     colNames = ["run" + str(i) for i in range(nb_of_runs)] 
 
+    # initialize a numpy array that will contain the accuracy score for each single RF run
+    accuracy_scores = np.zeros(nb_of_runs,dtype=float)
+
     # initialize two dataframe that will accomodate each run feature importance averages and standard deviations.
     feature_importance_averages = pd.DataFrame(
         index=X.columns.tolist(),
@@ -134,12 +137,17 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
     #  3) Average and standard deviation are computed and added in their corresponding final dataframes. 
     for i in range(nb_of_runs):
         single_run = single_random_forest_run(
-            X,y,rs=i,disp=False,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees,njobs=njobs)[0]
-        
-        feature_importance_averages.loc[:,"run" + str(i)] = single_run.mean(axis=1).tolist()    
-        feature_importance_sd.loc[:,"run" + str(i)] = single_run.std(axis=1).tolist()     
+            X,y,rs=i,disp=False,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees,njobs=njobs)
 
-    return [feature_importance_averages,feature_importance_sd]
+        variableImportance = single_run[0]
+        accuracy_scores[i] = single_run[2]
+
+        feature_importance_averages.loc[:,"run" + str(i)] = variableImportance.mean(axis=1).tolist()    
+        feature_importance_sd.loc[:,"run" + str(i)] = variableImportance.std(axis=1).tolist()     
+
+    accuracy_score_average = np.mean(accuracy_scores)
+
+    return [feature_importance_averages,feature_importance_sd,accuracy_score_average]
 
 
 #######################
