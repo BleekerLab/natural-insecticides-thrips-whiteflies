@@ -18,7 +18,7 @@ import seaborn as sns
 # define main random forest routine 
 ###################################
 
-def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000,njobs=2):
+def single_random_forest_run(X,y,rs,nb_of_splits = 6,nb_of_trees=1000,njobs=2):
     """
     This function takes a feature matrix (X) and a label array (y) and fits 
     a number of random forest classifiers based on the specified number of splits and trees.
@@ -74,14 +74,6 @@ def single_random_forest_run(X,y,rs,disp=False,nb_of_splits = 6,nb_of_trees=1000
     # For each dataset split, calculate the accuracy score 
     # predict the accuracy score: takes a vector of y_true and compares to y_pred
     accuracyScore = round(accuracy_score(y_pred=yhat["predicted"],y_true=y),ndigits=2)
-
-    if disp:
-        print(classification_report(y, yhat))
-        pdata = variableImportance.copy()
-        pdata.rename(columns={i:'split{0}'.format(i) for i in range(6)},inplace=True)
-        pdata['x'] = range(variableImportance.shape[0])
-        pdata.head()
-        sns.lineplot(data=pdata)
     
     return [variableImportance,yhat,accuracyScore] # two dataframes and one float number
 
@@ -137,7 +129,7 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
     #  3) Average and standard deviation are computed and added in their corresponding final dataframes. 
     for i in range(nb_of_runs):
         single_run = single_random_forest_run(
-            X,y,rs=i,disp=False,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees,njobs=njobs)
+            X,y,rs=i,nb_of_splits = nb_of_splits,nb_of_trees=nb_of_trees,njobs=njobs)
 
         variableImportance = single_run[0]
         accuracy_scores[i] = single_run[2]
