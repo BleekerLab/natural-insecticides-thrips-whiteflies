@@ -146,7 +146,7 @@ def extract_feature_importance_avg_and_sd_from_multiple_random_forest_runs(
 # Permutation functions
 #######################
 
-def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,randomNumber=random.SystemRandom(),nb_of_splits=6,nb_of_trees=1000,njobs=2):
+def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,randomSeed=1234,nb_of_splits=6,nb_of_trees=1000,njobs=2):
     """
     This function runs a single random forest analysis for the specified number of permutations. 
     It does the shuffling of the y label for the specified number of 
@@ -156,12 +156,14 @@ def extract_feature_importances_from_random_forests_on_permuted_y(X,y,nperm=100,
     X: A Pandas dataframe containing the feature values (index contains rows id, columns contains variable values). 
     y: a list containing the labels.
     n_perm: number of permutations.
-    randomNumber: this has to be a number used to suffle  
+    randomSeed: seed value used to generate a random number (used for sampling)
     nb_of_splits: the number of splits used for stratified K-folds cross-validator.
     nb_of_trees:  number of trees in each single RandomForest model.
 
 
     """
+    # fix the random number generator
+    random.seed(a=randomSeed)
 
     # functions used to create a generator of permutations
     def perm_generator(seq):
