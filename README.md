@@ -28,4 +28,4 @@ Eventually, all code and datasets used to generate the figures will be archived 
 - Figure S3: Trichomes photos of 19 accessions
 - Figure S4: trichome densities on each leaf side for each tomato genotype.
 - Figure S5: volatile and acylsugar occurrences in the selected 19 tomato genotypes.
-- Figure S6: Spearman rank-based correlation between the trichome typeI/IV density and the summed peak areas of acylsugar abundances.
+- Figure S6: original average and sd feature importance compared to the permuted feature importance distribution. 
