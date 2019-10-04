@@ -26,12 +26,22 @@ phenolink = read.delim("Figure4/phenolink_thrips_and_whitefly.txt", row.names = 
 acylsugars.annotation = read.delim("Figure4/acylsugars_annotation.tsv", row.names = 1, header = T)
 row.names(acylsugars.annotation) = colnames(log.acylsugars)
 
+colors4annotation = list(
+  "Sugar backbone" = c(
+    "Sucrose" = "#7570B3",
+    "Glucose" = "#E7298A"),
+  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="white"),
+  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="white")
+)
+
+
 # Make and save the plot (heatmap including annotations)
 pdf(file = "Figure4/acylsugar_heatmap.pdf",width = 10,height = 5)
 
 pheatmap(log.acylsugars, 
          annotation_row = phenolink, 
          annotation_col = acylsugars.annotation,
+         annotation_colors = colors4annotation,
          fontsize = 6, 
          fontsize_row = 6, 
          fontsize_col = 6
@@ -45,7 +55,7 @@ dev.off()
 #############
 
 #Load dataset and shape accession names
-volatiles = read.delim("Figure4/pheno_terpenoids.tsv", header = T)
+volatiles = read.delim("Figure4/pheno_terpenoids.tsv", header = T,check.names = F)
 volatiles = separate(volatiles, sample, into = c("x", "y", "accession")) %>% select(., -c("x","y", "wf", "thrips")) %>% column_to_rownames(., var = "accession")
 
 # Change NA to 0 -> +1 -> logtransfrom
@@ -55,13 +65,29 @@ log.volatiles = log10(volatiles[,2:ncol(volatiles)])
 
 
 # Load phenotypes (i.e. toxic / non-toxic) and volatile class-annotations
-volatiles.annotation = read.delim(file = "Figure6_heatmaps/plots_metabolites_vs_phenotypes/volatiles_annotation.tsv", header = T, row.names = 1)
+volatiles.annotation = read.delim(file = "Figure4/volatiles_annotation.tsv", header = T, row.names = 1,check.names = F)
 
-# Heatmap including annotations
+colors4annotation = list(
+  metabolite_class = c(
+    "methylketon" = "#7570B3",
+    "monoterpene" = "#E7298A",
+    "sesquiterpene" ="#66A61E",
+    "other_carbohydrate" = "firebrick"),
+  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="white"),
+  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="white")
+)
+
+
+# Make and save the plot (heatmap including annotations)
+pdf(file = "Figure4/volatile_heatmap.pdf",width = 10,height = 5)
+
 pheatmap(log.volatiles,
          annotation_row = phenolink, 
          annotation_col = volatiles.annotation,
+         annotation_colors = colors4annotation,
          fontsize = 6, 
          fontsize_row = 6, 
          fontsize_col = 6
 )
+
+dev.off()
