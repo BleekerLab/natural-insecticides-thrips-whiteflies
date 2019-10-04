@@ -22,7 +22,7 @@ log.acylsugars = log.acylsugars %>% select(., -c("summed_glucose", "summed_sucro
 
 
 # Load phenotypes (i.e. toxic / non-toxic) and acylsugar annotations
-phenolink = read.delim("Figure4/phenolink_thrips_and_whitefly.txt", row.names = 1, header = T)
+phenolink = read.delim("Figure4/phenolink_thrips_and_whitefly.tsv", row.names = 1, header = T)
 acylsugars.annotation = read.delim("Figure4/acylsugars_annotation.tsv", row.names = 1, header = T)
 row.names(acylsugars.annotation) = colnames(log.acylsugars)
 
