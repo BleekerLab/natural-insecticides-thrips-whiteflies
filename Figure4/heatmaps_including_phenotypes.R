@@ -27,11 +27,9 @@ acylsugars.annotation = read.delim("Figure4/acylsugars_annotation.tsv", row.name
 row.names(acylsugars.annotation) = colnames(log.acylsugars)
 
 colors4annotation = list(
-  "Sugar backbone" = c(
-    "Sucrose" = "#7570B3",
-    "Glucose" = "#E7298A"),
-  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="white"),
-  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="white")
+  Sugar.backbone = c("Sucrose" = "tomato3", "Glucose" = "steelblue4"),
+  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="grey"),
+  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="grey")
 )
 
 
@@ -55,7 +53,7 @@ dev.off()
 #############
 
 #Load dataset and shape accession names
-volatiles = read.delim("Figure4/pheno_terpenoids.tsv", header = T,check.names = F)
+volatiles = read.delim("Figure4/terpenoids_normalized.tsv", header = T,check.names = F)
 volatiles = separate(volatiles, sample, into = c("x", "y", "accession")) %>% select(., -c("x","y", "wf", "thrips")) %>% column_to_rownames(., var = "accession")
 
 # Change NA to 0 -> +1 -> logtransfrom
@@ -69,12 +67,12 @@ volatiles.annotation = read.delim(file = "Figure4/volatiles_annotation.tsv", hea
 
 colors4annotation = list(
   metabolite_class = c(
-    "methylketon" = "#7570B3",
-    "monoterpene" = "#E7298A",
-    "sesquiterpene" ="#66A61E",
-    "other_carbohydrate" = "firebrick"),
-  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="white"),
-  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="white")
+    "methylketon" = "forestgreen",
+    "monoterpene" = "steelblue4",
+    "sesquiterpene" = "tan1",
+    "other_carbohydrate" = "tomato3"),
+  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="grey"),
+  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="grey")
 )
 
 
