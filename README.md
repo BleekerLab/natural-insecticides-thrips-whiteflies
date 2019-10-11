@@ -15,7 +15,8 @@ Eventually, all code and datasets used to generate the figures will be archived 
 
 ## Tables
 - Table 1: Table 1: the selected 19 genotypes (Solanum section Lycopersicon)
-- Table 2: Random Forest metabolic candidates in the 19 genotypes related to pest toxicity
+- Table 2: Random Forest volatile candidates in the 19 genotypes related to pest toxicity
+- Table 3: Random Forest acylsugar candidates in the 19 genotypes related to pest toxicity
 
 ## Supplemental tables 
 - Table S1: Generalised Linear Model fitted on the whitefly survival data.
