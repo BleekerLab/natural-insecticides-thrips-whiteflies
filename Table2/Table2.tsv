@@ -1,4 +1,4 @@
-id	m/z	RT (min)	RI	name	insect	p-value	average	sd	rsd	comment
+id	RT (min) m/z	RI	name	insect	p-value	average	sd	rsd	comment
 1	5.541	67.0557	NA		whitefly	0	0.004	0.001	0.286	p < 0.05 and rsd < 0.5
 2	11.844	91.0573	996		whitefly	0.034	0.030	0.006	0.212	p < 0.05 and rsd < 0.5
 3	14.572	91.0565	1083		whitefly	0.011	0.004	0.001	0.298	p < 0.05 and rsd < 0.5
