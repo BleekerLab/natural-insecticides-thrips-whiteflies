@@ -1,0 +1,10 @@
+id	formula	insect	p-value	average	sd	rsd	comment
+1	S3:C15 	whitefly	0	0.041475615	0.012	0.296	p < 0.01 and rsd < 0.5
+2	S3:C21 	whitefly	0	0.063809003	0.012	0.188	p < 0.01 and rsd < 0.5
+3	S4:C17_2 	whitefly	0	0.006846553	0.003	0.393	p < 0.01 and rsd < 0.5
+4	S4:C19 	whitefly	0	0.007799082	0.003	0.396	p < 0.01 and rsd < 0.5
+5	S4:C21 	whitefly	0	0.005341613	0.003	0.484	p < 0.01 and rsd < 0.5
+6	S4:C21_3 	whitefly	0	0.008667437	0.003	0.357	p < 0.01 and rsd < 0.5
+7	S4:C21_4 	whitefly	0	0.005306546	0.002	0.424	p < 0.01 and rsd < 0.5
+8	S4:C22 	whitefly	0	0.006703435	0.002	0.299	p < 0.01 and rsd < 0.5
+9	S4:C22_2 	whitefly	0	0.00601751	0.002	0.375	p < 0.01 and rsd < 0.5
