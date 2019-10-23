@@ -89,3 +89,25 @@ pheatmap(log.volatiles,
 )
 
 dev.off()
+
+#####################################
+# Create barplots of some volatiles #
+#####################################
+#join volatiles and insect phenotype data together in "volatiles" 
+volatiles = rownames_to_column(volatiles)
+phenolink = rownames_to_column(phenolink)
+volatiles = left_join(volatiles, phenolink, by = "rowname")
+volatiles = column_to_rownames(volatiles, var = "rowname")
+volatiles = rownames_to_column(volatiles, "accession")
+
+#tidy volatile data
+volatiles.long = gather(volatiles,
+                        key = "metabolite",
+                        value = "abundance",
+                        -accession, -Thrips.phenotype, -Whitefly.phenotype)
+
+volatiles.long$accession = as.factor(volatiles.long$accession)
+volatiles.long %>% filter(., metabolite %in% c('11.844_91.0573', '25.356_105.0726', '25.968_119.0881')) %>%
+ggplot()+
+  geom_bar(aes(y = abundance, x = sort(accession, Whitefly.phenotype) , fill = Whitefly.phenotype), stat = "identity")+
+  facet_wrap(~metabolite, scale = "free" , ncol = 1)
