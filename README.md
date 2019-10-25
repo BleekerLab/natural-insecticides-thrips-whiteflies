@@ -30,3 +30,4 @@ Eventually, all code and datasets used to generate the figures will be archived 
 - Figure S4: trichome densities on each leaf side for each tomato genotype.
 - Figure S5: volatile and acylsugar occurrences in the selected 19 tomato genotypes.
 - Figure S6: original average and sd feature importance compared to the permuted feature importance distribution. 
+- Figure S7: Mass spectra of toxic volatiles
