@@ -9,7 +9,7 @@ library("agricolae")
 # import data
 # make it tidy
 # remove date (not necessary)
-df = read.delim("Figure5_densities/trichome_counts.tsv",header = T,stringsAsFactors = F)
+df = read.delim("FigureS4/trichome_counts.tsv",header = T,stringsAsFactors = F)
 df = gather(df,key = "type",value = "counts",-genotype,-accession,-plant,-leaf.side,-leaf.disc,-name,-date)
 df$date = NULL
 
@@ -149,7 +149,7 @@ types_to_keep = c("non.glandular","typeIandIV","typeVI")
 df = filter(.data = df,type %in% types_to_keep) # only keep the trichomes of interest 
 
 # write table
-write.table(x = df,file = "Figure5_densities/trichome.counts.processed.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = df,file = "FigureS4/trichome.counts.processed.tsv",quote = F,sep = "\t",row.names = F)
 
 
 ###########
