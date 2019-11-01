@@ -84,6 +84,22 @@ thrips = df.medians %>% select(accession,median,species,color)
 multiplication_coefficient = 100 / max(thrips$median)
 thrips_relative = mutate(thrips,scaled_thrips_survival = median * multiplication_coefficient)
 
+### Scatterplot using relative survival numbers
+df_for_relative_scatterplot = inner_join(wf_relative,thrips_relative,by="accession")
+
+
+g2 <- ggplot(df_for_relative_scatterplot) +
+  geom_point(aes(x = scaled_wf_survival,y = scaled_thrips_survival),fill="grey",color="black",shape=21,size=4) +
+  theme_bw() +
+  geom_label_repel(aes(x=scaled_wf_survival,y=scaled_thrips_survival,label=accession,fill=species)) +
+  labs(x = "Tomato genotype whitefly survival (relative survival,%)",y = "Tomato genotype thrips survival (relative survival,%)")  + 
+  scale_x_continuous(breaks=seq(0,100,20)) +  scale_y_continuous(breaks=seq(0,100,20))
+g2
+
+### save plots
+ggsave(filename = file.path("Figure2/","scatterplot_relative.svg"),plot = g,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","scatterplot_relative.png"),plot = g,width = 7,height = 5)
+
 ##############
 # Session Info
 ##############
