@@ -1,10 +1,12 @@
 ################
 # load libraries
 ################
-#library(gplots)
 library(RColorBrewer)
 library(dplyr)
 library(ggrepel)
+library(survival)
+library(survminer)
+
 
 #####################
 ## Scatterplot (rank)
@@ -51,5 +53,38 @@ wf = df %>% select(accession,plant,species,color,average) %>% group_by(accession
 
 ### Scale from 0 to 100% (the high survival percentage becomes 100%)
 multiplication_coefficient = 100 / max(wf$perc_survival)
-wf_relative = mutate(wf,scaled_survival = perc_survival * multiplication_coefficient)
+wf_relative = mutate(wf,scaled_wf_survival = perc_survival * multiplication_coefficient)
 
+########
+# Thrips
+########
+survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
+
+# import accessions to species correspondence
+accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stringsAsFactors = T)
+
+
+###################
+# Survival analysis
+###################
+fit <- with(survData,survfit(formula = Surv(time,status) ~ accession))
+
+# extract accession order by increasing survival time to reorder factor
+df.medians = surv_median(fit)
+df.medians = mutate(df.medians,strata = gsub("accession=",replacement = "",strata))
+df.medians = df.medians[order(df.medians$median,decreasing = F),]
+colnames(df.medians)[1]="accession"
+df.medians = dplyr::left_join(df.medians,accession2species,by="accession")
+df.medians$accession = factor(df.medians$accession,levels = df.medians$accession)
+
+### Extract the median survival time
+thrips = df.medians %>% select(accession,median,species,color) 
+
+### Scale from 0 to 100% (the high survival percentage becomes 100%)
+multiplication_coefficient = 100 / max(thrips$median)
+thrips_relative = mutate(thrips,scaled_thrips_survival = median * multiplication_coefficient)
+
+##############
+# Session Info
+##############
+writeLines(capture.output(sessionInfo()), "Figure2/sessionInfo.txt")
