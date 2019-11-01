@@ -66,9 +66,6 @@ accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stri
 ###################
 fit <- with(survData,survfit(formula = Surv(time,status) ~ accession))
 
-# extract result into a dataframe
-df = fortify(fit)
-
 # extract accession order by increasing survival time to reorder factor
 df.medians = surv_median(fit)
 df.medians = mutate(df.medians,strata = gsub("accession=",replacement = "",strata))
