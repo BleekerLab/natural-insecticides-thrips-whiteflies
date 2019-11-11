@@ -21,7 +21,7 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6),
 density = read.delim("FigureS4/trichome.counts.processed.tsv", header =T)
 
 # whitefly and thrips ranks based on toxicity
-pheno = read.delim("Figure2/data4scatterplot.txt", header = T)
+pheno = read.delim("Figure2/data4scatterplot_ranks.tsv", header = T)
 pheno = separate(pheno, col = sample, into = c("x", "y", "accession")) %>% #separate "sample" into accession names only so it can be used for fusing the datasets
   select(., c("accession", "wf", "thrips"))
 
@@ -36,7 +36,7 @@ density.avg = summarySE(
 #####################################
 # merge the two datasets to a new one
 #####################################
-density.pheno  = left_join(density.avg, pheno, by = "accession")
+density.pheno  = left_join(pheno,density.avg, by = "accession")
 density.pheno$accession = as.factor(density.pheno$accession)
 
 # Label the trichome classes nicely

@@ -16,7 +16,7 @@ source("Figure2/rmst_functions.R")
 #####################
 df = read.delim("Figure2/data4scatterplot_ranks.tsv",header=T,stringsAsFactors = F)
 
-g <- ggplot(df) +
+g1 <- ggplot(df) +
   geom_point(aes(wf,thrips),fill="grey",color="black",shape=21,size=4) +
   theme_bw() +
   geom_label_repel(aes(x = wf,y=thrips,label=sample,fill=species)) +
@@ -24,8 +24,8 @@ g <- ggplot(df) +
   scale_x_continuous(breaks=seq(0,19,1)) +
   scale_y_continuous(breaks=seq(0,19,1))
 
-ggsave(filename = file.path("Figure2/","scatterplot_rank.svg"),plot = g,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","scatterplot_rank.png"),plot = g,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","scatterplot_rank.svg"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","scatterplot_rank.png"),plot = g1,width = 7,height = 5)
 
 #########################
 ## Scatterplot (relative)
@@ -90,7 +90,6 @@ thrips_relative = mutate(thrips,scaled_thrips_survival = median * multiplication
 ### Scatterplot using relative survival numbers
 df_for_relative_scatterplot = inner_join(wf_relative,thrips_relative,by="accession")
 
-
 g2 <- ggplot(df_for_relative_scatterplot) +
   geom_point(aes(x = scaled_wf_survival,y = scaled_thrips_survival),fill="grey",color="black",shape=21,size=4) +
   theme_bw() +
@@ -102,7 +101,6 @@ g2
 ### save plots
 ggsave(filename = file.path("Figure2/","scatterplot_relative.svg"),plot = g2,width = 7,height = 5)
 ggsave(filename = file.path("Figure2/","scatterplot_relative.png"),plot = g2,width = 7,height = 5)
-
 
 ##############
 # RMST: 

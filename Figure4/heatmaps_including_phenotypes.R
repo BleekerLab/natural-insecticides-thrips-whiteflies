@@ -114,9 +114,17 @@ pheatmap(log.volatiles,
 
 dev.off()
 
-#####################################
-# Create barplots of some volatiles #
-#####################################
+#########################################
+# Create barplots of selected volatiles #
+#########################################
+
+# Theme for plotting
+my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 45, hjust = 1),
+                 axis.text.y = element_text(color = "black", size = 6),
+                 axis.title.x = element_text(color = "black", size = 8),
+                 axis.title.y = element_text(color = "black", size = 8)
+)
+
 #join volatiles and insect phenotype data together in "volatiles" 
 volatiles = rownames_to_column(volatiles)
 phenolink = rownames_to_column(phenolink)
@@ -130,8 +138,14 @@ volatiles.long = gather(volatiles,
                         value = "abundance",
                         -accession, -Thrips.phenotype, -Whitefly.phenotype)
 
-volatiles.long$accession = as.factor(volatiles.long$accession)
-volatiles.long %>% filter(., metabolite %in% c('11.844_91.0573', '25.356_105.0726', '25.968_119.0881')) %>%
+volatiles.long$accession = factor(volatiles.long$accession, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
+                                                                          "LA1278", "LA1401", "LA2172", "LA0407",
+                                                                          "LA1718", "LA1954", "PI127826",
+                                                                          "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
+                                     ordered = TRUE)
+volatiles.long %>% filter(., metabolite %in% c('11.844_91.0573', '25.356_105.0726', '26.164_119.0865', '25.421_161.1340','25.968_119.0881')) %>%
 ggplot()+
-  geom_bar(aes(y = abundance, x = sort(accession, Whitefly.phenotype) , fill = Whitefly.phenotype), stat = "identity")+
-  facet_wrap(~metabolite, scale = "free" , ncol = 1)
+  geom_bar(aes(y = abundance, x = accession, fill = Whitefly.phenotype), stat = "identity")+
+  facet_wrap(~metabolite, scale = "free" , ncol = 1)+
+  theme_bw()+
+  my.theme
