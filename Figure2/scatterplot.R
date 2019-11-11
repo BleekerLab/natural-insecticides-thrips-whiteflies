@@ -7,6 +7,9 @@ library(ggrepel)
 library(survival)
 library(survminer)
 
+# custom functions for Restricted mean survival time (RMST) calculation
+source("Figure2/rmst_functions.R")
+
 
 #####################
 ## Scatterplot (rank)
@@ -97,9 +100,31 @@ g2 <- ggplot(df_for_relative_scatterplot) +
 g2
 
 ### save plots
-ggsave(filename = file.path("Figure2/","scatterplot_relative.svg"),plot = g,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","scatterplot_relative.png"),plot = g,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","scatterplot_relative.svg"),plot = g2,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","scatterplot_relative.png"),plot = g2,width = 7,height = 5)
 
+
+##############
+# RMST: 
+#############
+rmstKM(formula = Surv(time, status) ~ arm, data=D, trunc=5, alpha=0.05)
+
+
+rmst.results = rmstKM(formula = Surv(time, status) ~ accession, 
+       data=survData, 
+       trunc=5, # end point integration.  The truncation time must be shorter than the minimum of the largest observed time in each group: 5.000
+       alpha=0.05) # The default is 0.05. (1-alpha) confidence intervals are reported. https://cran.r-project.org/web/packages/survRM2/survRM2.pdf
+
+rmst.df = as.data.frame(rmst.results$RMST)
+genotypes = gsub(pattern = "RMST ",x = row.names(rmst.df),replacement = "")  
+genotypes = gsub(pattern = ":",x = genotypes,replacement = "")  
+rmst.df$genotype = genotypes
+
+colnames(rmst.df)[1]="rmst"
+
+g3 = ggplot(data = rmst.df,aes(x = genotype,y=rmst)) +
+  geom_bar(stat = "identity")
+g3
 ##############
 # Session Info
 ##############
