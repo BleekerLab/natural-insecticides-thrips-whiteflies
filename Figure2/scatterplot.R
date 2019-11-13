@@ -102,12 +102,13 @@ g2
 ggsave(filename = file.path("Figure2/","scatterplot_relative.svg"),plot = g2,width = 7,height = 5)
 ggsave(filename = file.path("Figure2/","scatterplot_relative.png"),plot = g2,width = 7,height = 5)
 
-##############
-# RMST: 
-#############
-rmstKM(formula = Surv(time, status) ~ arm, data=D, trunc=5, alpha=0.05)
+#####################################
+# RMST: Restricted Mean Survival Time 
+# The RMST is the mean survival time of all subjects in the study population followed up to t, and is simply the area under the survival curve up to t. (Zhao et al., 2016 Biometrics)
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5114026/
+#####################################
 
-
+### calculate RMST based on the Kaplan-Meier survival curve
 rmst.results = rmstKM(formula = Surv(time, status) ~ accession, 
        data=survData, 
        trunc=5, # end point integration.  The truncation time must be shorter than the minimum of the largest observed time in each group: 5.000
@@ -116,13 +117,18 @@ rmst.results = rmstKM(formula = Surv(time, status) ~ accession,
 rmst.df = as.data.frame(rmst.results$RMST)
 genotypes = gsub(pattern = "RMST ",x = row.names(rmst.df),replacement = "")  
 genotypes = gsub(pattern = ":",x = genotypes,replacement = "")  
-rmst.df$genotype = genotypes
-
+rmst.df$accession = genotypes
 colnames(rmst.df)[1]="rmst"
 
-g3 = ggplot(data = rmst.df,aes(x = genotype,y=rmst)) +
-  geom_bar(stat = "identity")
-g3
+
+# add to the df_for_relative_scatterplot
+test = left_join(df_for_relative_scatterplot,rmst.df,by="accession")
+
+###################################
+# save dataframe used for the plots
+###################################
+write.table(df_for_relative_scatterplot,file = "Figure2/dataframe_for_relative_scatterplots.tsv",quote = F,row.names = F,sep = "\t")
+
 ##############
 # Session Info
 ##############
