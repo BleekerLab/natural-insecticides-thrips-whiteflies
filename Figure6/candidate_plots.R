@@ -39,6 +39,11 @@ volatiles.candidates = volatiles.long %>% filter(., metabolite %in% c('11.844_91
 # Read and add species and color information
 accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
 volatiles.candidates.with.species = left_join(volatiles.candidates,accession2species,by="accession")
+volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
+                                                                       "LA1278", "LA1401", "LA2172", "LA0407",
+                                                                       "LA1718", "LA1954", "PI127826",
+                                                                       "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
+                                  ordered = TRUE)
 
 #########################################
 # Create barplots of selected volatiles #
