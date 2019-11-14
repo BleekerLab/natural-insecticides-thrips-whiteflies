@@ -16,7 +16,7 @@ if (is.element('checkpoint', installed.packages()[,1]))
 checkpoint("2019-10-01", checkpointLocation = tempdir())
 
 library(tidyverse)
-library(gridExtra)
+library(ggpubr)
 
 ################################################
 # Load and transform individual data measurement
@@ -148,10 +148,9 @@ g3 = acylsugar.candidates.with.species %>%
 #############################
 # Arrange the plots together
 ############################
-grid.arrange(g1,g2,g3,nrow=1)
+ggarrange(g1,g2,g3,ncol = 3,nrow = 1,common.legend = TRUE)
 
-g = arrangeGrob(g1,g2,g3,nrow=1)
-
+g <- ggarrange(g1,g2,g3,ncol = 3,nrow = 1,common.legend = TRUE)
 
 ############
 # Save plots
