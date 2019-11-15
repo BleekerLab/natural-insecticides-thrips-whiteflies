@@ -35,9 +35,7 @@ volatiles.long = gather(volatiles,
                         value = "abundance",
                         -sample, 
                         -accession)
-volatiles.long$accession = with(volatiles.long,
-                                factor(accession,levels = unique(accession)),
-                                ordered= TRUE)
+volatiles.long$accession = 
 
 ### Filter to keep volatiles toxic to either whitefly or thrips
 candidates = read.delim("Figure6/toxic_candidate_names.txt",stringsAsFactors = F,check.names = F)
@@ -46,6 +44,12 @@ volatiles.long.candidates = inner_join(candidates,volatiles.long,by="metabolite"
 ### Read and add species and color information
 accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
 volatiles.candidates.with.species = left_join(volatiles.long.candidates,accession2species,by="accession")
+
+volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
+                             "LA1278", "LA1401", "LA2172", "LA0407",
+                             "LA1718", "LA1954", "PI127826",
+                             "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
+       ordered = TRUE)
 
 ##############
 # acylsugars #
@@ -63,16 +67,26 @@ acylsugar.long.candidates = inner_join(candidates,acylsugars.long,by="metabolite
 
 ### Read and add species and color information
 acylsugar.candidates.with.species = left_join(acylsugar.long.candidates,accession2species,by="accession")
-acylsugar.candidates.with.species$accession = with(acylsugar.candidates.with.species,
-                                                   factor(accession, 
-                                                          levels = unique(accession)
-                                                          ),
-                                                       ordered = TRUE)
+acylsugar.candidates.with.species$accession = factor(acylsugar.candidates.with.species$accession, 
+                                                          levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
+                                                                     "LA1278", "LA1401", "LA2172", "LA0407",
+                                                                     "LA1718", "LA1954", "PI127826",
+                                                                     "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
+                                                          ordered = TRUE)
 
 
 ###########################################################
 # Plot 1 = barplot of selected volatiles toxic to whiteflies
 ############################################################
+
+# Theme for plotting
+my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 45, hjust = 1),
+                 axis.text.y = element_text(color = "black", size = 6),
+                 axis.title.x = element_text(color = "black", size = 8),
+                 axis.title.y = element_text(color = "black", size = 8)
+)
+
+
 
 g1 = volatiles.candidates.with.species %>%
   filter(toxic_to == "whitefly") %>% 
