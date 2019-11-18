@@ -16,7 +16,7 @@ RMST stands for Restricted Mean Survival Time and is defined as the area under t
 For whitefly: taking the maximum of the survival percentage (83% becomes 100%).  
 For thrips: taking the highest RMST (14 days becomes 100%).  
 
-![Figure 2 - Relative %](./Version3_scatterplot_relative.png)
+![Figure 2 - Relative %](./Version3_scatterplot_relative_rmst.png)
 
 Inspired by this R vignette:  
 https://cran.r-project.org/web/packages/survRM2/vignettes/survRM2-vignette3-2.html  
