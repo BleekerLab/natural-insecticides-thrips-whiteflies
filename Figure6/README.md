@@ -5,8 +5,4 @@ Tissue: leafwash
 
 ## Figure 6: abundance of volatiles predicted to be toxic in the 19 genotypes 
 
-__Boxplot__  
-!["Figure 6"](./Figure6_boxplot.png)
-
-__Barplot__
-!["Figure 6 alternative"](./Figure6_barplot.png)
+!["Figure 6"](./Figure6.png)

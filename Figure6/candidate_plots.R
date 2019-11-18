@@ -16,6 +16,7 @@ if (is.element('checkpoint', installed.packages()[,1]))
 checkpoint("2019-10-01", checkpointLocation = tempdir())
 
 library(tidyverse)
+library(ggpubr)
 
 ################################################
 # Load and transform individual data measurement
@@ -27,30 +28,29 @@ library(tidyverse)
 
 volatiles = read.csv("Figure6/20180905_Wild_collection_leafwash.csv", header = T, stringsAsFactors = TRUE, check.names = F)
 
+### Load data from tsv file
+volatiles = read.delim("Figure6/leaf_terpenoids_normalised_peak_area.tsv", header = T, stringsAsFactors = TRUE, check.names = F)
 volatiles.long = gather(volatiles, 
                         key = "metabolite",
                         value = "abundance",
-                        -sample, -accession)
+                        -sample, 
+                        -accession)
+volatiles.long$accession = 
 
-volatiles.long$Accession = factor(volatiles.long$accession, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
-                                                                       "LA1278", "LA1401", "LA2172", "LA0407",
-                                                                       "LA1718", "LA1954", "PI127826",
-                                                                       "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
-                                  ordered = TRUE)
+### Filter to keep volatiles toxic to either whitefly or thrips
+candidates = read.delim("Figure6/toxic_candidate_names.txt",stringsAsFactors = F,check.names = F)
+volatiles.long.candidates = inner_join(candidates,volatiles.long,by="metabolite") 
 
-volatiles.candidates = volatiles.long %>% filter(., metabolite %in% c('11.844_91.0573', '25.356_105.0726', '26.164_119.0865', '25.421_161.1340','25.968_119.0881'))
-
-
-# Read and add species and color information
+### Read and add species and color information
 accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
-volatiles.candidates.with.species = left_join(volatiles.candidates,accession2species,by="accession")
+volatiles.candidates.with.species = left_join(volatiles.long.candidates,accession2species,by="accession")
 
-# Set accession order to 4 phenotypic quadrants
 volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
-                                                                       "LA1278", "LA1401", "LA2172", "LA0407",
-                                                                       "LA1718", "LA1954", "PI127826",
-                                                                       "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
-                                  ordered = TRUE)
+                             "LA1278", "LA1401", "LA2172", "LA0407",
+                             "LA1718", "LA1954", "PI127826",
+                             "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
+       ordered = TRUE)
+
 ##############
 # acylsugars #
 ##############
@@ -61,20 +61,23 @@ acylsugars.long = gather(acylsugars,
                         value = "abundance",
                         -sample, -accession)
 
-acylsugar.candidates = acylsugars.long %>% filter(., metabolite %in% c('S3:C15','S3:C21','S4:C17_2','S4:C19','S4:C22'))
 
-acylsugar.candidates.with.species = left_join(acylsugar.candidates, accession2species, by = "accession")
-
-acylsugar.candidates.with.species$accession = factor(acylsugar.candidates.with.species$accession, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
-                                                                                                               "LA1278", "LA1401", "LA2172", "LA0407",
-                                                                                                               "LA1718", "LA1954", "PI127826",
-                                                                                                               "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
-                                                       ordered = TRUE)
+acylsugar.long.candidates = inner_join(candidates,acylsugars.long,by="metabolite") 
 
 
-#######################################
-# Create plots of selected volatiles #
-#######################################
+### Read and add species and color information
+acylsugar.candidates.with.species = left_join(acylsugar.long.candidates,accession2species,by="accession")
+acylsugar.candidates.with.species$accession = factor(acylsugar.candidates.with.species$accession, 
+                                                          levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
+                                                                     "LA1278", "LA1401", "LA2172", "LA0407",
+                                                                     "LA1718", "LA1954", "PI127826",
+                                                                     "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
+                                                          ordered = TRUE)
+
+
+###########################################################
+# Plot 1 = barplot of selected volatiles toxic to whiteflies
+############################################################
 
 # Theme for plotting
 my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 45, hjust = 1),
@@ -84,93 +87,90 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 4
 )
 
 
-# Boxplot
-g1 <- ggplot(volatiles.candidates.with.species) +
-  geom_boxplot(aes(x = accession, y = abundance,fill=species)) +
-  facet_wrap(~ metabolite, scale = "free" , ncol = 1) +
-  theme_bw() +
-  scale_colour_manual(values=volatiles.candidates.with.species$color) +
-  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
-  my.theme
-g1
 
-# Barplot
-volatiles.candidates.avg = volatiles.candidates.with.species %>%
-  dplyr::group_by(accession, metabolite, species, color) %>% 
+g1 = volatiles.candidates.with.species %>%
+  filter(toxic_to == "whitefly") %>% 
+  dplyr::group_by(accession, name, species, color) %>% 
   summarise(mean_abundance = mean(abundance), 
             n = n(), 
             se = (sd(abundance)/sqrt(n))
-            )
-
-g2 = ggplot(volatiles.candidates.avg) +
-  geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
-  geom_errorbar(
-    aes(x = accession, 
-        ymin = mean_abundance - se, 
-        ymax = mean_abundance + se)
-    ) +
-  facet_wrap(~ metabolite, scale = "free", ncol = 1) +
-  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
-  scale_colour_manual(values=volatiles.candidates.with.species$color) +
-  theme_bw() +
-  my.theme
-g2
-
-
-#######################################
-# Create plots of selected acylsugars #
-#######################################
-
-# Boxplot
-g3 <- ggplot(acylsugar.candidates.with.species) +
-  geom_boxplot(aes(x = accession, y = abundance,fill=species)) +
-  facet_wrap(~ metabolite, scale = "free" , ncol = 1) +
-  theme_bw() +
-  scale_colour_manual(values=acylsugar.candidates.with.species$color) +
-  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
-  my.theme
-g3
-
-# Barplot
-acylsugar.candidates.avg = acylsugar.candidates.with.species %>%
-  dplyr::group_by(accession, metabolite, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
-            n = n(), 
-            se = (sd(abundance)/sqrt(n))
-  )
-
-g4 = ggplot(acylsugar.candidates.avg) +
+  ) %>% 
+  ggplot(.) +
   geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
   geom_errorbar(
     aes(x = accession, 
         ymin = mean_abundance - se, 
         ymax = mean_abundance + se)
   ) +
-  facet_wrap(~ metabolite, scale = "free", ncol = 1) +
+  facet_wrap(~ name, scale = "free", ncol = 1) +
   labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
-  scale_colour_manual(values=acylsugar.candidates.with.species$color) +
+  scale_colour_manual(values=volatiles.candidates.with.species$color) +
   theme_bw() +
   my.theme
-g4
 
+
+########################################################
+# Plot 2 = barplot of selected volatiles toxic to thrips
+########################################################
+
+g2 = volatiles.candidates.with.species %>%
+  filter(toxic_to == "thrips") %>% 
+  dplyr::group_by(accession, name, species, color) %>% 
+  summarise(mean_abundance = mean(abundance), 
+            n = n(), 
+            se = (sd(abundance)/sqrt(n))
+  ) %>% 
+  ggplot(.) +
+  geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
+  geom_errorbar(
+    aes(x = accession, 
+        ymin = mean_abundance - se, 
+        ymax = mean_abundance + se)
+  ) +
+  facet_wrap(~ name, scale = "free", ncol = 1) +
+  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
+  scale_colour_manual(values=volatiles.candidates.with.species$color) +
+  theme_bw() +
+  my.theme
+
+
+###########################################################
+# Plot 3 = barplot of selected acylsugars toxic to whitefly
+###########################################################
+
+# Barplot
+g3 = acylsugar.candidates.with.species %>%
+  filter(toxic_to == "whitefly") %>% 
+  dplyr::group_by(accession, name, species, color) %>% 
+  summarise(mean_abundance = mean(abundance), 
+            n = n(), 
+            se = (sd(abundance)/sqrt(n))
+  ) %>% 
+  ggplot(.) +
+  geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
+  geom_errorbar(
+    aes(x = accession, 
+        ymin = mean_abundance - se, 
+        ymax = mean_abundance + se)
+  ) +
+  facet_wrap(~ name, scale = "free", ncol = 1) +
+  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
+  scale_colour_manual(values=volatiles.candidates.with.species$color) +
+  theme_bw() +
+  my.theme
+
+#############################
+# Arrange the plots together
+############################
+ggarrange(g1,g2,g3,ncol = 3,nrow = 1,common.legend = TRUE)
+
+g <- ggarrange(g1,g2,g3,ncol = 3,nrow = 1,common.legend = TRUE)
 
 ############
 # Save plots
 ############
-ggsave("Figure6/Figure6_boxplot.png",plot=g1,width = 12,height = 8)
-ggsave("Figure6/Figure6_boxplot.pdf",plot=g1,width = 12,height = 8)
-
-
-ggsave("Figure6/Figure6_barplot.png",plot=g2,width = 12,height = 8)
-ggsave("Figure6/Figure6_barplot.pdf",plot=g2,width = 12,height = 8)
-
-ggsave("Figure6/Figure6_boxplot_acylsugars.png",plot=g3,width = 12,height = 8)
-ggsave("Figure6/Figure6_boxplot_acylsugars.pdf",plot=g3,width = 12,height = 8)
-
-ggsave("Figure6/Figure6_barplot_acylsugars.png",plot=g4,width = 12,height = 8)
-ggsave("Figure6/Figure6_barplot_acylsugars.pdf",plot=g4,width = 12,height = 8)
-
-
+ggsave("Figure6/Figure6.png",plot=g,width = 12,height = 8)
+ggsave("Figure6/Figure6.pdf",plot=g,width = 12,height = 8)
 
 
 
