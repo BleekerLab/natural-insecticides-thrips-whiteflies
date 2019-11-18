@@ -24,8 +24,8 @@ g1 <- ggplot(df) +
   scale_x_continuous(breaks=seq(0,19,1)) +
   scale_y_continuous(breaks=seq(0,19,1))
 
-ggsave(filename = file.path("Figure2/","scatterplot_rank.svg"),plot = g1,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","scatterplot_rank.png"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version1_scatterplot_rank.svg"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version1_scatterplot_rank.png"),plot = g1,width = 7,height = 5)
 
 #########################
 ## Scatterplot (relative)
@@ -85,22 +85,25 @@ thrips = df.medians %>% select(accession,median,species,color)
 
 ### Scale from 0 to 100% (the high survival percentage becomes 100%)
 multiplication_coefficient = 100 / max(thrips$median)
-thrips_relative = mutate(thrips,scaled_thrips_survival = median * multiplication_coefficient)
+thrips_relative_median_survival = mutate(thrips,
+                                         scaled_thrips_survival_median_time = median * multiplication_coefficient)
 
 ### Scatterplot using relative survival numbers
-df_for_relative_scatterplot = inner_join(wf_relative,thrips_relative,by="accession")
+df_for_relative_scatterplot = inner_join(wf_relative,thrips_relative_median_survival,by="accession")
 
 g2 <- ggplot(df_for_relative_scatterplot) +
-  geom_point(aes(x = scaled_wf_survival,y = scaled_thrips_survival),fill="grey",color="black",shape=21,size=4) +
+  geom_point(
+    aes(x = scaled_wf_survival,y = scaled_thrips_survival_median_time),
+    fill="grey",color="black",shape=21,size=4) +
   theme_bw() +
-  geom_label_repel(aes(x=scaled_wf_survival,y=scaled_thrips_survival,label=accession,fill=species)) +
+  geom_label_repel(aes(x=scaled_wf_survival,y=scaled_thrips_survival_median_time,label=accession,fill=species)) +
   labs(x = "Tomato genotype whitefly survival (relative survival,%)",y = "Tomato genotype thrips survival (relative survival,%)")  + 
   scale_x_continuous(breaks=seq(0,100,20)) +  scale_y_continuous(breaks=seq(0,100,20))
 g2
 
 ### save plots
-ggsave(filename = file.path("Figure2/","scatterplot_relative.svg"),plot = g2,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","scatterplot_relative.png"),plot = g2,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version2_scatterplot_relative.svg"),plot = g2,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version2_scatterplot_relative.png"),plot = g2,width = 7,height = 5)
 
 #####################################
 # RMST: Restricted Mean Survival Time 
@@ -121,13 +124,50 @@ rmst.df$accession = genotypes
 colnames(rmst.df)[1]="rmst"
 
 
-# add to the df_for_relative_scatterplot
-test = left_join(df_for_relative_scatterplot,rmst.df,by="accession")
+### Scale from 0 to 100% (the high survival percentage becomes 100%)
+multiplication_coefficient = 100 / max(rmst.df$rmst)
+thrips_relative_rmst = mutate(rmst.df,scaled_thrips_survival_rmst = rmst * multiplication_coefficient)
+
+## Add to dataframe with relative data
+thrips_relative_rmst = 
+  mutate(rmst.df,
+         scaled_thrips_survival_rmst = rmst * multiplication_coefficient) %>%
+  select(accession,
+         rmst,
+         scaled_thrips_survival_rmst)
+
+df_for_relative_scatterplot_all = inner_join(
+  df_for_relative_scatterplot,
+  thrips_relative_rmst,
+  by="accession")
+
+# scatterplot with RMST relative %
+g3 <- ggplot(df_for_relative_scatterplot_all) +
+  geom_point(
+    aes(x = scaled_wf_survival,y = scaled_thrips_survival_rmst),
+    fill="grey",color="black",shape=21,size=4) +
+  theme_bw() +
+  geom_label_repel(aes(x=scaled_wf_survival,y=scaled_thrips_survival_rmst,label=accession,fill=species)) +
+  labs(x = "Tomato genotype whitefly survival (relative survival,%)",y = "Tomato genotype thrips survival (relative survival,%)")  + 
+  scale_x_continuous(breaks=seq(0,100,20)) +  scale_y_continuous(breaks=seq(0,100,20))
+g3
+
+### save plots
+ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative_rmst.svg"),plot = g3,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative_rmst.png"),plot = g3,width = 7,height = 5)
+
 
 ###################################
 # save dataframe used for the plots
 ###################################
-write.table(df_for_relative_scatterplot,file = "Figure2/dataframe_for_relative_scatterplots.tsv",quote = F,row.names = F,sep = "\t")
+
+# rename some columns
+colnames(df_for_relative_scatterplot_all)[1] = "wf_survival"
+colnames(df_for_relative_scatterplot_all)[3] = "thrips_median_survival_time"
+
+write.table(df_for_relative_scatterplot_all,
+            file = "Figure2/dataframe_for_relative_scatterplots.tsv",
+            quote = F,row.names = F,sep = "\t")
 
 ##############
 # Session Info
