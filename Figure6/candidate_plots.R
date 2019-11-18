@@ -18,38 +18,51 @@ checkpoint("2019-10-01", checkpointLocation = tempdir())
 library(tidyverse)
 library(ggpubr)
 
+#######################
+# Ordering of the plots
+#######################
+
+genotype_order_for_plots = c("MM", "LA4024", "LA2133", "LA0735",
+                             "LA1840", "LA1364", "LA1578",
+                             "LA1278", "LA1401", "LA2172", "LA0407",
+                             "LA1718", "LA1954", "PI127826",
+                             "LA1777", "PI134418", "LYC4", "LA0716", "LA2695")
+
 ################################################
 # Load and transform individual data measurement
 ###############################################
 
-############
+#############
 # volatiles #
-############
+#############
 
-volatiles = read.csv("Figure6/20180905_Wild_collection_leafwash.csv", header = T, stringsAsFactors = TRUE, check.names = F)
+volatiles = read.csv("Figure6/20180905_Wild_collection_leafwash.csv", header = T, 
+                     stringsAsFactors = TRUE, check.names = F)
 
 ### Load data from tsv file
-volatiles = read.delim("Figure6/leaf_terpenoids_normalised_peak_area.tsv", header = T, stringsAsFactors = TRUE, check.names = F)
+volatiles = read.delim("Figure6/leaf_terpenoids_normalised_peak_area.tsv", header = T, 
+                       stringsAsFactors = TRUE, check.names = F)
+
 volatiles.long = gather(volatiles, 
                         key = "metabolite",
                         value = "abundance",
                         -sample, 
                         -accession)
-volatiles.long$accession = 
 
 ### Filter to keep volatiles toxic to either whitefly or thrips
-candidates = read.delim("Figure6/toxic_candidate_names.txt",stringsAsFactors = F,check.names = F)
-volatiles.long.candidates = inner_join(candidates,volatiles.long,by="metabolite") 
+candidates = read.delim(file = "Figure6/toxic_candidate_names.tsv",header = T,stringsAsFactors = F,check.names = F)
+
+volatiles.long.candidates = inner_join(volatiles.long,
+                                       candidates,
+                                       by = "metabolite") 
 
 ### Read and add species and color information
 accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
 volatiles.candidates.with.species = left_join(volatiles.long.candidates,accession2species,by="accession")
 
-volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
-                             "LA1278", "LA1401", "LA2172", "LA0407",
-                             "LA1718", "LA1954", "PI127826",
-                             "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
-       ordered = TRUE)
+volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, 
+                                                     levels = genotype_order_for_plots, 
+                                                     ordered = TRUE)
 
 ##############
 # acylsugars #
@@ -68,10 +81,7 @@ acylsugar.long.candidates = inner_join(candidates,acylsugars.long,by="metabolite
 ### Read and add species and color information
 acylsugar.candidates.with.species = left_join(acylsugar.long.candidates,accession2species,by="accession")
 acylsugar.candidates.with.species$accession = factor(acylsugar.candidates.with.species$accession, 
-                                                          levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
-                                                                     "LA1278", "LA1401", "LA2172", "LA0407",
-                                                                     "LA1718", "LA1954", "PI127826",
-                                                                     "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
+                                                          levels = genotype_order_for_plots, 
                                                           ordered = TRUE)
 
 
