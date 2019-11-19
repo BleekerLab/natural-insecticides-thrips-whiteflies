@@ -93,13 +93,14 @@ acylsugar.candidates.with.species$accession = factor(acylsugar.candidates.with.s
 my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 45, hjust = 1),
                  axis.text.y = element_text(color = "black", size = 6),
                  axis.title.x = element_text(color = "black", size = 8),
-                 axis.title.y = element_text(color = "black", size = 8)
+                 axis.title.y = element_text(color = "black", size = 8),
+                 strip.text.x = element_text(size = 8, colour = "black"),
+                 legend.text = element_text(size = 8, colour = "black")
 )
 
 
 
 g1 = volatiles.candidates.with.species %>%
-  filter(toxic_to == "whitefly") %>% 
   dplyr::group_by(accession, name, species, color) %>% 
   summarise(mean_abundance = mean(abundance), 
             n = n(), 
@@ -118,30 +119,6 @@ g1 = volatiles.candidates.with.species %>%
   theme_bw() +
   my.theme
 
-
-########################################################
-# Plot 2 = barplot of selected volatiles toxic to thrips
-########################################################
-
-g2 = volatiles.candidates.with.species %>%
-  filter(toxic_to == "thrips") %>% 
-  dplyr::group_by(accession, name, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
-            n = n(), 
-            se = (sd(abundance)/sqrt(n))
-  ) %>% 
-  ggplot(.) +
-  geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
-  geom_errorbar(
-    aes(x = accession, 
-        ymin = mean_abundance - se, 
-        ymax = mean_abundance + se)
-  ) +
-  facet_wrap(~ name, scale = "free", ncol = 1) +
-  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
-  scale_colour_manual(values=volatiles.candidates.with.species$color) +
-  theme_bw() +
-  my.theme
 
 
 ###########################################################
@@ -172,15 +149,15 @@ g3 = acylsugar.candidates.with.species %>%
 #############################
 # Arrange the plots together
 ############################
-ggarrange(g1,g2,g3,ncol = 3,nrow = 1,common.legend = TRUE)
+ggarrange(g1,g3,ncol = 2,nrow = 1,common.legend = TRUE)
 
-g <- ggarrange(g1,g2,g3,ncol = 3,nrow = 1,common.legend = TRUE)
+g <- ggarrange(g1,g3,ncol = 2,nrow = 1,common.legend = TRUE)
 
 ############
 # Save plots
 ############
-ggsave("Figure6/Figure6.png",plot=g,width = 12,height = 8)
-ggsave("Figure6/Figure6.pdf",plot=g,width = 12,height = 8)
+ggsave("Figure6/Figure6.png",plot=g,width = 8,height = 10)
+ggsave("Figure6/Figure6.pdf",plot=g,width = 8,height = 10)
 
 
 
