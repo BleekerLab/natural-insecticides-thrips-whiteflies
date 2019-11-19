@@ -45,26 +45,19 @@ df$dead = NULL
 df$total = NULL
 
 # average clip-cages results
-df = df %>% group_by(accession,plant) %>% summarise(average = mean(percentage,na.rm = T))
+df = df %>% dplyr::group_by(accession) %>% dplyr::summarise(wf_average = mean(percentage,na.rm = T))
 
 # import accession to species
 accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactors=F)
-df = dplyr::left_join(x = df,y = accession2species)
+df = dplyr::left_join(x = df,y = accession2species) %>% select(-genotype)
 
-### Extract the survival percentages
-wf = df %>% select(accession,plant,species,color,average) %>% group_by(accession) %>% summarise(perc_survival=mean(average)) %>% arrange(perc_survival)
-
-### Scale from 0 to 100% (the high survival percentage becomes 100%)
-multiplication_coefficient = 100 / max(wf$perc_survival)
-wf_relative = mutate(wf,scaled_wf_survival = perc_survival * multiplication_coefficient)
+#Calculate relative WF survival
+df$wf_relative_survival = (df$wf_average/max(df$wf_average))*100
 
 ########
 # Thrips
 ########
 survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
-
-# import accessions to species correspondence
-accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stringsAsFactors = T)
 
 
 ###################
@@ -75,35 +68,49 @@ fit <- with(survData,survfit(formula = Surv(time,status) ~ accession))
 # extract accession order by increasing survival time to reorder factor
 df.medians = surv_median(fit)
 df.medians = mutate(df.medians,strata = gsub("accession=",replacement = "",strata))
-df.medians = df.medians[order(df.medians$median,decreasing = F),]
 colnames(df.medians)[1]="accession"
-df.medians = dplyr::left_join(df.medians,accession2species,by="accession")
-df.medians$accession = factor(df.medians$accession,levels = df.medians$accession)
 
-### Extract the median survival time
-thrips = df.medians %>% select(accession,median,species,color) 
+df = dplyr::left_join(df,df.medians,by="accession")
+df$thrips_relative_survival = (df$median/max(df$median))*100
+df$accession = factor(df.medians$accession,levels = df.medians$accession)
 
-### Scale from 0 to 100% (the high survival percentage becomes 100%)
-multiplication_coefficient = 100 / max(thrips$median)
-thrips_relative_median_survival = mutate(thrips,
-                                         scaled_thrips_survival_median_time = median * multiplication_coefficient)
 
-### Scatterplot using relative survival numbers
-df_for_relative_scatterplot = inner_join(wf_relative,thrips_relative_median_survival,by="accession")
+########
+# Plot #
+########
 
-g2 <- ggplot(df_for_relative_scatterplot) +
+# Relative survival
+g1 <- ggplot(df) +
   geom_point(
-    aes(x = scaled_wf_survival,y = scaled_thrips_survival_median_time),
+    aes(x = wf_relative_survival,y = thrips_relative_survival),
     fill="grey",color="black",shape=21,size=4) +
   theme_bw() +
-  geom_label_repel(aes(x=scaled_wf_survival,y=scaled_thrips_survival_median_time,label=accession,fill=species)) +
-  labs(x = "Tomato genotype whitefly survival (relative survival,%)",y = "Tomato genotype thrips survival (relative survival,%)")  + 
+  geom_label_repel(aes(x=wf_relative_survival,y=thrips_relative_survival,label=accession,fill=species)) +
+  labs(x = "Tomato genotype whitefly relative survival",y = "Tomato genotype thrips relative survival")  + 
   scale_x_continuous(breaks=seq(0,100,20)) +  scale_y_continuous(breaks=seq(0,100,20))
-g2
+
+# Survival
+g2 = ggplot(df) +
+  geom_point(
+    aes(x = wf_average,y = median),
+    fill="grey",color="black",shape=21,size=4) +
+  theme_bw() +
+  geom_label_repel(aes(x = wf_average,y = median,label=accession,fill=species)) +
+  labs(x = "Tomato genotype whitefly survival (%)",y = "Tomato genotype thrips survival (median days)")+
+  scale_x_continuous(breaks=seq(0,85,10)) +  scale_y_continuous(breaks=seq(0,20,5))
+
+g3 = ggarrange(g1,g2,ncol = 2,nrow = 1,common.legend = TRUE)
+
 
 ### save plots
-ggsave(filename = file.path("Figure2/","Version2_scatterplot_relative.svg"),plot = g2,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","Version2_scatterplot_relative.png"),plot = g2,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative.svg"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative.png"),plot = g1,width = 7,height = 5)
+
+ggsave(filename = file.path("Figure2/","Version3_scatterplot_survival.svg"),plot = g2,width = 7,height = 5)
+ggsave(filename = file.path("Figure2/","Version3_scatterplot_survival.png"),plot = g2,width = 7,height = 5)
+
+ggsave(filename = file.path("Figure2/","Version3_relative_vs_normal_survival.pdf"),plot = g3,width = 15,height = 6)
+
 
 #####################################
 # RMST: Restricted Mean Survival Time 
