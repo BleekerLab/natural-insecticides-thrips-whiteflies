@@ -13,67 +13,100 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6),
                  axis.title.y = element_text(color = "black", size = 8)
 )
 
-##################################################
-# Load datasets
-##################################################
+#################
+# Load datasets #
+#################
 
 # trichome density data
 density = read.delim("FigureS4/trichome.counts.processed.tsv", header =T)
+
+# Calculate the average trichome densities per genotype (abaxial and adaxial are taken together)
+density.avg = summarySE(
+  density, 
+  measurevar = "density", 
+  groupvars = c("genotype", "accession", "species" ,"type", "color")
+)
+
 
 # whitefly and thrips ranks based on toxicity
 pheno = read.delim("Figure2/data4scatterplot_ranks.tsv", header = T)
 pheno = separate(pheno, col = sample, into = c("x", "y", "accession")) %>% #separate "sample" into accession names only so it can be used for fusing the datasets
   select(., c("accession", "wf", "thrips"))
 
-################################################################################################
-# Calculate the average trichome densities per genotype (abaxial and adaxial are taken together)
-density.avg = summarySE(
-  density, 
-  measurevar = "density", 
-  groupvars = c("genotype", "accession", "species" ,"type", "color")
-  )
+# Thrips median survival (from Fig 1B)
+survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
+accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stringsAsFactors = T)
+fit <- with(survData,survfit(formula = Surv(time,status) ~ accession))
+df.medians = surv_median(fit)
+df.medians = mutate(df.medians,strata = gsub("accession=",replacement = "",strata))
+df.medians = df.medians[order(df.medians$median,decreasing = F),]
+colnames(df.medians)[1]="accession"
+df.medians = dplyr::left_join(df.medians,accession2species,by="accession")
+df.medians$accession = factor(df.medians$accession,levels = df.medians$accession)
+
+#whitefly phenotype (From Fig 1A)
+wf = pheno = read.delim("Figure1/whitefly_no-choice_19_accessions.tsv", header = T)
+wf$alive = NULL
+wf$dead = NULL
+wf$total = NULL
+wf = wf %>% dplyr::group_by(accession) %>% dplyr::summarise(wf_average = mean(percentage,na.rm = T))
+
 
 #####################################
-# merge the two datasets to a new one
+# merge the datasets to a new one
 #####################################
-density.pheno  = left_join(pheno,density.avg, by = "accession")
-density.pheno$accession = as.factor(density.pheno$accession)
+density.pheno  = left_join(density.avg, df.medians %>% select(., accession, median), by = "accession") %>% dplyr::rename(median_trips = median)
+density.pheno  = left_join(density.pheno, wf, by = "accession")
 
 # Label the trichome classes nicely
 density.pheno$type = factor(density.pheno$type, levels = c("non.glandular", "typeIandIV", "typeVI"),
                             labels = c("Non glandular", "Type I/IV", "Type VI"))
 
+#########
+# plots #
+#########
+
 # Plot whiteflies vs. trichome densities
 p.whitelfies = 
 density.pheno %>%
 ggplot() +
-  geom_point(aes(x = wf, y = density),fill="grey",color="black",shape=21,size=2) +
+  geom_point(aes(x = (wf_average/max(density.pheno$wf_average))*100, y = density),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
-  geom_label_repel(aes(x = wf, y=density,label=accession, fill=species),
+  geom_label_repel(aes(x = (wf_average/max(density.pheno$wf_average))*100, y=density,label=accession, fill=species),
                    size = 2,
                    label.size = 0.05,
                    label.padding = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~type, scale = "free", ncol = 1)+
   labs(x = "Tomato genotype rank for whitefly survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
-  scale_x_continuous(breaks=seq(0,19,1))+
   my.theme
 
 # Plot thrips vs. trichome densities
 p.thrips = 
   density.pheno %>%
   ggplot() +
-  geom_point(aes(x = thrips, y = density),fill="grey",color="black",shape=21,size=2) +
+  geom_point(aes(x = (median_trips/max(density.pheno$median_trips))*100, y = density),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
-  geom_label_repel(aes(x = thrips, y=density,label=accession, fill=species),
+  geom_label_repel(aes(x = (median_trips/max(density.pheno$median_trips))*100, y=density,label=accession, fill=species),
                    size = 2,
                    label.size = 0.05,
                    label.padding = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~type, scale = "free", ncol = 1)+
   labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
-  scale_x_continuous(breaks=seq(0,19,1))+
   my.theme
+
+# Scatterplot
+density.pheno %>% filter(., type == "Type VI") %>%
+  ggplot() +
+  geom_point(aes(y = (median_trips/max(density.pheno$median_trips))*100, x = (wf_average/max(density.pheno$wf_average))*100),fill="grey",color="black",shape=21,size=2)+
+  theme_bw() +
+  geom_label_repel(aes(y = (median_trips/max(density.pheno$median_trips))*100, x=(wf_average/max(density.pheno$wf_average))*100,
+                   label=accession, fill=species),
+                   size = 2,
+                   label.size = 0.05,
+                   label.padding = 0.1,
+                   show.legend = FALSE) 
 
 ################
 # Save the plots
