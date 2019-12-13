@@ -36,11 +36,11 @@ genotype_order_for_plots = c("MM", "LA4024", "LA2133", "LA0735",
 # volatiles #
 #############
 
-volatiles = read.csv("Figure6/20180905_Wild_collection_leafwash.csv", header = T, 
+volatiles = read.csv("FigureS7/20180905_Wild_collection_leafwash.csv", header = T, 
                      stringsAsFactors = TRUE, check.names = F)
 
 ### Load data from tsv file
-volatiles = read.delim("Figure6/leaf_terpenoids_normalised_peak_area.tsv", header = T, 
+volatiles = read.delim("FigureS7/leaf_terpenoids_normalised_peak_area.tsv", header = T, 
                        stringsAsFactors = TRUE, check.names = F)
 
 volatiles.long = gather(volatiles, 
@@ -50,7 +50,7 @@ volatiles.long = gather(volatiles,
                         -accession)
 
 ### Filter to keep volatiles toxic to either whitefly or thrips
-candidates = read.delim(file = "Figure6/all_candidate_names.txt",header = T,stringsAsFactors = F,check.names = F)
+candidates = read.delim(file = "FigureS7/all_candidate_names.txt",header = T,stringsAsFactors = F,check.names = F)
 
 volatiles.long.candidates = inner_join(
                                        candidates,volatiles.long,
@@ -68,7 +68,7 @@ volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.s
 # acylsugars #
 ##############
 
-acylsugars = volatiles = read.csv("Figure6/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
+acylsugars = volatiles = read.csv("FigureS7/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
 acylsugars.long = gather(acylsugars, 
                         key = "metabolite",
                         value = "abundance",
@@ -168,17 +168,11 @@ g3 = acylsugar.candidates.with.species %>%
   theme_bw() +
   my.theme
 
-#############################
-# Arrange the plots together
 ############################
-ggarrange(g1,g2,g3,ncol = 3,nrow = 3,common.legend = TRUE)
-
-g <- ggarrange(g1,g2,g3,ncol = 3,nrow = 3,common.legend = TRUE)
 
 ############
 # Save plots
 ############
-ggsave("Figure6/Figure6.png",plot=g,width = 8,height = 10)
 ggsave("FigureS7/Figure_S7A_wf_volatiles.pdf",plot=g1,width = 10,height = 10)
 ggsave("FigureS7/Figure_S7B_thrips_volatiles.pdf",plot=g2,width = 10,height = 12)
 ggsave("FigureS7/Figure_S7C_wf_acylsugars.pdf",plot=g3,width = 10,height = 10)
