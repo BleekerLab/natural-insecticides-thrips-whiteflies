@@ -9,7 +9,3 @@ S3:C21	S3:C21	whitefly
 S4:C17_2	S4:C17_2	whitefly
 S4:C19	S4:C19	whitefly
 S4:C22	S4:C22	whitefly
-S4:C21	S4:C21	whitefly
-S4:C21-3	S4:C21-3	whitefly
-S4:C21-4	S4:C21-4	whitefly
-S4:C22-2	S4:C22-2	whitefly
