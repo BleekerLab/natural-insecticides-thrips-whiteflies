@@ -55,7 +55,7 @@ if (is.element('ggfortify', installed.packages()[,1]))
 #############
 # Data import
 #############
-survData = read.delim("Figure2_thrips/survival_data.tsv",header=T,stringsAsFactors = F)
+survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
 
 # import accessions to species correspondence
 accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stringsAsFactors = T)

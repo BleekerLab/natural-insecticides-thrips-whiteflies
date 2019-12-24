@@ -17,7 +17,7 @@ accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactor
 # remove missing values
 # convert cage to factor
 # Calculate a probability to die for each observation
-df = read.delim("Figure1_wf/whitefly_no-choice_19_accessions.tsv",header = T,stringsAsFactors = F)
+df = read.delim("Figure1/whitefly_no-choice_19_accessions.tsv",header = T,stringsAsFactors = F)
 df = na.omit(df)
 
 # Remove LA0716 since it has only zero values (cannot estimate the coefficient)
