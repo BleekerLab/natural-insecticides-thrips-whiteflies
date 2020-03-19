@@ -11,11 +11,10 @@ Eventually, all code and datasets used to generate the figures will be archived 
 - Figure 3: trichome diversity in the selected 19 tomato genotypes
 - Figure 4: relationship between metabolic profiles and pest toxicity
 - Figure 5: Random Forest candidate metabolites 
-- Figure 6: controlled toxicity bioassays on whiteflies and thrips 
 
 ## Tables
-- Table 1: Table 1: the selected 19 genotypes (Solanum section Lycopersicon)
-- Table 2: Random Forest volatile candidates in the 19 genotypes related to pest toxicity
+- Table 1: Toxic - Non toxic qualifications of the genotypes
+- Table 2: Random Forest acylsuagrs related to whitefly phenotype
 - Table 3: Random Forest acylsugar candidates in the 19 genotypes related to pest toxicity
 
 ## Supplemental tables 
