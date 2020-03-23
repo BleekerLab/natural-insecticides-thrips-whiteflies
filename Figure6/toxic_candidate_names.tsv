@@ -2,14 +2,14 @@ metabolite	name	toxic_to
 11.844_91.0573	2-carene	whitefly
 25.356_105.0726	10-epi-italicene ether	whitefly
 26.164_119.0865	y-cuprenene	whitefly
-25.421_161.1340	d-Selinene	thrips
-25.968_119.0881	b-cadiene	thrips
-S3:C15	S3:C15	whitefly
-S3:C21	S3:C21	whitefly
-S4:C17_2	S4:C17_2	whitefly
-S4:C19	S4:C19	whitefly
-S4:C22	S4:C22	whitefly
-S4:C21	S4:C21	whitefly
-S4:C21-3	S4:C21-3	whitefly
-S4:C21-4	S4:C21-4	whitefly
-S4:C22-2	S4:C22-2	whitefly
+25.421_161.1340	d-selinene	thrips
+25.968_119.0881	b-cadinene	thrips
+S3:15	S3:15	whitefly
+S3:21	S3:21	whitefly
+S4:17-2	S4:17-2	whitefly
+S4:19	S4:19	whitefly
+S4:22	S4:22	whitefly
+S4:21	S4:21	whitefly
+S4:21-3	S4:21-3	whitefly
+S4:21-4	S4:21-4	whitefly
+S4:22-2	S4:22-2	whitefly
