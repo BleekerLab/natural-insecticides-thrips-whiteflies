@@ -22,11 +22,15 @@ log.acylsugars = log.acylsugars %>% select(., -c("summed_glucose", "summed_sucro
 
 # Cluster accessions to phenotypes ("make the 4 quadrants")
 log.acylsugars = log.acylsugars %>% rownames_to_column()
-log.acylsugars$rowname = factor(log.acylsugars$rowname, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
-                                                                      "LA1278", "LA1401", "LA2172", "LA0407",
-                                                                      "LA1718", "LA1954", "PI127826",
-                                                                      "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
-                                                                      ordered = TRUE)
+
+# Order accessions according to whitefly survival (low to high survival) as on Figure 1
+log.acylsugars$rowname = factor(log.acylsugars$rowname, levels = c("LA0716","PI127826","LYC4", "LA1777", 
+                                                                   "PI134418", "LA1718", "LA1954","LA2695",
+                                                                   "LA1401","LA0407","LA1364","LA4024", "LA2172", 
+                                                                   "LA2133","LA1578","LA0735", "LA1278","MM","LA1840"),
+                                                                    ordered = TRUE) 
+
+
 log.acylsugars = log.acylsugars[order(log.acylsugars$rowname),]
 rownames(log.acylsugars) = log.acylsugars[,1]
 log.acylsugars[,1] = NULL
@@ -34,14 +38,12 @@ log.acylsugars[,1] = NULL
 
 
 # Load phenotypes (i.e. toxic / non-toxic) and acylsugar annotations
-phenolink = read.delim("Figure4/phenolink_thrips_and_whitefly.tsv", row.names = 1, header = T)
+# phenolink = read.delim("Figure4/phenolink_thrips_and_whitefly.tsv", row.names = 1, header = T)
 acylsugars.annotation = read.delim("Figure4/acylsugars_annotation.tsv", row.names = 1, header = T)
 row.names(acylsugars.annotation) = colnames(log.acylsugars)
 
 colors4annotation = list(
-  Sugar.backbone = c("Sucrose" = "tomato3", "Glucose" = "steelblue4"),
-  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="grey"),
-  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="grey")
+  Sugar.backbone = c("Sucrose" = "black", "Glucose" = "grey")
 )
 
 
@@ -50,7 +52,6 @@ pdf(file = "Figure4/acylsugar_heatmap.pdf",width = 10,height = 5)
 
 pheatmap(log.acylsugars,
          cluster_rows = FALSE,
-         annotation_row = phenolink, 
          annotation_col = acylsugars.annotation,
          annotation_colors = colors4annotation,
          fontsize = 6, 
@@ -75,11 +76,12 @@ volatiles = volatiles[] + 1
 log.volatiles = log10(volatiles[,2:ncol(volatiles)])
 
 log.volatiles = log.volatiles %>% rownames_to_column()
-log.volatiles$rowname = factor(log.volatiles$rowname, levels = c("MM", "LA4024", "LA2133", "LA0735", "LA1840", "LA1364", "LA1578",
-                                                                   "LA1278", "LA1401", "LA2172", "LA0407",
-                                                                   "LA1718", "LA1954", "PI127826",
-                                                                   "LA1777", "PI134418", "LYC4", "LA0716", "LA2695"), 
-                                ordered = TRUE)
+log.volatiles$rowname = factor(log.volatiles$rowname, levels = c("LA0716","PI127826","LYC4", "LA1777", 
+                                                                 "PI134418", "LA1718", "LA1954","LA2695",
+                                                                 "LA1401","LA0407","LA1364","LA4024", "LA2172", 
+                                                                 "LA2133","LA1578","LA0735", "LA1278","MM","LA1840"),
+                               ordered = TRUE) 
+
 log.volatiles = log.volatiles[order(log.volatiles$rowname),]
 rownames(log.volatiles) = log.volatiles[,1]
 log.volatiles[,1] = NULL
@@ -90,13 +92,11 @@ volatiles.annotation = read.delim(file = "Figure4/volatiles_annotation.tsv", hea
 
 colors4annotation.2 = list(
   metabolite_class = c(
-    "methylketon" = "forestgreen",
-    "monoterpene" = "steelblue4",
-    "sesquiterpene" = "tan1",
-    "other_carbohydrate" = "tomato3"),
-  Thrips.phenotype = c("Toxic" = "black","Non-toxic" ="grey"),
-  Whitefly.phenotype = c("Toxic" = "black","Non-toxic" ="grey")
-)
+    "methylketon" = "white",
+    "monoterpene" = "black",
+    "sesquiterpene" = "gray",
+    "other_carbohydrate" = "gray40")
+  )
 
 
 # Make and save the plot (heatmap including annotations)
@@ -104,7 +104,6 @@ pdf(file = "Figure4/volatile_heatmap.pdf",width = 10,height = 5)
 
 pheatmap(log.volatiles,
          cluster_rows = FALSE,
-         annotation_row = phenolink, 
          annotation_col = volatiles.annotation,
          annotation_colors = colors4annotation.2,
          fontsize = 6, 
