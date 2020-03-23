@@ -22,12 +22,18 @@ library(ggpubr)
 # Ordering of the plots
 #######################
 
-genotype_order_for_plots = c("MM", "LA4024", "LA2133", "LA0735",
-                             "LA1840", "LA1364", "LA1578",
-                             "LA1278", "LA1401", "LA2172", "LA0407",
-                             "LA1718", "LA1954", "PI127826",
-                             "LA1777", "PI134418", "LYC4", "LA0716", "LA2695")
+genotype_order_whiteflies = c("LA0716","PI127826","LYC4", "LA1777", 
+                              "PI134418", "LA1718", "LA1954","LA2695",
+                              "LA1401","LA0407","LA1364","LA4024", "LA2172", 
+                              "LA2133","LA1578","LA0735", "LA1278","MM","LA1840")
 
+genotype_order_thrips = c("LYC4","LA0407", "LA1777", "PI134418",
+                          "LA1401", "LA0716", "LA1278",  "LA2172", 
+                          "LA2695","LA0735","LA1718","LA2133","PI127826",
+                          "LA1578", "LA1954", "MM",  "LA1840", "LA4024","LA1364")
+                         
+  
+  
 ################################################
 # Load and transform individual data measurement
 ###############################################
@@ -61,33 +67,32 @@ accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactor
 volatiles.candidates.with.species = left_join(volatiles.long.candidates,accession2species,by="accession")
 
 volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, 
-                                                     levels = genotype_order_for_plots, 
+                                                     levels = genotype_order_whiteflies, 
                                                      ordered = TRUE)
 
 ##############
 # acylsugars #
 ##############
 
-acylsugars = volatiles = read.csv("Figure6/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
+acylsugars = read.csv("Figure6/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
 acylsugars.long = gather(acylsugars, 
                         key = "metabolite",
                         value = "abundance",
                         -sample, -accession)
 
 
-acylsugar.long.candidates = inner_join(candidates,acylsugars.long,by="metabolite") 
+acylsugar.long.candidates = inner_join(candidates,acylsugars.long,by="metabolite")
 
 
 ### Read and add species and color information
 acylsugar.candidates.with.species = left_join(acylsugar.long.candidates,accession2species,by="accession")
 acylsugar.candidates.with.species$accession = factor(acylsugar.candidates.with.species$accession, 
-                                                          levels = genotype_order_for_plots, 
+                                                          levels = genotype_order_whiteflies, 
                                                           ordered = TRUE)
 
-
 ###########################################################
-# Plot 1 = barplot of selected volatiles toxic to whiteflies
-############################################################
+# Plot 1 = barplot of selected acylsugars toxic to whitefly
+###########################################################
 
 # Theme for plotting
 my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 45, hjust = 1),
@@ -95,39 +100,14 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 4
                  axis.title.x = element_text(color = "black", size = 8),
                  axis.title.y = element_text(color = "black", size = 8),
                  strip.text.x = element_text(size = 8, colour = "black"),
-                 legend.text = element_text(size = 8, colour = "black")
+                 legend.text = element_text(size = 8, colour = "black"),
+                 legend.position = "none"
 )
 
 
-
-g1 = volatiles.candidates.with.species %>%
-  dplyr::group_by(accession, name, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
-            n = n(), 
-            se = (sd(abundance)/sqrt(n))
-  ) %>% 
-  ggplot(.) +
-  geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
-  geom_errorbar(
-    aes(x = accession, 
-        ymin = mean_abundance - se, 
-        ymax = mean_abundance + se)
-  ) +
-  facet_wrap(~ name, scale = "free", ncol = 1) +
-  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
-  scale_colour_manual(values=volatiles.candidates.with.species$color) +
-  theme_bw() +
-  my.theme
-
-
-
-###########################################################
-# Plot 3 = barplot of selected acylsugars toxic to whitefly
-###########################################################
-
 # Barplot
-g3 = acylsugar.candidates.with.species %>%
-  filter(toxic_to == "whitefly") %>% 
+g1 = acylsugar.candidates.with.species %>%
+  filter(., name %in% c("S3:15", "S3:21", "S4:17-2", "S4:22")) %>%
   dplyr::group_by(accession, name, species, color) %>% 
   summarise(mean_abundance = mean(abundance), 
             n = n(), 
@@ -143,21 +123,79 @@ g3 = acylsugar.candidates.with.species %>%
   facet_wrap(~ name, scale = "free", ncol = 1) +
   labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
   scale_colour_manual(values=volatiles.candidates.with.species$color) +
+  scale_x_discrete("accession", labels = genotype_order_whiteflies)+
   theme_bw() +
   my.theme
+
+
+###########################################################
+# Plot 2 = barplot of selected volatiles toxic to whiteflies
+############################################################
+
+
+ g2 = volatiles.candidates.with.species %>%
+  dplyr::group_by(accession, name, species, color) %>% 
+  summarise(mean_abundance = mean(abundance), 
+            n = n(), 
+            se = (sd(abundance)/sqrt(n))
+  ) %>% 
+  filter(., name %in% c("10-epi-italicene ether", "y-cuprenene")) %>%
+  ggplot(.) +
+  geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
+  geom_errorbar(
+    aes(x = accession, 
+        ymin = mean_abundance - se, 
+        ymax = mean_abundance + se)
+  ) +
+  facet_wrap(~ name, scale = "free", ncol = 1) +
+  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
+  scale_colour_manual(values=volatiles.candidates.with.species$color) +
+  scale_x_discrete("accession", labels = genotype_order_whiteflies)+
+  theme_bw() +
+  my.theme
+ 
+ ###########################################################
+ # Plot 3 = barplot of selected volatiles toxic to Thrips
+ ############################################################
+
+g3 = volatiles.candidates.with.species %>%
+  dplyr::group_by(accession, name, species, color) %>% 
+  summarise(mean_abundance = mean(abundance), 
+            n = n(), 
+            se = (sd(abundance)/sqrt(n))
+  ) %>% 
+  filter(., name %in% c("d-selinene", "b-cadinene")) %>%
+  ggplot(.) +
+  geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
+  geom_errorbar(
+    aes(x = accession, 
+        ymin = mean_abundance - se, 
+        ymax = mean_abundance + se)
+  ) +
+  facet_wrap(~ name, scale = "free", ncol = 1) +
+  labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
+  scale_colour_manual(values=volatiles.candidates.with.species$color) +
+  scale_x_discrete("accession", labels = genotype_order_thrips)+
+  theme_bw() +
+  my.theme
+
+
+
 
 #############################
 # Arrange the plots together
 ############################
-ggarrange(g1,g3,ncol = 2,nrow = 1,common.legend = TRUE)
+plot.volatiles = ggarrange(g2,g3, ncol = 1,nrow = 2)
+
+grid.arrange(grobs = )
 
 g <- ggarrange(g1,g3,ncol = 2,nrow = 1,common.legend = TRUE)
 
 ############
 # Save plots
 ############
-ggsave("Figure6/Figure6.png",plot=g,width = 8,height = 10)
-ggsave("Figure6/Figure6.pdf",plot=g,width = 8,height = 10)
+ggsave("Figure6/Figure6_acylsugars.pdf",plot=g1,width = 8,height = 10)
+ggsave("Figure6/Figure6_volatiles.pdf",plot=plot.volatiles,width = 8,height = 10)
 
 
 
