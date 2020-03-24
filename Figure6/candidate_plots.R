@@ -152,7 +152,8 @@ g1 = acylsugar.candidates.with.species %>%
   scale_colour_manual(values=volatiles.candidates.with.species$color) +
   scale_x_discrete("accession", labels = genotype_order_whiteflies)+
   theme_bw() +
-  my.theme
+  my.theme+
+  theme(axis.title.x = element_blank())
  
  ###########################################################
  # Plot 3 = barplot of selected volatiles toxic to Thrips
