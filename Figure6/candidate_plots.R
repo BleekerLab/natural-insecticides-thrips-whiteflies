@@ -194,8 +194,8 @@ g <- ggarrange(g1,g3,ncol = 2,nrow = 1,common.legend = TRUE)
 ############
 # Save plots
 ############
-ggsave("Figure6/Figure6_acylsugars.pdf",plot=g1,width = 8,height = 10)
-ggsave("Figure6/Figure6_volatiles.pdf",plot=plot.volatiles,width = 8,height = 10)
+ggsave("Figure6/Figure6_acylsugars.pdf",plot=g1,width = 3.5,height = 7)
+ggsave("Figure6/Figure6_volatiles.pdf",plot=plot.volatiles,width = 3.5,height = 7)
 
 
 
