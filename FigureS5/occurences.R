@@ -34,7 +34,7 @@ make_classes_of_occurences <- function(matrix_of_metabolites){
 ##########
 # Terpenes
 ##########
-terpenes <- read.delim("Figure6_heatmaps/pheno_terpenoids.tsv",header = T,stringsAsFactors = F,check.names = F)
+terpenes <- read.delim("Figure4/terpenoids_normalized.tsv",header = T,stringsAsFactors = F,check.names = F)
 terpenes = terpenes[,4:ncol(terpenes)] # keep only compound abundances
 terpenes[terpenes > 0] <- 1
 
@@ -44,7 +44,7 @@ classes.occurences.terpenes = make_classes_of_occurences(terpenes)
 ############
 # Acylsugars
 ############
-acylsugars <- read.delim("Figure6_heatmaps/pheno_acylsugars.tsv",header = T,stringsAsFactors = F,check.names = F)
+acylsugars <- read.delim("Figure4/acylsugars_normalised.tsv",header = T,stringsAsFactors = F,check.names = F)
 acylsugars = acylsugars[,4:ncol(acylsugars)]
 acylsugars[acylsugars > 0] <- 1
 
@@ -70,6 +70,11 @@ p.bars.as = ggplot(data = classes.occurences.acylsugars,aes(x = class.occurence,
   labs(x = "Number of times an acylsugar is occuring in the N = 19 tomato genotype collection",y = "Percentage of occurence (%, 100% corresponds to N=19 genotypes)") +
   geom_label(size=3) + 
   theme(axis.text = element_text(color = "black"))
+
+# Pie-plots
+ggplot(PlantGrowth, aes(x=factor(1), fill=group))+
+  geom_bar(width = 1)+
+  coord_polar("y")
 
 
 #################
