@@ -69,7 +69,7 @@ density.pheno$type = factor(density.pheno$type, levels = c("non.glandular", "typ
 #########
 
 # Plot whiteflies vs. trichome densities
-#p.whitelfies = 
+p.whitelfies = 
 density.pheno %>%
 ggplot() +
   geom_point(aes(x = (wf_average/max(density.pheno$wf_average))*100, y = density),fill="grey",color="black",shape=21,size=2) +
@@ -80,10 +80,10 @@ ggplot() +
                    label.padding = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~type, scale = "free", ncol = 1)+
-  geom_smooth(aes(x=wf_average/max(density.pheno$wf_average)*100, y = density), method = "lm")
-  
-  labs(x = "Tomato genotype rank for whitefly survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
-  my.theme
+  geom_smooth(aes(x=wf_average/max(density.pheno$wf_average)*100, y = density), method = "lm", alpha = 0.2)+
+  labs(x = "Relative whitefly survival",y = "Trichome density (trichomes / mm2 leaf)") +
+  my.theme+
+  ylim(0, NA)
 
 # Plot thrips vs. trichome densities
 p.thrips = 
@@ -97,8 +97,10 @@ p.thrips =
                    label.padding = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~type, scale = "free", ncol = 1)+
-  labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
-  my.theme
+  geom_smooth(aes(x =(median_trips/max(density.pheno$median_trips))*100, y = density), method = "lm", alpha = 0.2)+
+  labs(x = "Relative thrips survival",y = "Trichome density (trichomes / mm2 leaf)") +
+  my.theme+
+  ylim(0, NA)
 
 
 #################
