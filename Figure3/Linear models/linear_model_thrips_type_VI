@@ -1,0 +1,21 @@
+
+Call:
+lm(formula = (median_trips/max(density.pheno$median_trips) * 
+    100) ~ density, data = density.pheno %>% filter(., type == 
+    "Type VI"))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-27.00 -19.54 -11.10  16.12  48.67 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   52.667      9.334   5.642 2.93e-05 ***
+density       -3.635      4.582  -0.793    0.439    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 26.14 on 17 degrees of freedom
+Multiple R-squared:  0.0357,	Adjusted R-squared:  -0.02102 
+F-statistic: 0.6294 on 1 and 17 DF,  p-value: 0.4385
+

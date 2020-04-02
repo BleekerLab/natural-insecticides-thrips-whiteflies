@@ -100,17 +100,42 @@ p.thrips =
   labs(x = "Tomato genotype rank for thrips survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
   my.theme
 
-# Scatterplot
-density.pheno %>% filter(., type == "Type VI") %>%
-  ggplot() +
-  geom_point(aes(y = (median_trips/max(density.pheno$median_trips))*100, x = (wf_average/max(density.pheno$wf_average))*100),fill="grey",color="black",shape=21,size=2)+
-  theme_bw() +
-  geom_label_repel(aes(y = (median_trips/max(density.pheno$median_trips))*100, x=(wf_average/max(density.pheno$wf_average))*100,
-                   label=accession, fill=species),
-                   size = 2,
-                   label.size = 0.05,
-                   label.padding = 0.1,
-                   show.legend = FALSE) 
+
+#################
+# Linear models #
+#################
+
+# whitefly vs (relative) type I/IV trichome density
+lm.wf.typeIIV = summary( 
+  lm(data = density.pheno %>% filter(., type == "Type I/IV"),
+          (wf_average/max(density.pheno$wf_average)*100) ~ density)
+)
+
+# whitefly vs (relative) type VI trichome density
+lm.wf.typeVI = summary(
+  lm(data = density.pheno %>% filter(., type == "Type VI"),
+          (wf_average/max(density.pheno$wf_average)*100) ~ density)
+)
+
+# whitefly vs (relative) type I/IV trichome density
+lm.thrips.typeIIV = summary(
+  lm(data = density.pheno %>% filter(., type == "Type I/IV"),
+                   (median_trips/max(density.pheno$median_trips)*100) ~ density)
+)
+
+# whitefly vs (relative) type VI trichome density
+lm.thrips.typeVI = summary(
+  lm(data = density.pheno %>% filter(., type == "Type VI"),
+                  (median_trips/max(density.pheno$median_trips)*100) ~ density)
+)
+
+
+capture.output(lm.wf.typeIIV, file = "Figure3/Linear models/linear_model_wf_typeI_IV")
+capture.output(lm.wf.typeVI, file = "Figure3/Linear models/linear_model_wf_type_VI")
+capture.output(lm.thrips.typeIIV, file = "Figure3/Linear models/linear_model_thrips_typeI_IV")
+capture.output(lm.thrips.typeVI, file = "Figure3/Linear models/linear_model_thrips_type_VI")
+
+
 
 ################
 # Save the plots

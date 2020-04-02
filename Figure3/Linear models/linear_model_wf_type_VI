@@ -1,0 +1,20 @@
+
+Call:
+lm(formula = (wf_average/max(density.pheno$wf_average) * 100) ~ 
+    density, data = density.pheno %>% filter(., type == "Type VI"))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-82.991 -12.587   9.777  20.477  34.371 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   83.354     10.622   7.847 4.74e-07 ***
+density       -7.143      5.214  -1.370    0.189    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 29.75 on 17 degrees of freedom
+Multiple R-squared:  0.09943,	Adjusted R-squared:  0.04646 
+F-statistic: 1.877 on 1 and 17 DF,  p-value: 0.1885
+
