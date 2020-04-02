@@ -2,6 +2,8 @@ library(RColorBrewer)
 library(ggrepel)
 library(tidyverse)
 library(Rmisc)
+library(survival)
+library(survminer)
 
 #############################
 # Custom theme for plotting #
@@ -67,7 +69,7 @@ density.pheno$type = factor(density.pheno$type, levels = c("non.glandular", "typ
 #########
 
 # Plot whiteflies vs. trichome densities
-p.whitelfies = 
+#p.whitelfies = 
 density.pheno %>%
 ggplot() +
   geom_point(aes(x = (wf_average/max(density.pheno$wf_average))*100, y = density),fill="grey",color="black",shape=21,size=2) +
@@ -78,6 +80,8 @@ ggplot() +
                    label.padding = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~type, scale = "free", ncol = 1)+
+  geom_smooth(aes(x=wf_average/max(density.pheno$wf_average)*100, y = density), method = "lm")
+  
   labs(x = "Tomato genotype rank for whitefly survival (low to high survival)",y = "Trichome density (trichomes / mm2 leaf)") +
   my.theme
 
