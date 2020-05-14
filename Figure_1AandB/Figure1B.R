@@ -55,7 +55,7 @@ if (is.element('ggfortify', installed.packages()[,1]))
 #############
 # Data import
 #############
-survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
+survData = read.delim("Figure_1AandB/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
 
 # import accessions to species correspondence
 accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stringsAsFactors = T)
@@ -83,10 +83,10 @@ p <- ggplot(data=df.medians,aes(x=accession,y=median,fill=species)) +
   theme(axis.text.x = element_text(angle=30, hjust = 1, vjust = 1),
         axis.text = element_text(colour = "black"))
 
-ggsave(filename = "Figure1/Figure1B.pdf",plot = p,width = 7,height = 3)
-ggsave(filename = "Figure1/Figure1B.svg",plot = p,width = 7,height = 3)
+ggsave(filename = "Figure_1AandB/Figure1B.pdf",plot = p,width = 7,height = 3)
+ggsave(filename = "Figure_1AandB/Figure1B.svg",plot = p,width = 7,height = 3)
 
 #################
 # session info
 ##################
-writeLines(capture.output(sessionInfo()), "Figure1/sessionInfo.Figure1B.txt")
+writeLines(capture.output(sessionInfo()), "Figure_1AandB/sessionInfo.Figure1B.txt")
