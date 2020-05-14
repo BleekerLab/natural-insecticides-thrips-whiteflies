@@ -55,7 +55,7 @@ if (is.element('ggfortify', installed.packages()[,1]))
 #############
 # Data import
 #############
-survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
+survData = read.delim("Figure_1AandB/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
 
 # import accessions to species correspondence
 accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stringsAsFactors = T)
@@ -86,8 +86,8 @@ p <- ggplot(data=df.medians,aes(x=accession,y=median,fill=species)) +
   theme(axis.text.x = element_text(angle=30, hjust = 1, vjust = 1),
         axis.text = element_text(colour = "black"))
 
-ggsave(filename = "Figure2_thrips/Figure2B.pdf",plot = p,width = 7,height = 3)
-ggsave(filename = "Figure2_thrips/Figure2B.svg",plot = p,width = 7,height = 3)
+ggsave(filename = "Figure_1AandB/Figure1B.pdf",plot = p,width = 7,height = 3)
+ggsave(filename = "Figure_1AandB/Figure1B.svg",plot = p,width = 7,height = 3)
 
 ######################
 # Plot survival curves
@@ -154,7 +154,7 @@ ggsurvplot_group_by(fit = with(survData,survfit(formula = Surv(time,status) ~ ac
 #   l[[i]] = plotSurvival(tmp_df)
 #   plot_title = genotypes[i]
 #   gg = l[[i]]$plot + ggtitle(plot_title)
-#   ggsave(filename = file.path("Figure2_thrips/plots/",paste(genotypes[i],".png",sep = "")),plot = gg,width = 7,height = 5,dpi = 400)
+#   ggsave(filename = file.path("Figure_1AandB/plots/",paste(genotypes[i],".png",sep = "")),plot = gg,width = 7,height = 5,dpi = 400)
 # }
 
 ###############
@@ -182,4 +182,4 @@ write.table(x = coefs,file = "TableS2_Cox/TableS2_Cox_model_coefs.tsv",quote = F
 #################
 # session info
 ##################
-writeLines(capture.output(sessionInfo()), "Figure2_thrips/sessionInfo.txt")
+writeLines(capture.output(sessionInfo()), "Figure_1AandB/sessionInfo.txt")
