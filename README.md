@@ -5,17 +5,17 @@ Eventually, all code and datasets used to generate the figures will be archived 
 
 # List of figures
 ## Figure list
-
-- Figure 1: whitefly & thrips no-choice assay on the 19 selected accessions
-- Figure 2: scatterplot of the 19 genotypes ordered by increasing toxicity towards pests  
-- Figure 3: trichome diversity in the selected 19 tomato genotypes
-- Figure 4: relationship between metabolic profiles and pest toxicity
-- Figure 5: Random Forest candidate metabolites 
+Figures
+•	Figure 1: Insect survival phenotypes on the collection of accessions
+•	Figure 2: Glandular trichome phenotypes 
+•	Figure 3: Heatmaps of GC-MS and UHPLC-MS detected metabolites
+•	Figure 4: Significant metabolites in toxic-labelled accessions
 
 ## Tables
-- Table 1: Toxic - Non toxic qualifications of the genotypes
-- Table 2: Random Forest acylsuagrs related to whitefly phenotype
-- Table 3: Random Forest acylsugar candidates in the 19 genotypes related to pest toxicity
+•	Table 1: Classification of the accessions
+•	Table 2: List of acylsugars significantly contributing to the RF model
+•	Table 3: List of volatiles significantly contributing to the RF model
+
 
 ## Supplemental tables 
 - Table S1: Generalised Linear Model fitted on the whitefly survival data.
@@ -23,10 +23,10 @@ Eventually, all code and datasets used to generate the figures will be archived 
 - Table S3: volatile and acylsugars identified in the stem trichomes of the 19 tomato genotypes. 
 
 ## Supplemental figures
-- Figure S1: geographic origin of the selected 19 tomato genotypes. 
-- Figure S2: Survival curves of thrips assay
-- Figure S3: Trichomes photos of 19 accessions
-- Figure S4: trichome densities on each leaf side for each tomato genotype.
-- Figure S5: volatile and acylsugar occurrences in the selected 19 tomato genotypes.
-- Figure S6: original average and sd feature importance compared to the permuted feature importance distribution. 
-- Figure S7: Mass spectra of toxic volatiles
+•	Figure S1: Survival curves of thrips bioassay
+•	Figure S2: Trichome photos of all 19 accessions
+•	Figure S3: Trichome densities per trichome type and leaf surface
+•	Figure S4: Frequency of metabolite detection among the accessions.
+•	Figure S5: Mass spectra of volatiles that were not verified by an authentic standard
+•	Figure S6: Detection of significant metabolites among the tomato accessions
+
