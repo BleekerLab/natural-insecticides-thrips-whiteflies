@@ -10,7 +10,7 @@ library(grDevices)
 ##############
 
 # Load dataset and shape accession names
-acylsugars = read.delim("Figure4/acylsugars_normalised.tsv", header = T,check.names = F)
+acylsugars = read.delim("Figure_3/acylsugars_normalised.tsv", header = T,check.names = F)
 
 acylsugars = separate(acylsugars, col = "accession", into = c("accession", "x"))  %>% select(., -x) %>% column_to_rownames(., var = "accession")
 
@@ -38,8 +38,8 @@ log.acylsugars[,1] = NULL
 
 
 # Load phenotypes (i.e. toxic / non-toxic) and acylsugar annotations
-# phenolink = read.delim("Figure4/phenolink_thrips_and_whitefly.tsv", row.names = 1, header = T)
-acylsugars.annotation = read.delim("Figure4/acylsugars_annotation.tsv", row.names = 1, header = T)
+# phenolink = read.delim("Figure_3/phenolink_thrips_and_whitefly.tsv", row.names = 1, header = T)
+acylsugars.annotation = read.delim("Figure_3/acylsugars_annotation.tsv", row.names = 1, header = T)
 row.names(acylsugars.annotation) = colnames(log.acylsugars)
 
 colors4annotation = list(
@@ -48,7 +48,7 @@ colors4annotation = list(
 
 
 # Make and save the plot (heatmap including annotations)
-pdf(file = "Figure4/acylsugar_heatmap.pdf",width = 10,height = 5)
+pdf(file = "Figure_3/acylsugar_heatmap.pdf",width = 10,height = 5)
 
 pheatmap(log.acylsugars,
          cluster_rows = FALSE,
@@ -67,7 +67,7 @@ dev.off()
 #############
 
 #Load dataset and shape accession names
-volatiles = read.delim("Figure4/terpenoids_normalized.tsv", header = T,check.names = F) %>% select(., -'13.604_105.0725_blank')
+volatiles = read.delim("Figure_3/terpenoids_normalized.tsv", header = T,check.names = F) %>% select(., -'13.604_105.0725_blank')
 volatiles = separate(volatiles, sample, into = c("x", "y", "accession")) %>% select(., -c("x","y", "wf", "thrips")) %>% column_to_rownames(., var = "accession")
 
 # Change NA to 0 -> +1 -> logtransfrom
@@ -88,7 +88,7 @@ log.volatiles[,1] = NULL
 
 
 # Load phenotypes (i.e. toxic / non-toxic) and volatile class-annotations
-volatiles.annotation = read.delim(file = "Figure4/volatiles_annotation.tsv", header = T, row.names = 1,check.names = F)
+volatiles.annotation = read.delim(file = "Figure_3/volatiles_annotation.tsv", header = T, row.names = 1,check.names = F)
 
 colors4annotation.2 = list(
   metabolite_class = c(
@@ -100,7 +100,7 @@ colors4annotation.2 = list(
 
 
 # Make and save the plot (heatmap including annotations)
-pdf(file = "Figure4/volatile_heatmap.pdf",width = 10,height = 5)
+pdf(file = "Figure_3/volatile_heatmap.pdf",width = 10,height = 5)
 
 pheatmap(log.volatiles,
          cluster_rows = FALSE,
