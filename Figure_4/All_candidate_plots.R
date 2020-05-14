@@ -40,7 +40,7 @@ genotype_order_thrips = c("LYC4","LA0407", "LA1777", "PI134418",
 # volatiles #
 #############
 
-volatiles = read.delim("Figure6/leaf_terpenoids_normalised_peak_area.tsv", header = T, 
+volatiles = read.delim("Figure_4/leaf_terpenoids_normalised_peak_area.tsv", header = T, 
                      stringsAsFactors = TRUE, check.names = F)
 
 
@@ -51,7 +51,7 @@ volatiles.long = gather(volatiles,
                         -accession)
 
 ### Filter to keep volatiles toxic to either whitefly or thrips
-candidates = read.delim(file = "Figure6/all_candidate_names.txt",header = T,stringsAsFactors = F,check.names = F)
+candidates = read.delim(file = "Figure_4/all_candidate_names.txt",header = T,stringsAsFactors = F,check.names = F)
 
 volatiles.long.candidates = inner_join(
                                        candidates,volatiles.long,
@@ -69,7 +69,7 @@ volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.s
 # acylsugars #
 ##############
 
-acylsugars = volatiles = read.csv("Figure6/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
+acylsugars = volatiles = read.csv("Figure_4/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
 acylsugars.long = gather(acylsugars, 
                         key = "metabolite",
                         value = "abundance",
@@ -176,7 +176,7 @@ g3 = volatiles.candidates.with.species %>%
 ############
 # Save plots
 ############
-ggsave("Figure6/Figure6.png",plot=g,width = 8,height = 10)
-ggsave("FigureS7/Figure_S7A_acylsugars_wf",plot=g1,width = 10,height = 10)
-ggsave("FigureS7/Figure_S7B_volatiles_wf.pdf",plot=g2,width = 10,height = 12)
-ggsave("FigureS7/Figure_S7C_volatiles_thrips.pdf",plot=g3,width = 10,height = 12)
+ggsave("Figure_4/Figure_4.png",plot=g,width = 8,height = 10)
+ggsave("FigureS6/Figure_S6A_acylsugars_wf",plot=g1,width = 10,height = 10)
+ggsave("FigureS6/Figure_S6B_volatiles_wf.pdf",plot=g2,width = 10,height = 12)
+ggsave("FigureS6/Figure_S6C_volatiles_thrips.pdf",plot=g3,width = 10,height = 12)
