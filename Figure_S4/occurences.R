@@ -34,7 +34,7 @@ make_classes_of_occurences <- function(matrix_of_metabolites){
 ##########
 # Terpenes
 ##########
-terpenes <- read.delim("Figure4/terpenoids_normalized.tsv",header = T,stringsAsFactors = F,check.names = F)
+terpenes <- read.delim("Figure_3/terpenoids_normalized.tsv",header = T,stringsAsFactors = F,check.names = F)
 terpenes = terpenes[,4:ncol(terpenes)] # keep only compound abundances
 terpenes[terpenes > 0] <- 1
 
@@ -44,7 +44,7 @@ classes.occurences.terpenes = make_classes_of_occurences(terpenes)
 ############
 # Acylsugars
 ############
-acylsugars <- read.delim("Figure4/acylsugars_normalised.tsv",header = T,stringsAsFactors = F,check.names = F)
+acylsugars <- read.delim("Figure_3/acylsugars_normalised.tsv",header = T,stringsAsFactors = F,check.names = F)
 acylsugars = acylsugars[,4:ncol(acylsugars)]
 acylsugars[acylsugars > 0] <- 1
 
@@ -80,31 +80,31 @@ ggplot(PlantGrowth, aes(x=factor(1), fill=group))+
 #################
 # Save plots
 #################
-ggsave(filename = "FigureS3_occurences/FigureS3A.volatiles.barplot.pdf",plot = p.bars.volatiles,width = 10,height = 5)
-ggsave(filename = "FigureS3_occurences/FigureS3B.acylsugars.barplot.pdf",plot = p.bars.as,width = 10,height = 5)
+ggsave(filename = "Figure_S4/Figure_S4A.volatiles.barplot.pdf",plot = p.bars.volatiles,width = 10,height = 5)
+ggsave(filename = "Figure_S4/Figure_S4B.acylsugars.barplot.pdf",plot = p.bars.as,width = 10,height = 5)
 
 ##################################
 # Make heatmaps of sparse matrices
 ##################################
-terpenes <- read.delim("Figure6_heatmaps/pheno_terpenoids.tsv",header = T,stringsAsFactors = F,check.names = F)
+terpenes <- read.delim("Figure_3/pheno_terpenoids.tsv",header = T,stringsAsFactors = F,check.names = F)
 row.names(terpenes) = terpenes$sample
 terpenes = terpenes[,4:ncol(terpenes)] # keep only compound abundances
 terpenes[terpenes > 0] <- 1
 
-png("FigureS3_occurences/FigS2C.volatiles.heatmap.png",height = 900,width=800)
+png("Figure_S4/Fig_S4C.volatiles.heatmap.png",height = 900,width=800)
 superheat(terpenes,bottom.label = "none")
 dev.off()
 
-acylsugars <- read.delim("Figure6_heatmaps/pheno_acylsugars.tsv",header = T,stringsAsFactors = F,check.names = F)
+acylsugars <- read.delim("Figure_3_heatmaps/pheno_acylsugars.tsv",header = T,stringsAsFactors = F,check.names = F)
 row.names(acylsugars)=acylsugars$sample
 acylsugars = acylsugars[,4:ncol(acylsugars)]
 acylsugars[acylsugars > 0] <- 1
 
-png("FigureS3_occurences/FigS2D.acylsugars.heatmap.png",height = 900,width=800)
+png("Figure_S4/Fig_S4D.acylsugars.heatmap.png",height = 900,width=800)
 superheat(acylsugars,bottom.label = "none")
 dev.off()
 
 #################
 # session info
 ##################
-writeLines(capture.output(sessionInfo()), "FigureS3_occurences/sessionInfo.txt")
+writeLines(capture.output(sessionInfo()), "Figure_S4/sessionInfo.txt")
