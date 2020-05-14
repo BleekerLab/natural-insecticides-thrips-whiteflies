@@ -20,7 +20,7 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6),
 #################
 
 # trichome density data
-density = read.delim("FigureS4/trichome.counts.processed.tsv", header =T)
+density = read.delim("Figure_S3/trichome.counts.processed.tsv", header =T)
 
 # Calculate the average trichome densities per genotype (abaxial and adaxial are taken together)
 density.avg = summarySE(
@@ -31,12 +31,12 @@ density.avg = summarySE(
 
 
 # whitefly and thrips ranks based on toxicity
-pheno = read.delim("Figure2/data4scatterplot_ranks.tsv", header = T)
+pheno = read.delim("Figure_1C/data4scatterplot_ranks.tsv", header = T)
 pheno = separate(pheno, col = sample, into = c("x", "y", "accession")) %>% #separate "sample" into accession names only so it can be used for fusing the datasets
   select(., c("accession", "wf", "thrips"))
 
 # Thrips median survival (from Fig 1B)
-survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
+survData = read.delim("Figure_1AandB/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
 accession2species = read.delim("genotype2species.txt",header = T,sep = "\t",stringsAsFactors = T)
 fit <- with(survData,survfit(formula = Surv(time,status) ~ accession))
 df.medians = surv_median(fit)
@@ -47,7 +47,7 @@ df.medians = dplyr::left_join(df.medians,accession2species,by="accession")
 df.medians$accession = factor(df.medians$accession,levels = df.medians$accession)
 
 #whitefly phenotype (From Fig 1A)
-wf = pheno = read.delim("Figure1/whitefly_no-choice_19_accessions.tsv", header = T)
+wf = pheno = read.delim("Figure_1AandB/whitefly_no-choice_19_accessions.tsv", header = T)
 wf$alive = NULL
 wf$dead = NULL
 wf$total = NULL
@@ -132,20 +132,20 @@ lm.thrips.typeVI = summary(
 )
 
 
-capture.output(lm.wf.typeIIV, file = "Figure3/Linear models/linear_model_wf_typeI_IV")
-capture.output(lm.wf.typeVI, file = "Figure3/Linear models/linear_model_wf_type_VI")
-capture.output(lm.thrips.typeIIV, file = "Figure3/Linear models/linear_model_thrips_typeI_IV")
-capture.output(lm.thrips.typeVI, file = "Figure3/Linear models/linear_model_thrips_type_VI")
+capture.output(lm.wf.typeIIV, file = "Figure_2/Linear models/linear_model_wf_typeI_IV")
+capture.output(lm.wf.typeVI, file = "Figure_2/Linear models/linear_model_wf_type_VI")
+capture.output(lm.thrips.typeIIV, file = "Figure_2/Linear models/linear_model_thrips_typeI_IV")
+capture.output(lm.thrips.typeVI, file = "Figure_2/Linear models/linear_model_thrips_type_VI")
 
 
 
 ################
 # Save the plots
 ################
-ggsave(filename = file.path("Figure3/whitefly_toxicity_vs_trichome_densities.pdf"),plot = p.whitelfies, width = 9,height = 21, units = "cm")
-ggsave(filename = file.path("Figure3/thrips_toxicity_vs_trichome_densities.pdf"),plot = p.thrips, width = 9,height = 21, units = "cm")
+ggsave(filename = file.path("Figure_2/whitefly_toxicity_vs_trichome_densities.pdf"),plot = p.whitelfies, width = 9,height = 21, units = "cm")
+ggsave(filename = file.path("Figure_2/thrips_toxicity_vs_trichome_densities.pdf"),plot = p.thrips, width = 9,height = 21, units = "cm")
 
 #################
 # session info
 ##################
-writeLines(capture.output(sessionInfo()), "Figure3/sessionInfo.txt")
+writeLines(capture.output(sessionInfo()), "Figure_2/sessionInfo.txt")
