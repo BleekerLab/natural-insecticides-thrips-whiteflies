@@ -9,7 +9,7 @@ library("agricolae")
 # import data
 # make it tidy
 # remove date (not necessary)
-df = read.delim("FigureS4/trichome_counts.tsv",header = T,stringsAsFactors = F)
+df = read.delim("Figure_S3/trichome_counts.tsv",header = T,stringsAsFactors = F)
 df = gather(df,key = "type",value = "counts",-genotype,-accession,-plant,-leaf.side,-leaf.disc,-name,-date)
 df$date = NULL
 
@@ -149,7 +149,7 @@ types_to_keep = c("non.glandular","typeIandIV","typeVI")
 df = filter(.data = df,type %in% types_to_keep) # only keep the trichomes of interest 
 
 # write table
-write.table(x = df,file = "FigureS4/trichome.counts.processed.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = df,file = "Figure_S3/trichome.counts.processed.tsv",quote = F,sep = "\t",row.names = F)
 
 
 ###########
@@ -183,13 +183,13 @@ p.leafside.per.genotype = df %>%
   ggtitle("Trichome density (trichomes/mm2) per genotype and per leaf side")  +
   stat_compare_means(method="t.test",label.x.npc = "center",label.y.npc =1)
 
-#ggsave(filename = "Figure5_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/Figure5A.pdf",plot = p.leafside.per.type,width = 10,height = 7)
-#ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
+#ggsave(filename = "Figure_S3_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
+ggsave(filename = "Figure_S3_densities/plots/Figure_S3.pdf",plot = p.leafside.per.type,width = 10,height = 7)
+#ggsave(filename = "Figure_S3_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
 
-#ggsave(filename = "Figure5_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure5_densities/plots/Figure5A..svg",plot = p.leafside.per.type,width = 7,height = 5)
-#ggsave(filename = "Figure5_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
+#ggsave(filename = "Figure_S3_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
+ggsave(filename = "Figure_S3_densities/plots/Figure_S3A..svg",plot = p.leafside.per.type,width = 7,height = 5)
+#ggsave(filename = "Figure_S3_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
 
 
 ##########################
@@ -250,7 +250,7 @@ test = left_join(adaxial,species.info,by="genotype")
 #adaxial_and_abaxial = rbind.data.frame(adaxial,abaxial)                              
 
 # write to file
-write.table(x = adaxial_and_abaxial,file = "Figure5_densities/hsd.groups.tsv",sep = "\t",row.names = F,quote = F)
+write.table(x = adaxial_and_abaxial,file = "Figure_S3/hsd.groups.tsv",sep = "\t",row.names = F,quote = F)
 
 # add info to main dataframe
 #df = left_join(df,adaxial_and_abaxial,by = c(
@@ -262,7 +262,7 @@ write.table(x = adaxial_and_abaxial,file = "Figure5_densities/hsd.groups.tsv",se
 
 
 ############
-# Figure 5B
+# Figure_S3
 ############
 p.adaxial = df %>% 
   filter(leaf.side == "adaxial") %>%
@@ -283,16 +283,16 @@ p.abaxial = df %>%
   facet_wrap(~ type,scales = "free") +
   labs(y = "Abaxial trichome density (trichomes/mm2)")
 
-svg("Figure5_densities/plots/Figure5B.svg",width = 10,height = 7)
+svg("Figure_S3/plots/Figure_S3B.svg",width = 10,height = 7)
 grid.arrange(p.adaxial,p.abaxial,nrow=2)
 dev.off()
 
-pdf("Figure5_densities/plots/Figure5B.pdf",width = 10,height = 7)
+pdf("Figure_S3/plots/Figure_S3B.pdf",width = 10,height = 7)
 grid.arrange(p.adaxial,p.abaxial,nrow=2)
 dev.off()
 
-ggsave(filename = "Figure5_densities/plots/Figure5B.adaxial.pdf",plot = p.adaxial,width = 10,height = 5)
-ggsave(filename = "Figure5_densities/plots/Figure5B.abaxial.pdf",plot = p.abaxial,width = 10,height = 5)
+ggsave(filename = "Figure_S3/plots/Figure_S3B.adaxial.pdf",plot = p.adaxial,width = 10,height = 5)
+ggsave(filename = "Figure_S3/plots/Figure_S3B.abaxial.pdf",plot = p.abaxial,width = 10,height = 5)
 
 #################
 # session info
