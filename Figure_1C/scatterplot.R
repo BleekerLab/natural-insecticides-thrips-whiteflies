@@ -8,13 +8,13 @@ library(survival)
 library(survminer)
 
 # custom functions for Restricted mean survival time (RMST) calculation
-source("Figure2/rmst_functions.R")
+source("Figure_1C/rmst_functions.R")
 
 
 #####################
 ## Scatterplot (rank)
 #####################
-df = read.delim("Figure2/data4scatterplot_ranks.tsv",header=T,stringsAsFactors = F)
+df = read.delim("Figure_1C/data4scatterplot_ranks.tsv",header=T,stringsAsFactors = F)
 
 g1 <- ggplot(df) +
   geom_point(aes(wf,thrips),fill="grey",color="black",shape=21,size=4) +
@@ -24,8 +24,8 @@ g1 <- ggplot(df) +
   scale_x_continuous(breaks=seq(0,19,1)) +
   scale_y_continuous(breaks=seq(0,19,1))
 
-ggsave(filename = file.path("Figure2/","Version1_scatterplot_rank.svg"),plot = g1,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","Version1_scatterplot_rank.png"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C/","Version1_scatterplot_rank.svg"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C/","Version1_scatterplot_rank.png"),plot = g1,width = 7,height = 5)
 
 #########################
 ## Scatterplot (relative)
@@ -37,7 +37,7 @@ ggsave(filename = file.path("Figure2/","Version1_scatterplot_rank.png"),plot = g
 
 ### Data import and wrangling 
 # import whitefly no-choice data
-df = read.delim("./Figure1/whitefly_no-choice_19_accessions.tsv",header = T,stringsAsFactors = F)
+df = read.delim("./Figure_1C/whitefly_no-choice_19_accessions.tsv",header = T,stringsAsFactors = F)
 
 # remove unecessary variables
 df$alive = NULL
@@ -57,7 +57,7 @@ df$wf_relative_survival = (df$wf_average/max(df$wf_average))*100
 ########
 # Thrips
 ########
-survData = read.delim("Figure1/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
+survData = read.delim("Figure_1C/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
 
 
 ###################
@@ -103,13 +103,13 @@ g3 = ggarrange(g1,g2,ncol = 2,nrow = 1,common.legend = TRUE)
 
 
 ### save plots
-ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative.svg"),plot = g1,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative.png"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C/","Version3_scatterplot_relative.svg"),plot = g1,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C/","Version3_scatterplot_relative.png"),plot = g1,width = 7,height = 5)
 
-ggsave(filename = file.path("Figure2/","Version3_scatterplot_survival.svg"),plot = g2,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","Version3_scatterplot_survival.png"),plot = g2,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C/","Version3_scatterplot_survival.svg"),plot = g2,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C/","Version3_scatterplot_survival.png"),plot = g2,width = 7,height = 5)
 
-ggsave(filename = file.path("Figure2/","Version3_relative_vs_normal_survival.pdf"),plot = g3,width = 15,height = 6)
+ggsave(filename = file.path("Figure_1C/","Version3_relative_vs_normal_survival.pdf"),plot = g3,width = 15,height = 6)
 
 
 #####################################
@@ -160,8 +160,8 @@ g3 <- ggplot(df_for_relative_scatterplot_all) +
 g3
 
 ### save plots
-ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative_rmst.svg"),plot = g3,width = 7,height = 5)
-ggsave(filename = file.path("Figure2/","Version3_scatterplot_relative_rmst.png"),plot = g3,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C/","Version3_scatterplot_relative_rmst.svg"),plot = g3,width = 7,height = 5)
+ggsave(filename = file.path("Figure_1C","Version3_scatterplot_relative_rmst.png"),plot = g3,width = 7,height = 5)
 
 
 ###################################
@@ -173,10 +173,10 @@ colnames(df_for_relative_scatterplot_all)[1] = "wf_survival"
 colnames(df_for_relative_scatterplot_all)[3] = "thrips_median_survival_time"
 
 write.table(df_for_relative_scatterplot_all,
-            file = "Figure2/dataframe_for_relative_scatterplots.tsv",
+            file = "Figure_1C/dataframe_for_relative_scatterplots.tsv",
             quote = F,row.names = F,sep = "\t")
 
 ##############
 # Session Info
 ##############
-writeLines(capture.output(sessionInfo()), "Figure2/sessionInfo.txt")
+writeLines(capture.output(sessionInfo()), "Figure_1C/sessionInfo.txt")
