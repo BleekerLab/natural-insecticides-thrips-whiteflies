@@ -153,7 +153,7 @@ write.table(x = df,file = "Figure_S3/trichome.counts.processed.tsv",quote = F,se
 
 
 ###########
-# Figure 5A
+# Figure S3
 ############
 p.leafside = df %>%
   ggplot(aes(x = leaf.side,y=density,fill=leaf.side)) + 
@@ -183,13 +183,13 @@ p.leafside.per.genotype = df %>%
   ggtitle("Trichome density (trichomes/mm2) per genotype and per leaf side")  +
   stat_compare_means(method="t.test",label.x.npc = "center",label.y.npc =1)
 
-#ggsave(filename = "Figure_S3_densities/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure_S3_densities/plots/Figure_S3.pdf",plot = p.leafside.per.type,width = 10,height = 7)
-#ggsave(filename = "Figure_S3_densities/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
+#ggsave(filename = "Figure_S3/plots/leafside.pdf",plot = p.leafside,width = 7,height = 5)
+ggsave(filename = "Figure_S3/plots/Figure_S3.pdf",plot = p.leafside.per.type,width = 10,height = 7)
+#ggsave(filename = "Figure_S3/plots/leafside.per.genotype.pdf",plot = p.leafside.per.genotype,width = 20,height = 10)
 
-#ggsave(filename = "Figure_S3_densities/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
-ggsave(filename = "Figure_S3_densities/plots/Figure_S3A..svg",plot = p.leafside.per.type,width = 7,height = 5)
-#ggsave(filename = "Figure_S3_densities/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
+#ggsave(filename = "Figure_S3/plots/leafside.svg",plot = p.leafside,width = 7,height = 5)
+ggsave(filename = "Figure_S3/plots/Figure_S3A..svg",plot = p.leafside.per.type,width = 7,height = 5)
+#ggsave(filename = "Figure_S3/plots/leafside.per.genotype.svg",plot = p.leafside.per.genotype,width = 7,height = 5)
 
 
 ##########################
