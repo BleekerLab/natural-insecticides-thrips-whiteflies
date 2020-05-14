@@ -6,15 +6,15 @@ Eventually, all code and datasets used to generate the figures will be archived 
 # List of figures
 ## Figure list
 Figures
-•	Figure 1: Insect survival phenotypes on the collection of accessions
-•	Figure 2: Glandular trichome phenotypes 
-•	Figure 3: Heatmaps of GC-MS and UHPLC-MS detected metabolites
-•	Figure 4: Significant metabolites in toxic-labelled accessions
+-	Figure 1: Insect survival phenotypes on the collection of accessions
+-	Figure 2: Glandular trichome phenotypes 
+-	Figure 3: Heatmaps of GC-MS and UHPLC-MS detected metabolites
+-	Figure 4: Significant metabolites in toxic-labelled accessions
 
 ## Tables
-•	Table 1: Classification of the accessions
-•	Table 2: List of acylsugars significantly contributing to the RF model
-•	Table 3: List of volatiles significantly contributing to the RF model
+-	Table 1: Classification of the accessions
+-	Table 2: List of acylsugars significantly contributing to the RF model
+-	Table 3: List of volatiles significantly contributing to the RF model
 
 
 ## Supplemental tables 
@@ -23,10 +23,10 @@ Figures
 - Table S3: volatile and acylsugars identified in the stem trichomes of the 19 tomato genotypes. 
 
 ## Supplemental figures
-•	Figure S1: Survival curves of thrips bioassay
-•	Figure S2: Trichome photos of all 19 accessions
-•	Figure S3: Trichome densities per trichome type and leaf surface
-•	Figure S4: Frequency of metabolite detection among the accessions.
-•	Figure S5: Mass spectra of volatiles that were not verified by an authentic standard
-•	Figure S6: Detection of significant metabolites among the tomato accessions
+-	Figure S1: Survival curves of thrips bioassay
+-	Figure S2: Trichome photos of all 19 accessions
+-	Figure S3: Trichome densities per trichome type and leaf surface
+-	Figure S4: Frequency of metabolite detection among the accessions.
+-	Figure S5: Mass spectra of volatiles that were not verified by an authentic standard
+-	Figure S6: Detection of significant metabolites among the tomato accessions
 
