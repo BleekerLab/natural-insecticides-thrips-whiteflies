@@ -14,8 +14,8 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6),
 )
 
 #Load Trichome density data + Whitefly / Thrips ranked phenotypes
-density = read.delim("Figure5_densities/trichome.counts.processed.tsv", header =T)
-pheno = read.delim("Figure3_scatterplot/data4scatterplot.txt", header = T)
+density = read.delim("Figure_S3/trichome.counts.processed.tsv", header =T)
+pheno = read.delim("Figure_1C/data4scatterplot.txt", header = T)
 pheno = separate(pheno, col = sample, into = c("x", "y", "accession")) %>% #separate "sample" into accession names only so it can be used for fusing the datasets
   select(., c("accession", "wf", "thrips"))
 
@@ -65,5 +65,5 @@ p.thrips =
 ##############
 # SAVE PLOTS #
 ##############
-ggsave(filename = file.path("Figure5_densities/plots/WF_vs_densities.pdf"),plot = p.whitelfies, width = 9,height = 21, units = "cm")
-ggsave(filename = file.path("Figure5_densities/plots/Thrips_vs_densities.pdf"),plot = p.thrips, width = 9,height = 21, units = "cm")
+ggsave(filename = file.path("Figure_S3/plots/WF_vs_densities.pdf"),plot = p.whitelfies, width = 9,height = 21, units = "cm")
+ggsave(filename = file.path("Figure_S3/plots/Thrips_vs_densities.pdf"),plot = p.thrips, width = 9,height = 21, units = "cm")
