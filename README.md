@@ -1,4 +1,5 @@
-# Github repository of "Natural variation in trichome-based anti-insect metabolites from wild tomato species" papers
+# Data and code repository 
+## "Natural variation in trichome-based anti-insect metabolites from wild tomato species"
 
 Code and datasets are available
 
