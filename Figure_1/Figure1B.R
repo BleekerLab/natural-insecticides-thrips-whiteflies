@@ -53,8 +53,8 @@ p <- ggplot(data = df.medians,
   theme(axis.text.x = element_text(angle=30, hjust = 1, vjust = 1),
         axis.text = element_text(colour = "black"))
 
-ggsave(filename = "Figure_1/Fig1B_thrips.pdf",plot = p,width = 7,height = 3)
-ggsave(filename = "Figure_1/Fig1B_thrips.svg",plot = p,width = 7,height = 3)
+ggsave(filename = "Figure_1/Fig1B_thrips.png", plot = p, width = 7, height = 3)
+ggsave(filename = "Figure_1/Fig1B_thrips.svg", plot = p, width = 7, height = 3)
 
 #################
 # session info
