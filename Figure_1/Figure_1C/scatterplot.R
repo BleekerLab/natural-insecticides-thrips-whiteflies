@@ -1,11 +1,25 @@
 ################
 # load libraries
 ################
+if (is.element('checkpoint', installed.packages()[,1]))
+{
+  suppressPackageStartupMessages(require('checkpoint'));
+} else
+{
+  install.packages('checkpoint');
+  suppressPackageStartupMessages(library('checkpoint'));
+}
+
+# Checkpoint ensures that the same version of the packages are being used
+# For more info on checkpoint: https://cran.r-project.org/web/packages/checkpoint/vignettes/checkpoint.html
+checkpoint("2019-10-01")
+
 library(RColorBrewer)
 library(dplyr)
 library(ggrepel)
 library(survival)
 library(survminer)
+library(svglite)
 
 # custom functions for Restricted mean survival time (RMST) calculation
 source("Figure_1C/rmst_functions.R")
@@ -14,13 +28,14 @@ source("Figure_1C/rmst_functions.R")
 #####################
 ## Scatterplot (rank)
 #####################
-df = read.delim("Figure_1C/data4scatterplot_ranks.tsv",header=T,stringsAsFactors = F)
+df = read.delim("Figure_1/Figure_1C/data4scatterplot_ranks.tsv",header=T,stringsAsFactors = F)
 
 g1 <- ggplot(df) +
-  geom_point(aes(wf,thrips),fill="grey",color="black",shape=21,size=4) +
+  geom_point(aes(wf,thrips), fill = "grey", color = "black", shape = 21, size = 4) +
   theme_bw() +
-  geom_label_repel(aes(x = wf,y=thrips,label=sample,fill=species)) +
-  labs(x = "Tomato genotype rank for whitefly survival (low to high survival)",y = "Tomato genotype rank for thrips survival (low to high survival)") +
+  geom_label_repel(aes(x = wf, y = thrips, label = sample, fill = species)) +
+  labs(x = "Tomato genotype rank for whitefly survival (low to high survival)", 
+       y = "Tomato genotype rank for thrips survival (low to high survival)") +
   scale_x_continuous(breaks=seq(0,19,1)) +
   scale_y_continuous(breaks=seq(0,19,1))
 
@@ -37,7 +52,9 @@ ggsave(filename = file.path("Figure_1C/","Version1_scatterplot_rank.png"),plot =
 
 ### Data import and wrangling 
 # import whitefly no-choice data
-df = read.delim("./Figure_1C/whitefly_no-choice_19_accessions.tsv",header = T,stringsAsFactors = F)
+df = read.delim("./Figure_1C/whitefly_no-choice_19_accessions.tsv",
+                header = T,
+                stringsAsFactors = F)
 
 # remove unecessary variables
 df$alive = NULL
@@ -45,11 +62,15 @@ df$dead = NULL
 df$total = NULL
 
 # average clip-cages results
-df = df %>% dplyr::group_by(accession) %>% dplyr::summarise(wf_average = mean(percentage,na.rm = T))
+df = df %>% 
+  dplyr::group_by(accession) %>% 
+  dplyr::summarise(wf_average = mean(percentage,na.rm = T))
 
 # import accession to species
 accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactors=F)
-df = dplyr::left_join(x = df,y = accession2species) %>% select(-genotype)
+df = df %>% 
+  dplyr::left_join(., y = accession2species) %>% 
+  select(- genotype)
 
 #Calculate relative WF survival
 df$wf_relative_survival = (df$wf_average/max(df$wf_average))*100
@@ -147,21 +168,6 @@ df_for_relative_scatterplot_all = inner_join(
   df_for_relative_scatterplot,
   thrips_relative_rmst,
   by="accession")
-
-# scatterplot with RMST relative %
-g3 <- ggplot(df_for_relative_scatterplot_all) +
-  geom_point(
-    aes(x = scaled_wf_survival,y = scaled_thrips_survival_rmst),
-    fill="grey",color="black",shape=21,size=4) +
-  theme_bw() +
-  geom_label_repel(aes(x=scaled_wf_survival,y=scaled_thrips_survival_rmst,label=accession,fill=species)) +
-  labs(x = "Tomato genotype whitefly survival (relative survival,%)",y = "Tomato genotype thrips survival (relative survival,%)")  + 
-  scale_x_continuous(breaks=seq(0,100,20)) +  scale_y_continuous(breaks=seq(0,100,20))
-g3
-
-### save plots
-ggsave(filename = file.path("Figure_1C/","Version3_scatterplot_relative_rmst.svg"),plot = g3,width = 7,height = 5)
-ggsave(filename = file.path("Figure_1C","Version3_scatterplot_relative_rmst.png"),plot = g3,width = 7,height = 5)
 
 
 ###################################

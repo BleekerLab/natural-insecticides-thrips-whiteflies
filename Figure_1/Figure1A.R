@@ -1,9 +1,24 @@
 # library
+
+if (is.element('checkpoint', installed.packages()[,1]))
+{
+  suppressPackageStartupMessages(require('checkpoint'));
+} else
+{
+  install.packages('checkpoint');
+  suppressPackageStartupMessages(library('checkpoint'));
+}
+
+# Checkpoint ensures that the same version of the packages are being used
+# For more info on checkpoint: https://cran.r-project.org/web/packages/checkpoint/vignettes/checkpoint.html
+checkpoint("2019-10-01")
+
+
 suppressMessages(library(tidyverse))
 
 ############ Data import and wrangling #########
 # import whitefly no-choice data
-df = read.delim("Figure_1AandB/whitefly_no-choice_19_accessions.tsv",header = T,stringsAsFactors = F)
+df = read.delim("Figure_1/whitefly_no-choice_19_accessions.tsv",header = T,stringsAsFactors = F)
 
 # remove unecessary variables
 df$alive = NULL
@@ -43,7 +58,7 @@ survival <- ggplot(data = df,aes(x = accession,y = average,fill=species)) +
 print(survival)
 
 # save plot into a file
-ggsave(filename = file.path("Figure_1AandB/","wf_survival_19_accessions.png"),plot = survival,width=7,height=3,dpi = 300)
-ggsave(filename = file.path("Figure_1AandB/","wf_survival_19_accessions.svg"),plot = survival,width=7,height=3)
+ggsave(filename = file.path("Figure_1/","Fig1A_wf_survival_19_accessions.png"),plot = survival,width=7,height=3,dpi = 300)
+ggsave(filename = file.path("Figure_1/","Fig1Awf_survival_19_accessions.svg"),plot = survival,width=7,height=3)
 
 ################################################
