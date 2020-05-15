@@ -17,6 +17,7 @@ checkpoint("2019-10-01", checkpointLocation = tempdir())
 
 library(tidyverse)
 library(ggpubr)
+library(patchwork)
 
 #######################
 # Ordering of the plots
@@ -42,11 +43,11 @@ genotype_order_thrips = c("LYC4","LA0407", "LA1777", "PI134418",
 # volatiles #
 #############
 
-volatiles = read.csv("Figure6/20180905_Wild_collection_leafwash.csv", header = T, 
+volatiles = read.csv("Figure_4/20180905_Wild_collection_leafwash.csv", header = T, 
                      stringsAsFactors = TRUE, check.names = F)
 
 ### Load data from tsv file
-volatiles = read.delim("Figure6/leaf_terpenoids_normalised_peak_area.tsv", header = T, 
+volatiles = read.delim("Figure_4/leaf_terpenoids_normalised_peak_area.tsv", header = T, 
                        stringsAsFactors = TRUE, check.names = F)
 
 volatiles.long = gather(volatiles, 
@@ -56,7 +57,7 @@ volatiles.long = gather(volatiles,
                         -accession)
 
 ### Filter to keep volatiles toxic to either whitefly or thrips
-candidates = read.delim(file = "Figure6/toxic_candidate_names.tsv",header = T,stringsAsFactors = F,check.names = F)
+candidates = read.delim(file = "Figure_4/toxic_candidate_names.tsv",header = T,stringsAsFactors = F,check.names = F)
 
 volatiles.long.candidates = inner_join(volatiles.long,
                                        candidates,
@@ -74,7 +75,7 @@ volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.s
 # acylsugars #
 ##############
 
-acylsugars = read.csv("Figure6/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
+acylsugars = read.csv("Figure_4/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
 acylsugars.long = gather(acylsugars, 
                         key = "metabolite",
                         value = "abundance",
@@ -186,17 +187,15 @@ g3 = volatiles.candidates.with.species %>%
 #############################
 # Arrange the plots together
 ############################
-plot.volatiles = ggarrange(g2,g3, ncol = 1,nrow = 2)
 
-grid.arrange(grobs = )
-
-g <- ggarrange(g1,g3,ncol = 2,nrow = 1,common.legend = TRUE)
+g1 + g2 + g3 
 
 ############
 # Save plots
 ############
-ggsave("Figure6/Figure6_acylsugars.pdf",plot=g1,width = 3.5,height = 7)
-ggsave("Figure6/Figure6_volatiles.pdf",plot=plot.volatiles,width = 3.5,height = 7)
+
+ggsave("Figure_4/Figure_4_acylsugars.pdf", plot = g1, width = 3.5,height = 7)
+ggsave("Figure_4/Figure_4_volatiles.pdf", plot = plot.volatiles, width = 3.5, height = 7)
 
 
 
