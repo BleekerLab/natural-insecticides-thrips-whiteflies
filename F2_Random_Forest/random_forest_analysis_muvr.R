@@ -2,8 +2,8 @@
 # Libraries
 ##############
 library("MUVR")
-library("tidyverse")
-library("doParallel")
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("doParallel"))
 
 #########
 # params
@@ -12,15 +12,16 @@ library("doParallel")
 n_cores = 3
 n_outer = 7
 n_inner = 4
-n_permutations = 100
+n_permutations = 10
+model_choosen = "min"             # Choose between "min", "mid" or "max" 
 
 # grid search params
-start_ratio <- 0.6
-end_ratio <- 0.9
+start_ratio <- 0.7
+end_ratio <- 0.7
 step_ratio <- 0.1 
 
 start_nreps <- 5
-end_nreps <- 50
+end_nreps <- 10
 step_nreps <- 5
 
 # cluster generation
@@ -83,7 +84,7 @@ for (i in 1:nrow(hyper_grid)){
 }
 
 # plot evolution of Q2 against parameters
-hyper_grid %>% 
+optimization_plot <- hyper_grid %>% 
   mutate(ratio = as.factor(ratio), 
          rep = as.factor(rep)) %>% 
   rownames_to_column("combination") %>% 
@@ -119,13 +120,26 @@ plotMV(rf_model, model = "min")
 par(mar=c(3,10,1,1))
 plotVIP(rf_model)
 
-#####################################################
-# Compute permuted models and extract fitness metrics
-#####################################################
+#######################
+# Permutation analysis
+#######################
 
+### Part 1: permutations ###
+# compute permuted models 
 # collect Q2 from permutations
 perm_fit = numeric(n_permutations)
 
+# computed permuted models
+# collect permuted feature importances
+features_permuted_pvalues_matrix <- matrix(0, 
+                                           nrow = ncol(X), # One row = one feature
+                                           ncol = n_permutations)
+
+rownames(features_permuted_pvalues_matrix) = colnames(X)
+colnames(features_permuted_pvalues_matrix) = paste0("permutation",seq(1:n_permutations))
+
+# permutations
+cat("\nStarting permutations")
 for (p in 1:n_permutations) {
   cat('\nPermutation',p,'of', n_permutations)
   YPerm = sample(Y)
@@ -141,10 +155,15 @@ for (p in 1:n_permutations) {
               fitness   = "RMSEP", 
               method    = "RF", 
               parallel  = TRUE)
+  # for model
   perm_fit[p] = perm$fitMetric$Q2
+  
+  # for each variable
+  features_permuted_pvalues_matrix[,p] = as.vector(perm$VIP[,"min"])
 }
 
-
+### Part 2: plot of RF model (actual fit vs permuted fits) ###
+cat("\nCreating permutation plot for Random Forest model")
 # actual (original RF mode)
 actual_fit <- rf_model$fitMetric$Q2[1] #(1 = "min model")
 
@@ -159,9 +178,10 @@ plotPerm(actual = actual_fit,
          h0 = perm_fit) 
 
 
-perm_fit_df = data.frame(permutation = seq(1:length(perm_fit)), q2 = perm_fit) 
+perm_fit_df = data.frame(permutation = seq(1:length(perm_fit)), 
+                         q2 = perm_fit) 
 
-g <- ggplot(perm_fit_df, aes(x = q2)) + 
+model_permutation_plot <- ggplot(perm_fit_df, aes(x = q2)) + 
   geom_histogram(bins = 10) + 
   geom_vline(xintercept = actual_fit, col = "blue") + 
   labs(x = "Q2 metric", y = "Frequency") +
@@ -171,6 +191,40 @@ g <- ggplot(perm_fit_df, aes(x = q2)) +
                 format(pvalue,digits = 3, decimal.mark = "."),sep = " "
                 ))
 
+
+### Part 3: extract significant p-values for each variable ###
+features_permuted_pvalues_matrix %>% 
+  as.data.frame() %>% 
+  rownames_to_column("feature") %>% 
+  pivot_longer(cols = - feature) %>% 
+  split(.$feature) %>% 
+  
+
+mutate(original_vip = rf_model$VIP[,model_choosen]) %>% 
+
+
+# plot
+features_permuted_pvalues_df %>% 
+  pivot_longer(cols = - feature, names_to = "permutation", values_to = "var_imp") %>% 
+  ggplot(., aes(x = var_imp)) +
+  geom_histogram() +
+  facet_wrap(~ feature)
+features_permuted_pvalues_df
+
+
+
+#########
+# Save
+########
+save(df,
+     X,
+     Y,
+     rf_model,
+     best_params,
+     optimization_plot,
+     model_permutation_plot,
+     file = "rf_analysis.RData",
+     compress = "gzip",
+     compression_level = 6)
+
 stopCluster(cl)
-
-
