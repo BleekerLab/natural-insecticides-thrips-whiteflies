@@ -113,13 +113,6 @@ rf_model <- MUVR(X = X,
                  method = "RF", 
                  parallel = TRUE)
 
-par(mar=c(4,4,1,1))
-plotVAL(rf_model)
-plotMV(rf_model, model = "min")
-
-par(mar=c(3,10,1,1))
-plotVIP(rf_model)
-
 #######################
 # Permutation analysis
 #######################
@@ -193,38 +186,32 @@ model_permutation_plot <- ggplot(perm_fit_df, aes(x = q2)) +
 
 
 ### Part 3: extract significant p-values for each variable ###
-features_permuted_pvalues_matrix %>% 
-  as.data.frame() %>% 
-  rownames_to_column("feature") %>% 
-  pivot_longer(cols = - feature) %>% 
-  split(.$feature) %>% 
-  
-
-mutate(original_vip = rf_model$VIP[,model_choosen]) %>% 
-
-
-# plot
-features_permuted_pvalues_df %>% 
-  pivot_longer(cols = - feature, names_to = "permutation", values_to = "var_imp") %>% 
-  ggplot(., aes(x = var_imp)) +
-  geom_histogram() +
-  facet_wrap(~ feature)
-features_permuted_pvalues_df
 
 
 
 #########
 # Save
 ########
+fixed_params <- data.frame(n_cores = n_cores,
+                         n_outer = n_outer,
+                         n_inner = n_inner,
+                         n_permutations,
+                         model = model_choosen)
+all_params <- cbind.data.frame(fixed_params, best_params)
+
 save(df,
      X,
      Y,
      rf_model,
+     hyper_grid,
      best_params,
+     all_params,
      optimization_plot,
      model_permutation_plot,
      file = "rf_analysis.RData",
      compress = "gzip",
      compression_level = 6)
+
+
 
 stopCluster(cl)
