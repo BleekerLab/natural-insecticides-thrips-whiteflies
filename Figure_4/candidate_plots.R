@@ -108,7 +108,7 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 4
 
 # Barplot
 g1 = acylsugar.candidates.with.species %>%
-  filter(., name %in% c("S3:15", "S3:21", "S4:17-2", "S4:22")) %>%
+  filter(., name %in% c("S3:15", "S3:21")) %>%
   dplyr::group_by(accession, name, species, color) %>% 
   summarise(mean_abundance = mean(log(abundance+1)), 
             n = n(), 
@@ -136,12 +136,12 @@ g1 = acylsugar.candidates.with.species %>%
 
 
  g2 = volatiles.candidates.with.species %>%
-  dplyr::group_by(accession, name, species, color) %>% 
+  dplyr::group_by(accession, name, species, color, toxic_to) %>% 
   summarise(mean_abundance = mean(log(abundance+1)), 
             n = n(), 
             se = (sd(log(abundance+1))/sqrt(n))
   ) %>% 
-  filter(., name %in% c("10-epi-italicene ether", "y-cuprenene")) %>%
+  filter(., toxic_to == "whitefly") %>%
   ggplot(.) +
   geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
   geom_errorbar(
@@ -163,12 +163,12 @@ g1 = acylsugar.candidates.with.species %>%
  ############################################################
 
 g3 = volatiles.candidates.with.species %>%
-  dplyr::group_by(accession, name, species, color) %>% 
+  dplyr::group_by(accession, name, species, color, toxic_to) %>% 
   summarise(mean_abundance = mean(log(abundance+1)), 
             n = n(), 
             se = (sd(log(abundance+1))/sqrt(n))
   ) %>% 
-  filter(., name %in% c("d-selinene", "b-cadinene")) %>%
+  filter(.,toxic_to == "thrips") %>%
   ggplot(.) +
   geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
   geom_errorbar(
@@ -191,14 +191,14 @@ g3 = volatiles.candidates.with.species %>%
 # Arrange the plots together
 ############################
 
-plot.volatiles = ggarrange(g2,g3, ncol = 1,nrow = 2)
+plot.volatiles = ggarrange(g2,g3, ncol = 1,nrow = 4)
 
 ############
 # Save plots
 ############
 
-ggsave("Figure_4/Figure_4_acylsugars.pdf", plot = g1, width = 3.5,height = 7)
-ggsave("Figure_4/Figure_4_volatiles.pdf", plot = plot.volatiles, width = 3.5, height = 7)
+ggsave("Figure_4/Figure_4_acylsugars.pdf", plot = g1, width = 3.5,height = 5)
+ggsave("Figure_4/Figure_4_volatiles.pdf", plot = plot.volatiles, width = 3.5, height = 21)
 
 
 
