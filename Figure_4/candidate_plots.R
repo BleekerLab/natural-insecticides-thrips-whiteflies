@@ -110,16 +110,17 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6, angle = 4
 g1 = acylsugar.candidates.with.species %>%
   filter(., name %in% c("S3:15", "S3:21", "S4:17-2", "S4:22")) %>%
   dplyr::group_by(accession, name, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
+  summarise(mean_abundance = mean(log(abundance+1)), 
             n = n(), 
-            se = (sd(abundance)/sqrt(n))
+            se = (sd(log(abundance+1))/sqrt(n))
   ) %>% 
   ggplot(.) +
   geom_bar(aes(x = accession, y = mean_abundance,fill=species), stat = "identity",color="black") + 
   geom_errorbar(
     aes(x = accession, 
         ymin = mean_abundance - se, 
-        ymax = mean_abundance + se)
+        ymax = mean_abundance + se,
+        width = 0.4)
   ) +
   facet_wrap(~ name, scale = "free", ncol = 1) +
   labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
@@ -136,9 +137,9 @@ g1 = acylsugar.candidates.with.species %>%
 
  g2 = volatiles.candidates.with.species %>%
   dplyr::group_by(accession, name, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
+  summarise(mean_abundance = mean(log(abundance+1)), 
             n = n(), 
-            se = (sd(abundance)/sqrt(n))
+            se = (sd(log(abundance+1))/sqrt(n))
   ) %>% 
   filter(., name %in% c("10-epi-italicene ether", "y-cuprenene")) %>%
   ggplot(.) +
@@ -146,7 +147,8 @@ g1 = acylsugar.candidates.with.species %>%
   geom_errorbar(
     aes(x = accession, 
         ymin = mean_abundance - se, 
-        ymax = mean_abundance + se)
+        ymax = mean_abundance + se,
+        width = 0.4)
   ) +
   facet_wrap(~ name, scale = "free", ncol = 1) +
   labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
@@ -162,9 +164,9 @@ g1 = acylsugar.candidates.with.species %>%
 
 g3 = volatiles.candidates.with.species %>%
   dplyr::group_by(accession, name, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
+  summarise(mean_abundance = mean(log(abundance+1)), 
             n = n(), 
-            se = (sd(abundance)/sqrt(n))
+            se = (sd(log(abundance+1))/sqrt(n))
   ) %>% 
   filter(., name %in% c("d-selinene", "b-cadinene")) %>%
   ggplot(.) +
@@ -172,7 +174,8 @@ g3 = volatiles.candidates.with.species %>%
   geom_errorbar(
     aes(x = accession, 
         ymin = mean_abundance - se, 
-        ymax = mean_abundance + se)
+        ymax = mean_abundance + se,
+        width = 0.4)
   ) +
   facet_wrap(~ name, scale = "free", ncol = 1) +
   labs(x = "Tomato genotype", y="Mean normalised peak area (AU)") +
@@ -188,7 +191,7 @@ g3 = volatiles.candidates.with.species %>%
 # Arrange the plots together
 ############################
 
-g1 + g2 + g3 
+plot.volatiles = ggarrange(g2,g3, ncol = 1,nrow = 2)
 
 ############
 # Save plots
