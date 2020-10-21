@@ -1,4 +1,7 @@
 library(tidyverse)
+library(Rmisc)
+library(pals)
+library(reshape2)
 
 #######################
 # Load acylsugar data #
@@ -55,7 +58,8 @@ acylsugars.long.structure <- acylsugars.long %>%
                            grepl("C24", metabolite) ~ "C24",
                            grepl("C25", metabolite) ~ "C25",
                            grepl("C26", metabolite) ~ "C26",
-                           grepl("C27", metabolite) ~ "C27")
+                           grepl("C27", metabolite) ~ "C27",
+                           grepl("C32", metabolite) ~ "C32")
   )
   
 # Add species info
@@ -96,7 +100,7 @@ cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
 p.acyl.proportion = 
 acylsugars.with.species %>%
   dplyr::group_by(accession, backbone, tails, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
+  dplyr::summarise(mean_abundance = mean(abundance), 
             n = n(), 
             se = (sd(abundance)/sqrt(n))
             ) %>%
@@ -107,103 +111,66 @@ acylsugars.with.species %>%
   theme_bw()+
   theme(axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1))+
   scale_fill_manual(values = cbp1)+
-  ylab("Proportion of sugar moiety")
+  labs(fill = "No of acyl chains")+
+  ylab("Proportion of the acylsugar")
 
-# Plot # acyl chains
+# Plot backbones
 
-#p.backbones = 
-  acylsugars.with.species %>%
-  dplyr::group_by(accession, backbone) %>% 
-  summarise(mean_abundance = mean(abundance), 
-            n = n(), 
-            se = (sd(abundance)/sqrt(n))
-  ) %>%
-    mutate(cum_abundance = ave(mean_abundance, backbone, accession, FUN = cumsum)) %>%
-  ggplot(aes(x = accession, y = mean_abundance, fill = backbone))+
+summary = summarySE(acylsugars.with.species, measurevar = "abundance", groupvars = c("accession","backbone"))
+summary = within(summary, cum_abundance <- ave(abundance, accession, FUN = cumsum))
+
+p.backbones = 
+  summary %>%
+  ggplot( aes(x = accession, y = abundance, fill = backbone))+
   geom_bar(position = "stack", stat = "identity")+
-  geom_errorbar(aes(ymin = cum_abundance -se, ymax = cum_abundance+se))+
+  geom_errorbar(aes(ymin = cum_abundance -se, 
+                    ymax = cum_abundance+se,
+                    width = 0.5))+
   theme_bw()+
   theme(axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1))+
   scale_fill_manual(values = c("black","grey"))+
-  ylab("Proportion of sugar moiety")
+  labs(fill = "Sugar moiety")+
+  ylab("Summed peak area (ion counts)")
 
 
-##
-
-
-# Plot # Carbon
+# Plot number of carbons
+p.carbon =
 acylsugars.with.species %>%
   dplyr::group_by(accession, backbone, carbons, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
+  dplyr::summarise(mean_abundance = mean(abundance), 
             n = n(), 
             se = (sd(abundance)/sqrt(n))
+  ) %>%
+  ggplot(aes(x = accession, y = mean_abundance, fill = carbons))+
+  geom_bar(position = "stack", stat = "identity")+
+  facet_wrap(~backbone, ncol = 1)+
+  theme_bw()+
+  theme(legend.position  = "bottom",
+        axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1))+
+  scale_fill_manual(values=stepped())
+
+# Number of carbons proportion
+
+p.carbon.proportion =
+  acylsugars.with.species %>%
+  dplyr::group_by(accession, backbone, carbons, species, color) %>% 
+  dplyr::summarise(mean_abundance = mean(abundance), 
+                   n = n(), 
+                   se = (sd(abundance)/sqrt(n))
   ) %>%
   ggplot(aes(x = accession, y = mean_abundance, fill = carbons))+
   geom_bar(position = "fill", stat = "identity")+
   facet_wrap(~backbone, ncol = 1)+
   theme_bw()+
-  scale_fill_manual(values = c25)
+  theme(legend.position  = "bottom",
+        axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1))+
+  scale_fill_manual(values=stepped())
 
-########################
-# Average chain length #
-########################
+##############
+# Save plots #
+##############
 
-acylsugars.carbons =
-  acylsugars.with.species %>%
-  mutate(carbons_number = case_when(grepl("C4", carbons) ~ 4,
-                             grepl("C5", carbons) ~ 5,
-                             grepl("C6", carbons) ~ 6,
-                             grepl("C7", carbons) ~ 7,
-                             grepl("C8", carbons) ~ 8,
-                             grepl("C9", carbons) ~ 9,
-                             grepl("C10", carbons) ~ 10,
-                             grepl("C11", carbons) ~ 11,
-                             grepl("C12", carbons) ~ 12,
-                             grepl("C13", carbons) ~ 13,
-                             grepl("C14", carbons) ~ 14,
-                             grepl("C15", carbons) ~ 15,
-                             grepl("C16", carbons) ~ 16,
-                             grepl("C17", carbons) ~ 17,
-                             grepl("C18", carbons) ~ 18,
-                             grepl("C19", carbons) ~ 19,
-                             grepl("C20", carbons) ~ 20,
-                             grepl("C21", carbons) ~ 21,
-                             grepl("C22", carbons) ~ 22,
-                             grepl("C23", carbons) ~ 23,
-                             grepl("C24", carbons) ~ 24,
-                             grepl("C25", carbons) ~ 25,
-                             grepl("C26", carbons) ~ 26,
-                             grepl("C27", carbons) ~ 27)
-  )
-
-acylsugars.carbons$tails = as.numeric(acylsugars.carbons$tails)
-
-acylsugars.carbons <- acylsugars.carbons %>%
-  mutate(average_tail_lenght = carbons_number / tails)
-
-#plot
-acylsugars.carbons %>%
-  filter(average_tail_lenght < 15) %>%
-  dplyr::group_by(accession, backbone, average_tail_lenght, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
-            n = n(), 
-            se = (sd(abundance)/sqrt(n))
-  ) %>%
-  ggplot(aes(x = accession, y = mean_abundance, fill = average_tail_lenght))+
-  geom_bar(position = "fill", stat = "identity")+
-  facet_wrap(~backbone, ncol = 1)+
-  scale_fill_gradient(low = "white", high = "black")
-
-#plot
-
-acylsugars.carbons %>%
-  dplyr::group_by(accession, backbone, tails, species, color) %>% 
-  summarise(mean_abundance = mean(abundance), 
-            n = n(), 
-            se = (sd(abundance)/sqrt(n))
-  ) %>%
-  ggplot(aes(x = accession, y = mean_abundance, fill = tails))+
-  geom_bar(position = "fill", stat = "identity")+
-  facet_wrap(~backbone, ncol = 1)+
-  scale_fill_gradient(low = "white", high = "black")
-
+ggsave(filename = "Figure_3/acylsugar_analytics/Sugar_moiety.pdf", plot = p.backbones, height = 3.5, width = 6)
+ggsave(filename = "Figure_3/acylsugar_analytics/Acyl_chains.pdf", plot = p.acyl.proportion, height = 3.5, width = 6)
+ggsave(filename = "Figure_3/acylsugar_analytics/Carbons.pdf", plot = p.carbon, height = 5.5, width = 6)
+ggsave(filename = "Figure_3/acylsugar_analytics/Carbons_proportion.pdf", plot = p.carbon.proportion, height = 5.5, width = 6)
