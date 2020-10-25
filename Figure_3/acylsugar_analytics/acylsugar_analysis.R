@@ -115,20 +115,22 @@ acylsugars.with.species %>%
   ylab("Proportion of the acylsugar")
 
 # Plot backbones
-
-summary = summarySE(acylsugars.with.species, measurevar = "abundance", groupvars = c("accession","backbone"))
-summary = within(summary, cum_abundance <- ave(abundance, accession, FUN = cumsum))
+sum.backbone <- acylsugars.with.species %>% dplyr::group_by(sample, accession, backbone) %>% dplyr::summarise(summed_sugar = sum(abundance))
+summary = summarySE(sum.backbone, measurevar = "summed_sugar", groupvars = c("accession","backbone"))
+summary = within(summary, cum_abundance <- ave(summed_sugar, accession, FUN = cumsum))
 
 p.backbones = 
   summary %>%
-  ggplot( aes(x = accession, y = abundance, fill = backbone))+
+  ggplot( aes(x = accession, y = summed_sugar, fill = backbone))+
   geom_bar(position = "stack", stat = "identity")+
   geom_errorbar(aes(ymin = cum_abundance -se, 
                     ymax = cum_abundance+se,
                     width = 0.5))+
   theme_bw()+
-  theme(axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1))+
-  scale_fill_manual(values = c("black","grey"))+
+  theme(axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1),
+        axis.text.y = element_text(color = "black"),
+        legend.position = c(0.8,0.8))+
+  scale_fill_manual(values = c("grey22","grey"))+
   labs(fill = "Sugar moiety")+
   ylab("Summed peak area (ion counts)")
 
