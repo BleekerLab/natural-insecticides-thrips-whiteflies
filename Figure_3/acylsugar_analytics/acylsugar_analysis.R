@@ -8,7 +8,7 @@ library(reshape2)
 #######################
 
 
-acylsugars = volatiles = read.csv("Figure_S6/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
+acylsugars = read.csv("Figure_S6/20190904_acylsugars_peak_area_all_samples.csv", header = T, stringsAsFactors = TRUE, check.names = F)
 acylsugars.long = gather(acylsugars, 
                          key = "metabolite",
                          value = "abundance",
@@ -36,10 +36,10 @@ acylsugars.long.structure <- acylsugars.long %>%
                           grepl("S6", metabolite) ~ "6")
   ) %>%
   mutate(carbons = case_when(grepl("C4", metabolite) ~ "C4",
-                             grepl("C5", metabolite) ~ "C10",
-                             grepl("C6", metabolite) ~ "C10",
-                             grepl("C7", metabolite) ~ "C10",
-                             grepl("C8", metabolite) ~ "C10",
+                             grepl("C5", metabolite) ~ "C5",
+                             grepl("C6", metabolite) ~ "C6",
+                             grepl("C7", metabolite) ~ "C7",
+                             grepl("C8", metabolite) ~ "C8",
                              grepl("C9", metabolite) ~ "C9",
                            grepl("C10", metabolite) ~ "C10",
                            grepl("C11", metabolite) ~ "C11",
@@ -153,6 +153,10 @@ acylsugars.with.species %>%
 
 # Number of carbons proportion
 
+acylsugars.with.species$carbons <- factor(acylsugars.with.species$carbons, 
+                                          levels = c("C4","C5","C6","C7","C10","C11","C12","C13","C14","C15",
+                                                     "C16","C17","C18","C19","C20","C21","C22","C23","C24","C25",
+                                                     "C27","C32"), ordered = TRUE)
 p.carbon.proportion =
   acylsugars.with.species %>%
   dplyr::group_by(accession, backbone, carbons, species, color) %>% 
@@ -165,8 +169,10 @@ p.carbon.proportion =
   facet_wrap(~backbone, ncol = 1)+
   theme_bw()+
   theme(legend.position  = "bottom",
-        axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1))+
-  scale_fill_manual(values=stepped())
+        axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1),
+        axis.text.y = element_text(color = "black", size = 10))+
+  scale_fill_manual(values=stepped())+
+  ylab("Proportion of total pool")
 
 ##############
 # Save plots #
