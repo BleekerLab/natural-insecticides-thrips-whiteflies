@@ -68,7 +68,17 @@ dev.off()
 
 #Load dataset and shape accession names
 volatiles = read.delim("Figure_3/terpenoids_normalized.tsv", header = T,check.names = F) %>% select(., -'13.604_105.0725_blank')
-volatiles = separate(volatiles, sample, into = c("x", "y", "accession")) %>% select(., -c("x","y", "wf", "thrips")) %>% column_to_rownames(., var = "accession")
+volatiles = separate(volatiles, sample, into = c("x", "y", "accession")) %>% select(., -c("x","y", "wf", "thrips")) 
+
+volatiles.id <- read.delim("Figure_3/volatile analytics/volatile_identifications.txt", sep = "\t") %>% select(metabolite, tentative_id)
+
+volatiles.long <- pivot_longer(volatiles, -accession, names_to = "metabolite", values_to = "abundance")
+volatiles.long$metabolite <- factor(volatiles.long$metabolite)
+volatiles.long.id <- left_join(volatiles.long, volatiles.id, by = "metabolite") %>% 
+  select(tentative_id, abundance, accession)
+
+volatiles = pivot_wider(volatiles.long.id, values_from = "abundance", names_from = "tentative_id") %>%
+  column_to_rownames(var = "accession")
 
 # Change NA to 0 -> +1 -> logtransfrom
 volatiles[is.na(volatiles)] <- 0
@@ -88,14 +98,17 @@ log.volatiles[,1] = NULL
 
 
 # Load phenotypes (i.e. toxic / non-toxic) and volatile class-annotations
-volatiles.annotation = read.delim(file = "Figure_3/volatiles_annotation.tsv", header = T, row.names = 1,check.names = F)
+volatiles.annotation = read.delim(file = "Figure_3/volatile analytics/volatile_identifications.txt", sep = "\t") %>% 
+  select(tentative_id, class) %>% column_to_rownames(var = "tentative_id")
 
 colors4annotation.2 = list(
-  metabolite_class = c(
-    "methylketon" = "white",
-    "monoterpene" = "black",
-    "sesquiterpene" = "gray",
-    "other_carbohydrate" = "gray40")
+  class = c("monoterpene"="#999999", 
+            "sesquiterpene"="#E69F00", 
+            "aromatic hydrocarbon" = "#56B4E9", 
+            "inorganic"= "#009E73",
+            "cyclic hydrocarbon" = "#0072B2", 
+            "acyclic hydrocarbon" = "#D55E00", 
+            "methylketone" = "#CC79A7")
   )
 
 
