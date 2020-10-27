@@ -64,13 +64,19 @@ cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
 # Plot #
 ########
 
+p.volatiles = 
 volatiles.long %>%
   dplyr::group_by(accession, class) %>%
   dplyr::summarise(mean_abundance = mean(abundance)) %>%
   ggplot(aes(x = accession, y = mean_abundance, fill = class)) +
   geom_bar(position = "fill", stat = "identity")+
   theme_bw()+
-  theme(axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1))+
+  theme(legend.position  = "bottom",
+        axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1),
+        axis.text.y = element_text(color = "black", size = 10))+
   scale_fill_manual(values = cbp1)+
   labs(class = "Chemical class")+
   ylab("Proportion of total volatiles")
+
+ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 5.5, width = 6)
+
