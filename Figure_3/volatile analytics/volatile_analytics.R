@@ -80,3 +80,23 @@ volatiles.long %>%
 
 ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 5.5, width = 6)
 
+p.stacked.abundance = 
+  volatiles.long %>%
+  dplyr::group_by(accession, class) %>%
+  dplyr::summarise(mean_abundance = mean(log(abundance+1)),
+                   n = n(),
+                   se = sd(log(abundance+1))/sqrt(n())) %>%
+  ggplot(aes(x = accession, y = mean_abundance, fill = class)) +
+  geom_bar(position = "stack", stat = "identity")+
+  geom_errorbar(aes(ymin = mean_abundance -se, 
+                    ymax = mean_abundance+se,
+                    width = 0.5))+
+  theme_bw()+
+  theme(legend.position  = "bottom",
+        axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1),
+        axis.text.y = element_text(color = "black", size = 10))+
+  scale_fill_manual(values = cbp1)+
+  labs(class = "Chemical class")+
+  ylab("Metabolite abundance (Log-10 ion counts / mg FW)")
+
+ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_abundace.pdf", plot = p.stacked.abundance, height = 5.5, width = 6)
