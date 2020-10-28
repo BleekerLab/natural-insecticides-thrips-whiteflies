@@ -53,10 +53,10 @@ metabolite	tentative_id	id_method	class
 25.036_159.1160	b-acoradiene	NIST-library hit	sesquiterpene
 25.911_105.0725	aristolene	NIST-library hit	sesquiterpene
 25.020_145.1032	ar-curcumene	Adams 2017	sesquiterpene
-9.653_91.0565	a-thujene	NIST-library hit	monoterpene
+9.653_91.0565	a-pinene	NIST-library hit	monoterpene
 12.373_91.0575	a-terpinene	authentic standard	monoterpene
 21.260_109.1042	a-pinene-oxide	NIST-library hit	monoterpene
-9.472_91.0566	a-pinene	NIST-library hit	monoterpene
+9.472_91.0566	a-thujene	NIST-library hit	monoterpene
 11.96_91.0560	a-phellandrene	authentic standard	monoterpene
 25.585_105.0719	a-muurolene	NIST-library hit	sesquiterpene
 24.707_93.0725	a-humulene	NIST-library hit	sesquiterpene
