@@ -102,13 +102,13 @@ volatiles.annotation = read.delim(file = "Figure_3/volatile analytics/volatile_i
   select(tentative_id, class) %>% column_to_rownames(var = "tentative_id")
 
 colors4annotation.2 = list(
-  class = c("monoterpene"="#999999", 
-            "sesquiterpene"="#E69F00", 
-            "aromatic hydrocarbon" = "#56B4E9", 
+  class = c("monoterpene"="#D55E00", 
+            "sesquiterpene"="#CC79A7", 
+            "aromatic hydrocarbon" = "#E69F00", 
             "inorganic"= "#009E73",
-            "cyclic hydrocarbon" = "#0072B2", 
-            "acyclic hydrocarbon" = "#D55E00", 
-            "methylketone" = "#CC79A7")
+            "cyclic hydrocarbon" ="#56B4E9", 
+            "acyclic hydrocarbon" = "#999999", 
+            "methylketone" =  "#0072B2")
   )
 
 
