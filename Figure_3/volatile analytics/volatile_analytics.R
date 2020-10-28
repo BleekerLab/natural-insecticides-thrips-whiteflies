@@ -80,7 +80,7 @@ volatiles.long %>%
 
 ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 4, width = 6)
 
-p.stacked.abundance = s
+p.stacked.abundance =
   volatiles.long %>%
   dplyr::group_by(accession,class) %>%
   dplyr::summarise(mean_abundance = mean(log(abundance+1)),
