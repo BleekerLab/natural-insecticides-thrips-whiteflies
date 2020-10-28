@@ -78,11 +78,11 @@ volatiles.long %>%
   labs(class = "Chemical class")+
   ylab("Proportion of total volatiles")
 
-ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 5.5, width = 6)
+ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 4, width = 6)
 
-p.stacked.abundance = 
+p.stacked.abundance = s
   volatiles.long %>%
-  dplyr::group_by(sample, accession, class) %>%
+  dplyr::group_by(accession,class) %>%
   dplyr::summarise(mean_abundance = mean(log(abundance+1)),
                    n = n(),
                    se = sd(log(abundance+1))/sqrt(n())) %>%
