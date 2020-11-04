@@ -70,7 +70,7 @@ dev.off()
 volatiles = read.delim("Figure_3/terpenoids_normalized.tsv", header = T,check.names = F) %>% select(., -'13.604_105.0725_blank')
 volatiles = separate(volatiles, sample, into = c("x", "y", "accession")) %>% select(., -c("x","y", "wf", "thrips")) 
 
-volatiles.id <- read.delim("Figure_3/volatile analytics/volatile_identifications.txt", sep = "\t") %>% select(metabolite, tentative_id)
+volatiles.id <- read.delim("Figure_3/volatile_identifications_with_KI.tsv", sep = "\t") %>% select(metabolite, tentative_id)
 
 volatiles.long <- pivot_longer(volatiles, -accession, names_to = "metabolite", values_to = "abundance")
 volatiles.long$metabolite <- factor(volatiles.long$metabolite)
@@ -82,7 +82,7 @@ volatiles = pivot_wider(volatiles.long.id, values_from = "abundance", names_from
 
 # Change NA to 0 -> +1 -> logtransfrom
 volatiles[is.na(volatiles)] <- 0
-volatiles = volatiles[] + 1
+volatiles = as.data.frame(volatiles[] + 1)
 log.volatiles = log10(volatiles[,2:ncol(volatiles)])
 
 log.volatiles = log.volatiles %>% rownames_to_column()
@@ -98,14 +98,14 @@ log.volatiles[,1] = NULL
 
 
 # Load phenotypes (i.e. toxic / non-toxic) and volatile class-annotations
-volatiles.annotation = read.delim(file = "Figure_3/volatile analytics/volatile_identifications.txt", sep = "\t") %>% 
+volatiles.annotation = read.delim("Figure_3/volatile_identifications_with_KI.tsv", sep = "\t") %>% select(tentative_id, class)%>% 
   select(tentative_id, class) %>% column_to_rownames(var = "tentative_id")
 
 colors4annotation.2 = list(
   class = c("monoterpene"="#999999", 
             "sesquiterpene"="#E69F00", 
             "aromatic hydrocarbon" = "#56B4E9", 
-            "inorganic"= "#009E73",
+            "unknown"= "#009E73",
             "cyclic hydrocarbon" = "#0072B2", 
             "acyclic hydrocarbon" = "#D55E00", 
             "methylketone" = "#CC79A7")
