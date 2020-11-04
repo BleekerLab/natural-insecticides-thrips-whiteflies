@@ -11,7 +11,7 @@ volatiles$accession <- factor(volatiles$accession, levels = c("LA0716","PI127826
 volatiles = volatiles[order(volatiles$accession),]
 
 # Load annotations for heatmap
-volatile.annotation <- read_delim(file = "Figure_3/volatile analytics/volatile_identifications.txt", delim = "\t") %>%
+volatile.annotation <- read_delim(file = "Figure_3/volatile_identifications_with_KI.tsv", delim = "\t") %>%
   select(metabolite, class) %>% column_to_rownames(var = "metabolite")
 
 sample.annotation <- volatiles %>% select(sample, accession) %>% column_to_rownames(var = "sample")
@@ -78,5 +78,29 @@ volatiles.long %>%
   labs(class = "Chemical class")+
   ylab("Proportion of total volatiles")
 
+################
+# Plot stacked #
+################
+
+p.volatiles.abundance = 
+  volatiles.long %>%
+  dplyr::group_by(accession, class) %>%
+  dplyr::summarise(mean_abundance = mean(log(abundance+1)),
+                   se = sd(log(abundance+1))/n()) %>%
+  ggplot(aes(x = accession, y = mean_abundance, fill = class)) +
+  geom_bar(position = "stack", stat = "identity")+
+  geom_errorbar(aes(x = accession,
+                    ymin = mean_abundance - se,
+                    ymax = mean_abundance + se),
+                width = 0.5)+
+  theme_bw()+
+  theme(legend.position  = "bottom",
+        axis.text.x = element_text(color = "black", size = 10, angle = 45, hjust = 1),
+        axis.text.y = element_text(color = "black", size = 10))+
+  scale_fill_manual(values = cbp1)+
+  labs(class = "Chemical class")+
+  ylab("Proportion of total volatiles")
+
 ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 5.5, width = 6)
+ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_abundance.pdf", plot = p.volatiles.abundance, height = 5.5, width = 6)
 
