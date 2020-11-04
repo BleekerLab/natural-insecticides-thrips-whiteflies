@@ -86,7 +86,7 @@ p.volatiles.abundance =
   volatiles.long %>%
   dplyr::group_by(accession, class) %>%
   dplyr::summarise(mean_abundance = mean(log(abundance+1)),
-                   se = sd(log(abundance+1))/n()) %>%
+                   se = sd(log(abundance+1))/sqrt(n())) %>%
   ggplot(aes(x = accession, y = mean_abundance, fill = class)) +
   geom_bar(position = "stack", stat = "identity")+
   geom_errorbar(aes(x = accession,
