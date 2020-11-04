@@ -1,4 +1,4 @@
-metaolite	tentative_id	id_method	class	experimental_KI	theoretical_KI	
+metabolite	tentative_id	id_method	class	experimental_KI	theoretical_KI	
 32.503 _ 159.8606	unknown-1	NIST-library hit	unknown	1651	NA	NA
 26.227 _ 95.0152	unknown-2	NIST-library hit	unknown	1539	NA	NA
 25.516 _ 145.0981	unknown-4	NIST-library hit	unknown	1496	NA	NA
@@ -20,7 +20,7 @@ metaolite	tentative_id	id_method	class	experimental_KI	theoretical_KI
 26.803 _ 111.0836	caryophyllene alcohol	Adams 2017	sesquiterpene	1574	1572	2
 26.689 _ 109.1032	Longipinanol	Adams 2017	sesquiterpene	1567	1569	2
 26.595 _ 91.0568	germacrene-B	in-house library	sesquiterpene	1562	1561	1
-26.529 _ 131.0872	6,9-guaiadiene	NIST-library hit	sesquiterpene	1558	1556	2
+26.529 _ 131.0872	"6,9-guaiadiene"	NIST-library hit	sesquiterpene	1558	1556	2
 26.2 _ 105.0726	a-cadinene	Adams 2017	sesquiterpene	1537	1538	1
 26.164 _ 119.0865	y-cuprenene	Adams 2017	sesquiterpene	1535	1533	2
 26.045 _ 91.0563	d-cadiene	NIST-library hit	sesquiterpene	1528	1524	4
@@ -35,17 +35,17 @@ metaolite	tentative_id	id_method	class	experimental_KI	theoretical_KI
 25.421 _ 119.0869	a-zingiberene	NIST-library hit	sesquiterpene	1492	1492	0
 25.421 _ 161.1340	d-selinene	Adams 2017	sesquiterpene	1492	1492	0
 25.356 _ 105.0726	b-guaiene	Adams 2017	sesquiterpene	1489	1490	1
-25.211 _ 105.0732	Amorpha-4,7(11)-diene	NIST-library hit	sesquiterpene	1481	1481	0
+25.211 _ 105.0732	"Amorpha-4,7(11)-diene"	NIST-library hit	sesquiterpene	1481	1481	0
 25.153 _ 119.0864	ar-curcumene	NIST-library hit	sesquiterpene	1479	1480	1
-24.843 _ 161.1344	7-epi-1,2-dehydro-sesquicineole	Adams 2017	sesquiterpene	1464	1473	9
-25.02 _ 145.1032	dauca-5,8-diene	Adams 2017	sesquiterpene	1472	1472	0
+24.843 _ 161.1344	"7-epi-1,2-dehydro-sesquicineole"	Adams 2017	sesquiterpene	1464	1473	9
+25.02 _ 145.1032	"dauca-5,8-diene"	Adams 2017	sesquiterpene	1472	1472	0
 25.036 _ 159.1160	b-acoradiene	NIST-library hit	sesquiterpene	1473	1470	3
 24.859 _ 91.0567	9-epi-b-caryophyllene	Adams 2017	sesquiterpene	1464	1466	2
 24.733 _ 105.0717	allo-aromadendrene	Adams 2017	sesquiterpene	1458	1460	2
 24.707 _ 93.0725	a-humulene	NIST-library hit	sesquiterpene	1457	1454	3
-24.619 _ 105.0723	E-muurola-3,5-diene	NIST-library hit	sesquiterpene	1453	1453	0
-24.5 _ 81.0718	Z-muurola-3,5-diene	NIST-library hit	sesquiterpene	1447	1450	3
-24.471 _ 105.0723	6,9-guaiadiene	Adams 2017	sesquiterpene	1446	1444	2
+24.619 _ 105.0723	"E-muurola-3,5-diene"	NIST-library hit	sesquiterpene	1453	1453	0
+24.5 _ 81.0718	"Z-muurola-3,5-diene"	NIST-library hit	sesquiterpene	1447	1450	3
+24.471 _ 105.0723	"6,9-guaiadiene"	Adams 2017	sesquiterpene	1446	1444	2
 24.374 _ 105.0720	aromadenderene	NIST-library hit	sesquiterpene	1441	1441	0
 24.291 _ 119.0873	a-E-bergamotene	NIST-library hit	sesquiterpene	1437	1434	3
 24.22 _ 91.0566	b-copaene	Adams 2017	sesquiterpene	1433	1432	1
@@ -76,7 +76,7 @@ metaolite	tentative_id	id_method	class	experimental_KI	theoretical_KI
 12.373 _ 91.0575	a-terpinene	authentic standard	monoterpene	1013	1017	4
 11.844 _ 91.0573	2-carene	Adams 2017	monoterpene	996	1002	6
 11.96 _ 91.0560	a-phellandrene	authentic standard	monoterpene	1000	1002	2
-11.572 _ 91.0564	Z-meta-mentha-2,8-diene	Adams 2017	monoterpene	988	987	1
+11.572 _ 91.0564	"Z-meta-mentha-2,8-diene"	Adams 2017	monoterpene	988	987	1
 11.056 _ 91.0567	sabinene	Adams 2017	monoterpene	972	975	3
 10.873 _ 119.0877	verbenene	Adams 2017	monoterpene	966	967	1
 10.581 _ 105.0363	dehydrosabinene	NIST-library hit	monoterpene	957	956	1
