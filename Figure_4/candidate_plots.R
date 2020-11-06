@@ -23,10 +23,8 @@ library(patchwork)
 # Ordering of the plots
 #######################
 
-genotype_order_whiteflies = c("LA0716","PI127826","LYC4", "LA1777", 
-                              "PI134418", "LA1718", "LA1954","LA2695",
-                              "LA1401","LA0407","LA1364","LA4024", "LA2172", 
-                              "LA2133","LA1578","LA0735", "LA1278","MM","LA1840")
+genotype_order_whiteflies = c("LA0716" ,  "PI127826", "LA1777" ,  "LYC4"   ,  "PI134418", "LA1718" ,  "LA1954" ,  "LA2695"  , "LA4024"  , "LA2172"  , "LA1401" , 
+                              "LA0407" ,  "LA1578"  , "LA1364" ,  "LA2133" ,  "MM"   ,    "LA1840"  , "LA0735" ,  "LA1278")
 
 genotype_order_thrips = c("LYC4","LA0407", "LA1777", "PI134418",
                           "LA1401", "LA0716", "LA1278",  "LA2172", 
@@ -197,7 +195,7 @@ plot.volatiles = ggarrange(g2,g3, ncol = 1,nrow = 4)
 # Save plots
 ############
 
-ggsave("Figure_4/Figure_4_acylsugars.pdf", plot = g1, width = 3.5,height = 5)
+ggsave("Figure_4/Figure_4_acylsugars.pdf", plot = g1, width = 3.5,height = 3.5)
 ggsave("Figure_4/Figure_4_volatiles.pdf", plot = plot.volatiles, width = 3.5, height = 21)
 
 
