@@ -34,8 +34,8 @@ df = dplyr::left_join(x = df,y = accession2species)
 
 # extract ordering by increasing median survival values
 newOrder = group_by(df,accession) %>%
-  summarise(median = median(average)) %>%
-  arrange(.,median) %>%
+  summarise(mean = mean(average)) %>%
+  arrange(.,mean) %>%
   select(accession)
 newOrder = newOrder$accession
 
