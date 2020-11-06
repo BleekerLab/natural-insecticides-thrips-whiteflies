@@ -24,10 +24,8 @@ log.acylsugars = log.acylsugars %>% select(., -c("summed_glucose", "summed_sucro
 log.acylsugars = log.acylsugars %>% rownames_to_column()
 
 # Order accessions according to whitefly survival (low to high survival) as on Figure 1
-log.acylsugars$rowname = factor(log.acylsugars$rowname, levels = c("LA0716","PI127826","LYC4", "LA1777", 
-                                                                   "PI134418", "LA1718", "LA1954","LA2695",
-                                                                   "LA1401","LA0407","LA1364","LA4024", "LA2172", 
-                                                                   "LA2133","LA1578","LA0735", "LA1278","MM","LA1840"),
+log.acylsugars$rowname = factor(log.acylsugars$rowname, levels = c("LA0716" ,  "PI127826", "LA1777" ,  "LYC4"   ,  "PI134418", "LA1718" ,  "LA1954" ,  "LA2695"  , "LA4024"  , "LA2172"  , "LA1401" , 
+                                                                   "LA0407" ,  "LA1578"  , "LA1364" ,  "LA2133" ,  "MM"   ,    "LA1840"  , "LA0735" ,  "LA1278"),
                                                                     ordered = TRUE) 
 
 
@@ -86,10 +84,8 @@ volatiles = as.data.frame(volatiles[] + 1)
 log.volatiles = log10(volatiles[,2:ncol(volatiles)])
 
 log.volatiles = log.volatiles %>% rownames_to_column()
-log.volatiles$rowname = factor(log.volatiles$rowname, levels = c("LA0716","PI127826","LYC4", "LA1777", 
-                                                                 "PI134418", "LA1718", "LA1954","LA2695",
-                                                                 "LA1401","LA0407","LA1364","LA4024", "LA2172", 
-                                                                 "LA2133","LA1578","LA0735", "LA1278","MM","LA1840"),
+log.volatiles$rowname = factor(log.volatiles$rowname, levels = c("LA0716" ,  "PI127826", "LA1777" ,  "LYC4"   ,  "PI134418", "LA1718" ,  "LA1954" ,  "LA2695"  , "LA4024"  , "LA2172"  , "LA1401" , 
+                                                                 "LA0407" ,  "LA1578"  , "LA1364" ,  "LA2133" ,  "MM"   ,    "LA1840"  , "LA0735" ,  "LA1278"),
                                ordered = TRUE) 
 
 log.volatiles = log.volatiles[order(log.volatiles$rowname),]
