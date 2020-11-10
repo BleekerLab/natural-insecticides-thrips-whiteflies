@@ -33,14 +33,18 @@ accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactor
 
 # import whitefly no-choice data
 # average clip-cages results
+# then average survival over the plant replicates
 # add accession to species
+# Calculate relative survival based on the most susceptible accession
 df = read.delim("Figure_1/whitefly_no-choice_19_accessions.tsv",
                 header = T,
                 stringsAsFactors = F) %>% 
   select(- alive, - dead, - total) %>%  
+  dplyr::group_by(accession, plant) %>%  
+  dplyr::summarise(plant_average = mean(percentage,na.rm = T)) %>% 
   dplyr::group_by(accession) %>%  
-  dplyr::summarise(wf_average = mean(percentage,na.rm = T)) %>% 
-  dplyr::left_join(., y = accession2species) %>% 
+  dplyr::summarise(wf_average = mean(plant_average,na.rm = T)) %>%
+  dplyr::left_join(., y = accession2species) %>%
   select(- genotype) %>% 
   mutate(wf_relative_survival = wf_average/max(wf_average) * 100) # Calculate relative WF survival
 
