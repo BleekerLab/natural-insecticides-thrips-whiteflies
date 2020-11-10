@@ -31,9 +31,8 @@ density.avg = summarySE(
 
 
 # whitefly and thrips ranks based on toxicity
-pheno = read.delim("Figure_1C/data4scatterplot_ranks.tsv", header = T)
-pheno = separate(pheno, col = sample, into = c("x", "y", "accession")) %>% #separate "sample" into accession names only so it can be used for fusing the datasets
-  select(., c("accession", "wf", "thrips"))
+pheno = read.delim("Figure_1/dataframe_for_relative_scatterplots.tsv", header = T) %>% 
+  select(., c("accession", "species", "color", "wf_relative_survival", "thrips_relative_survival"))
 
 # Thrips median survival (from Fig 1B)
 survData = read.delim("Figure_1AandB/thrips_survival_data.tsv",header=T,stringsAsFactors = F)
@@ -57,8 +56,7 @@ wf = wf %>% dplyr::group_by(accession) %>% dplyr::summarise(wf_average = mean(pe
 #####################################
 # merge the datasets to a new one
 #####################################
-density.pheno  = left_join(density.avg, df.medians %>% select(., accession, median), by = "accession") %>% dplyr::rename(median_trips = median)
-density.pheno  = left_join(density.pheno, wf, by = "accession")
+density.pheno  = left_join(density.avg, pheno)
 
 # Label the trichome classes nicely
 density.pheno$type = factor(density.pheno$type, levels = c("non.glandular", "typeIandIV", "typeVI"),
@@ -72,15 +70,15 @@ density.pheno$type = factor(density.pheno$type, levels = c("non.glandular", "typ
 p.whitelfies = 
 density.pheno %>%
 ggplot() +
-  geom_point(aes(x = (wf_average/max(density.pheno$wf_average))*100, y = density),fill="grey",color="black",shape=21,size=2) +
+  geom_point(aes(x = wf_relative_survival, y = density),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
-  geom_label_repel(aes(x = (wf_average/max(density.pheno$wf_average))*100, y=density,label=accession, fill=species),
+  geom_label_repel(aes(x = wf_relative_survival, y=density,label=accession, fill=species),
                    size = 2,
                    label.size = 0.05,
                    label.padding = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~type, scale = "free", ncol = 1)+
-  geom_smooth(aes(x=wf_average/max(density.pheno$wf_average)*100, y = density), method = "lm", alpha = 0.2)+
+  geom_smooth(aes(x=wf_relative_survival, y = density), method = "lm", alpha = 0.2)+
   labs(x = "Relative whitefly survival",y = "Trichome density (trichomes / mm2 leaf)") +
   my.theme+
   ylim(0, NA)
@@ -89,15 +87,15 @@ ggplot() +
 p.thrips = 
   density.pheno %>%
   ggplot() +
-  geom_point(aes(x = (median_trips/max(density.pheno$median_trips))*100, y = density),fill="grey",color="black",shape=21,size=2) +
+  geom_point(aes(x = thrips_relative_survival, y = density),fill="grey",color="black",shape=21,size=2) +
   theme_bw() +
-  geom_label_repel(aes(x = (median_trips/max(density.pheno$median_trips))*100, y=density,label=accession, fill=species),
+  geom_label_repel(aes(x = thrips_relative_survival, y=density,label=accession, fill=species),
                    size = 2,
                    label.size = 0.05,
                    label.padding = 0.1,
                    show.legend = FALSE) +
   facet_wrap(~type, scale = "free", ncol = 1)+
-  geom_smooth(aes(x =(median_trips/max(density.pheno$median_trips))*100, y = density), method = "lm", alpha = 0.2)+
+  geom_smooth(aes(x =thrips_relative_survival, y = density), method = "lm", alpha = 0.2)+
   labs(x = "Relative thrips survival",y = "Trichome density (trichomes / mm2 leaf)") +
   my.theme+
   ylim(0, NA)
@@ -110,26 +108,26 @@ p.thrips =
 # whitefly vs (relative) type I/IV trichome density
 lm.wf.typeIIV = summary( 
   lm(data = density.pheno %>% filter(., type == "Type I/IV"),
-          (wf_average/max(density.pheno$wf_average)*100) ~ density)
+     wf_relative_survival~ density)
 )
 
 # whitefly vs (relative) type VI trichome density
 lm.wf.typeVI = summary(
   lm(data = density.pheno %>% filter(., type == "Type VI"),
-          (wf_average/max(density.pheno$wf_average)*100) ~ density)
+          wf_relative_survival ~ density)
 )
 
-# whitefly vs (relative) type I/IV trichome density
+# thrips vs (relative) type I/IV trichome density
 lm.thrips.typeIIV = summary(
   lm(data = density.pheno %>% filter(., type == "Type I/IV"),
-                   (median_trips/max(density.pheno$median_trips)*100) ~ density)
+                   thrips_relative_survival ~ density)
 )
 
-# whitefly vs (relative) type VI trichome density
+# thrips vs (relative) type VI trichome density
 lm.thrips.typeVI = summary(
   lm(data = density.pheno %>% filter(., type == "Type VI"),
-                  (median_trips/max(density.pheno$median_trips)*100) ~ density)
-)
+                  thrips_relative_survival ~ density)
+  )
 
 
 capture.output(lm.wf.typeIIV, file = "Figure_2/Linear models/linear_model_wf_typeI_IV")

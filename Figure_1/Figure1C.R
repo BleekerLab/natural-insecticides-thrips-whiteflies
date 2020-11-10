@@ -86,14 +86,15 @@ g1 <- ggplot(df) +
   labs(x = "Tomato genotype whitefly relative survival", 
        y = "Tomato genotype thrips relative survival")  + 
   scale_x_continuous(breaks = seq(0,100,20)) +  
-  scale_y_continuous(breaks = seq(0,100,20))
+  scale_y_continuous(breaks = seq(0,100,20))+
+  theme(legend.position = "none")
 
 
 ### save plots
-ggsave(filename = "Figure_1/Figure_1C_scatterplot_relative.svg", 
+ggsave(filename = "Figure_1/Figure_1C_scatterplot_relative.pdf", 
        plot = g1, 
-       width = 7,
-       height = 5)
+       width = 4.5,
+       height = 4.5)
 
 ggsave(filename = "Figure_1/Figure_1C_scatterplot_relative.png", 
        plot = g1, 
