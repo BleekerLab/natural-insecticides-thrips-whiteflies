@@ -1,20 +1,20 @@
 
 Call:
-lm(formula = (wf_average/max(density.pheno$wf_average) * 100) ~ 
-    density, data = density.pheno %>% filter(., type == "Type I/IV"))
+lm(formula = wf_relative_survival ~ density, data = density.pheno %>% 
+    filter(., type == "Type I/IV"))
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--23.848  -4.940   2.741   7.716  14.114 
+-23.952  -4.953   2.583   7.631  14.097 
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  89.8138     2.7122   33.12  < 2e-16 ***
-density      -8.8877     0.7269  -12.23 7.56e-10 ***
+(Intercept)  89.7865     2.7243   32.96  < 2e-16 ***
+density      -8.8917     0.7302  -12.18 8.04e-10 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 10.02 on 17 degrees of freedom
-Multiple R-squared:  0.8979,	Adjusted R-squared:  0.8919 
-F-statistic: 149.5 on 1 and 17 DF,  p-value: 7.557e-10
+Residual standard error: 10.06 on 17 degrees of freedom
+Multiple R-squared:  0.8971,	Adjusted R-squared:  0.8911 
+F-statistic: 148.3 on 1 and 17 DF,  p-value: 8.038e-10
 

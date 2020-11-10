@@ -1,8 +1,7 @@
 
 Call:
-lm(formula = (median_trips/max(density.pheno$median_trips) * 
-    100) ~ density, data = density.pheno %>% filter(., type == 
-    "Type I/IV"))
+lm(formula = thrips_relative_survival ~ density, data = density.pheno %>% 
+    filter(., type == "Type I/IV"))
 
 Residuals:
     Min      1Q  Median      3Q     Max 
