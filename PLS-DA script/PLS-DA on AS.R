@@ -119,4 +119,4 @@ acylsugar.candidates.with.species %>%
   theme_bw()+
   my.theme
 
-ggsave(file = "PLS-DA script/Acylsugar_PLSDA_candidates_whiteflies.pdf", plot = p.acylsugars)
+ggsave(file = "PLS-DA script/Acylsugar_PLSDA_candidates_WF.pdf", plot = p.acylsugars)
