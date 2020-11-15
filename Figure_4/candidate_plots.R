@@ -164,7 +164,7 @@ volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.s
                                                      levels = genotype_order_thrips, 
                                                      ordered = TRUE)
 
-#g3 = 
+g3 = 
  volatiles.candidates.with.species %>%
   dplyr::group_by(accession, name, species, color, toxic_to) %>% 
   summarise(mean_abundance = mean(log(abundance+1)), 
@@ -194,7 +194,7 @@ volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.s
 # Arrange the plots together
 ############################
 
-plot.volatiles = ggarrange(g2,g3, ncol = 1,nrow = 4)
+plot.volatiles = ggarrange(g2,g3, ncol = 1, nrow = 4)
 
 ############
 # Save plots
