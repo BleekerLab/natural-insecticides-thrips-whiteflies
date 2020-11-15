@@ -65,9 +65,6 @@ volatiles.long.candidates = inner_join(volatiles.long,
 accession2species = read.delim("genotype2species.txt",header = T,stringsAsFactors = F)
 volatiles.candidates.with.species = left_join(volatiles.long.candidates,accession2species,by="accession")
 
-volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, 
-                                                     levels = genotype_order_whiteflies, 
-                                                     ordered = TRUE)
 
 ##############
 # acylsugars #
@@ -131,7 +128,9 @@ g1 = acylsugar.candidates.with.species %>%
 ###########################################################
 # Plot 2 = barplot of selected volatiles toxic to whiteflies
 ############################################################
-
+volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, 
+                                                     levels = genotype_order_whiteflies, 
+                                                     ordered = TRUE)
 
  g2 = volatiles.candidates.with.species %>%
   dplyr::group_by(accession, name, species, color, toxic_to) %>% 
@@ -160,7 +159,13 @@ g1 = acylsugar.candidates.with.species %>%
  # Plot 3 = barplot of selected volatiles toxic to Thrips
  ############################################################
 
-g3 = volatiles.candidates.with.species %>%
+# Change ordering of the accessions to thrips
+volatiles.candidates.with.species$accession = factor(volatiles.candidates.with.species$accession, 
+                                                     levels = genotype_order_thrips, 
+                                                     ordered = TRUE)
+
+#g3 = 
+ volatiles.candidates.with.species %>%
   dplyr::group_by(accession, name, species, color, toxic_to) %>% 
   summarise(mean_abundance = mean(log(abundance+1)), 
             n = n(), 
