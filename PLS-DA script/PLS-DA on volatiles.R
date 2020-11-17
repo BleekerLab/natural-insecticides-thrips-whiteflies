@@ -4,7 +4,11 @@ library(tidyverse)
 
 # Read data - select the phenotype - create matrix for sPLS-DA
 df = read.delim(file = "Random_Forest/phenotypes_vs_leaf_terpenoids.tsv", check.names = FALSE)
-pheno <- df$wf # select phenotype
+
+# Define the phenotype
+pheno <- df$thrips
+
+# Create numeric matrix for sPLS-DA
 matrix <- df %>% select(-thrips, -wf ) %>% column_to_rownames(var = "sample")
 matrix = log(matrix+1)
 

@@ -2,50 +2,45 @@ library(mixOmics)
 library(mdatools)
 library(tidyverse)
 
+# Load data
 df = read.delim(file = "Random_Forest/phenotypes_vs_acylsugars.tsv", check.names = FALSE)
-pheno <- df$wf
+
+# Define phenotype of the accessions
+pheno <- df$thrips
+
+# Create the numeric matrix for sPLSDA
 matrix <- df %>% select(-thrips, -wf ) %>% column_to_rownames(var = "sample")
 matrix = log(matrix+1)
 
-# Check amount of components  
+# Check the performace of the model 
 plsda.results <- splsda(matrix, pheno, ncomp = 8)
 set.seed(30)
 plsda.performance <- perf(plsda.results, validation = "Mfold", folds = 3, 
-     progressBar = FALSE, nrepeat = 10)
+     progressBar = FALSE, nrepeat = 20)
 plot(plsda.performance, col = color.mixo(5:7), sd = TRUE, legend.position = "horizontal")
 
-
-list.keepX <- c(1:8,  seq(20, 100, 10))
-tune.plsda<- tune.splsda(matrix, pheno, ncomp = 8, 
-                                 validation = 'Mfold',
-                                 folds = 3, dist = 'max.dist', progressBar = FALSE,
-                                 measure = "BER", test.keepX = list.keepX,
-                                 nrepeat = 10)
-
-error <- tune.plsda$error.rate
-ncomp <- tune.plsda$choice.ncomp$ncomp
-
-select.keepX <- tune.plsda$choice.keepX[1:2]  # optimal number of variables to select
-select.keepX
-
-plot(tune.plsda)
 
 ################
 # Do the PLSDA #
 ################
 
+# Perform the splsda using the number of components giving the lowest error rate
 plsda.results <- splsda(matrix, pheno, ncomp = 2)
 
+# Plot samples
 plotIndiv(plsda.results, ind.names = FALSE, legend=TRUE,
           ellipse = TRUE, title="sPLS-DA - final result")
+
+# plot variables
+plotVar(plsda.results, cutoff = 0.8)
+
+# Select candidates: the top 5 metabolites contributing to the phenotype
 scores <- selectVar(plsda.results, comp=1)$value
 candidates <- rownames(scores)[1:5]
 candidates <- str_replace_all(candidates, "\\.", ":")
 candidates <- str_replace_all(candidates, "C", "")
 candidates <- str_replace_all(candidates, "_", "-")
 
-
-plotVar(plsda.results, cutoff = 0.8)
 
 #######################
 # Plot the candidates #
