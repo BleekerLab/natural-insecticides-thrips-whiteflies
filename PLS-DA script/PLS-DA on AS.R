@@ -16,7 +16,7 @@ matrix = log(matrix+1)
 plsda.results <- splsda(matrix, pheno, ncomp = 8)
 set.seed(30)
 plsda.performance <- perf(plsda.results, validation = "Mfold", folds = 3, 
-     progressBar = FALSE, nrepeat = 20)
+     progressBar = FALSE, nrepeat = 50)
 plot(plsda.performance, col = color.mixo(5:7), sd = TRUE, legend.position = "horizontal")
 
 
