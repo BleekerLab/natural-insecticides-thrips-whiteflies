@@ -96,14 +96,14 @@ cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
           "#0072B2", "#D55E00", "#CC79A7")
 
 p.acyl.proportion = 
-acylsugars.with.species %>%
-  dplyr::group_by(accession, backbone, tails, species, color) %>% 
-  dplyr::summarise(mean_abundance = mean(abundance), 
-            n = n(), 
-            se = (sd(abundance)/sqrt(n))
-            ) %>%
+  acylsugars.with.species %>%
+  dplyr::group_by(accession, metabolite, backbone, tails, species, color) %>% 
+  dplyr::summarise(mean_abundance = mean(abundance)
+  ) %>%
+  dplyr::group_by(accession,  backbone, tails, species, color) %>%
+  dplyr::summarise(sum_abundance = sum(mean_abundance)) %>%
   ungroup %>%
-  ggplot(aes(x = accession, y = mean_abundance, fill = tails))+
+  ggplot(aes(x = accession, y = sum_abundance, fill = tails))+
   geom_bar(position = "fill", stat = "identity")+
   facet_wrap(~backbone, ncol = 1)+
   theme_bw()+
