@@ -180,3 +180,75 @@ ggsave(filename = "Figure_3/acylsugar_analytics/Sugar_moiety.pdf", plot = p.back
 ggsave(filename = "Figure_3/acylsugar_analytics/Acyl_chains.pdf", plot = p.acyl.proportion, height = 3.5, width = 6)
 ggsave(filename = "Figure_3/acylsugar_analytics/Carbons.pdf", plot = p.carbon, height = 5.5, width = 6)
 ggsave(filename = "Figure_3/acylsugar_analytics/Carbons_proportion.pdf", plot = p.carbon.proportion, height = 5.5, width = 6)
+
+##########################################
+# Create df with the summed chain values #
+##########################################
+
+df <- read.delim(file = "Random_Forest/phenotypes_vs_acylsugars.tsv",
+                 check.names = FALSE) 
+df.long <- df %>% select(-wf,-thrips) %>%
+  gather(key = "metabolite",
+         value = "abundance",
+        -sample)
+df.long.structures <-  df.long %>%
+  filter(!grepl("unknown", metabolite, ignore.case = TRUE)) %>%
+  mutate(backbone = case_when(grepl("S", metabolite) ~ "Sucrose",
+                              grepl("G", metabolite) ~ "Glucose")) %>%
+  mutate(tails = case_when(grepl("G1", metabolite) ~ "1",
+                           grepl("G2", metabolite) ~ "2",
+                           grepl("G3", metabolite) ~ "3",
+                           grepl("G4", metabolite) ~ "4",
+                           grepl("G5", metabolite) ~ "5",
+                           grepl("G4", metabolite) ~ "4",
+                           grepl("S1", metabolite) ~ "1",
+                           grepl("S2", metabolite) ~ "2",
+                           grepl("S3", metabolite) ~ "3",
+                           grepl("S4", metabolite) ~ "4",
+                           grepl("S5", metabolite) ~ "5",
+                           grepl("S6", metabolite) ~ "6")
+  ) %>%
+  mutate(carbons = case_when(grepl("C4", metabolite) ~ "C4",
+                             grepl("C5", metabolite) ~ "C5",
+                             grepl("C6", metabolite) ~ "C6",
+                             grepl("C7", metabolite) ~ "C7",
+                             grepl("C8", metabolite) ~ "C8",
+                             grepl("C9", metabolite) ~ "C9",
+                             grepl("C10", metabolite) ~ "C10",
+                             grepl("C11", metabolite) ~ "C11",
+                             grepl("C12", metabolite) ~ "C12",
+                             grepl("C13", metabolite) ~ "C13",
+                             grepl("C14", metabolite) ~ "C14",
+                             grepl("C15", metabolite) ~ "C15",
+                             grepl("C16", metabolite) ~ "C16",
+                             grepl("C17", metabolite) ~ "C17",
+                             grepl("C18", metabolite) ~ "C18",
+                             grepl("C19", metabolite) ~ "C19",
+                             grepl("C20", metabolite) ~ "C20",
+                             grepl("C21", metabolite) ~ "C21",
+                             grepl("C22", metabolite) ~ "C22",
+                             grepl("C23", metabolite) ~ "C23",
+                             grepl("C24", metabolite) ~ "C24",
+                             grepl("C25", metabolite) ~ "C25",
+                             grepl("C26", metabolite) ~ "C26",
+                             grepl("C27", metabolite) ~ "C27",
+                             grepl("C32", metabolite) ~ "C32")
+  )
+
+df.sum <- df.long.structures %>% 
+  dplyr::group_by(sample, backbone, tails) %>%
+  dplyr::summarise(summed_abundance = sum(abundance))
+
+df.sum.wide <- df.sum %>% unite(col = as_group, backbone,tails, sep = "_") %>%
+  pivot_wider(names_from = as_group, values_from = summed_abundance) %>%
+  mutate(sample = substr(sample, start = 7, stop = 15)) 
+
+phenotype <- df %>% select(sample, wf, thrips) %>%
+  mutate(sample = substr(sample, start = 7, stop = 15)) 
+
+df.final <- left_join(phenotype, df.sum.wide, by = "sample")
+df.final$total_glucose <- rowSums(df.final[,4:7])
+df.final$total_sucrose <- rowSums(df.final[,8:12])
+
+write.table(df.final, file = "Figure_3/acylsugar_analytics/acylsugar_summary.tsv",
+            col.names = TRUE, row.names = FALSE, sep = "\t")
