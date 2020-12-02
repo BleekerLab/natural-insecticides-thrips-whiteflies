@@ -16,7 +16,7 @@ acylsugars = separate(acylsugars, col = "accession", into = c("accession", "x"))
 
 # Change NA to 0 -> +1 and logtransfrom
 acylsugars[is.na(acylsugars)] <- 0
-acylsugars = acylsugars[] + 1
+acylsugars = acylsugars[,2:ncol(acylsugars)] + 1
 log.acylsugars = log10(acylsugars[,2:ncol(acylsugars)])
 log.acylsugars = log.acylsugars %>% select(., -c("summed_glucose", "summed_sucrose", "summed_total")) #Remove the 'summed' columns
 
