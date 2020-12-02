@@ -100,3 +100,37 @@ p.volatiles.abundance =
 ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 5.5, width = 6)
 ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_abundance.pdf", plot = p.volatiles.abundance, height = 5.5, width = 6)
 
+####################################
+# Create df of chemical structures #
+####################################
+
+#calculate means of metabolites over the samples
+df <- volatiles.long %>%
+  dplyr::group_by(accession, metabolite, class) %>%
+  dplyr::summarise(mean_abundance = mean(abundance))
+
+# Sum the metabolites from the same class
+df.sum <- df %>%
+  dplyr::group_by(accession, class) %>%
+  dplyr::summarise(summed_abundance = sum(mean_abundance))
+
+# Create a wide df
+df.sum.wide <- df.sum %>% pivot_wider(names_from = class,
+                                      values_from = summed_abundance) %>%
+  rename(sample = accession)
+
+df.sum.wide$total_volatiles <- rowSums(df.sum.wide[,2:8])
+
+# remove "unknown" column
+df.sum.wide <- df.sum.wide %>% select(-unknown)
+df.sum.wide[is.na(df.sum.wide)] <- 0
+
+# Load dataframe with phenotypes
+phenotype <- read.delim(file = "Random_Forest/phenotypes_vs_leaf_terpenoids.tsv", check.names = FALSE) %>%
+  select(sample, wf, thrips) %>%
+  mutate(sample = substr(sample, start = 7, stop = 15)) 
+
+df.final <- left_join(phenotype, df.sum.wide, by = "sample")
+
+write.table(df.final, file = "Figure_3/volatile analytics/volatiles_summary.tsv",
+            col.names = TRUE, row.names = FALSE, sep = "\t")
