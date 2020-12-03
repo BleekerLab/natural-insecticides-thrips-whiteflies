@@ -1,7 +1,7 @@
 library(tidyverse)
 library(pheatmap)
 
-volatiles <- read_delim(file = "Figure_3/volatile analytics/GCMS_normalised_counts.txt", delim = "\t")
+volatiles <- read_delim(file = "Figure_3/volatile_analytics/GCMS_normalised_counts.txt", delim = "\t")
 volatiles$accession <- factor(volatiles$accession, levels = c("LA0716" ,  "PI127826", "LA1777" ,  "LYC4"   ,  "PI134418", "LA1718" ,  "LA1954" ,  "LA2695"  , "LA4024"  , "LA2172"  , "LA1401" , 
                                                               "LA0407" ,  "LA1578"  , "LA1364" ,  "LA2133" ,  "MM"   ,    "LA1840"  , "LA0735" ,  "LA1278"),
                               ordered = TRUE)
