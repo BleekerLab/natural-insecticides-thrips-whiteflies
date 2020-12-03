@@ -62,11 +62,11 @@ cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
 
 p.volatiles = 
 volatiles.long %>%
-  dplyr::group_by(accession, metabolite, class) %>%
-  dplyr::summarise(mean_abundance = mean(abundance)) %>%
+  dplyr::group_by(accession, sample, class) %>%
+  dplyr::summarise(sum_volatiles = mean(abundance)) %>%
   dplyr::group_by(accession, class) %>%
-  dplyr::summarise(sum_abundance = sum(mean_abundance)) %>%
-  ggplot(aes(x = accession, y = sum_abundance, fill = class)) +
+  dplyr::summarise(mean_abundance = mean(log(sum_volatiles+1))) %>%
+  ggplot(aes(x = accession, y = mean_abundance, fill = class)) +
   geom_bar(position = "fill", stat = "identity")+
   theme_bw()+
   theme(legend.position  = "bottom",
@@ -82,11 +82,11 @@ volatiles.long %>%
 
 p.volatiles.abundance = 
   volatiles.long %>%
-  dplyr::group_by(accession, metabolite, class) %>%
-  dplyr::summarise(mean_volatiles = mean(abundance)) %>%
+  dplyr::group_by(accession, sample, class) %>%
+  dplyr::summarise(sum_volatiles = mean(abundance)) %>%
   dplyr::group_by(accession, class) %>%
-  dplyr::summarise(mean_abundance = mean(log(mean_volatiles+1)),
-                   se = sd(log(mean_volatiles+1))/sqrt(n())) %>%
+  dplyr::summarise(mean_abundance = mean(log(sum_volatiles+1)),
+                   se = sd(log(sum_volatiles+1))/sqrt(n())) %>%
   ggplot(aes(x = accession, y = mean_abundance, fill = class)) +
   geom_bar(position = "stack", stat = "identity")+
   geom_errorbar(aes(x = accession,
@@ -101,8 +101,8 @@ p.volatiles.abundance =
   labs(class = "Chemical class")+
   ylab("Proportion of total volatiles")
 
-ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 5.5, width = 6)
-ggsave(filename = "Figure_3/volatile analytics/stacked_volatile_abundance.pdf", plot = p.volatiles.abundance, height = 5.5, width = 6)
+ggsave(filename = "Figure_3/volatile_analytics/stacked_volatile_proportions.pdf", plot = p.volatiles, height = 5.5, width = 6)
+ggsave(filename = "Figure_3/volatile_analytics/stacked_volatile_abundance.pdf", plot = p.volatiles.abundance, height = 5.5, width = 6)
 
 ####################################
 # Create df of chemical structures #
