@@ -63,7 +63,7 @@ cbp1 <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
 p.volatiles = 
 volatiles.long %>%
   dplyr::group_by(accession, sample, class) %>%
-  dplyr::summarise(sum_volatiles = mean(abundance)) %>%
+  dplyr::summarise(sum_volatiles = sum(abundance)) %>%
   dplyr::group_by(accession, class) %>%
   dplyr::summarise(mean_abundance = mean(log(sum_volatiles+1))) %>%
   ggplot(aes(x = accession, y = mean_abundance, fill = class)) +
@@ -83,7 +83,7 @@ volatiles.long %>%
 p.volatiles.abundance = 
   volatiles.long %>%
   dplyr::group_by(accession, sample, class) %>%
-  dplyr::summarise(sum_volatiles = mean(abundance)) %>%
+  dplyr::summarise(sum_volatiles = sum(abundance)) %>%
   dplyr::group_by(accession, class) %>%
   dplyr::summarise(mean_abundance = mean(log(sum_volatiles+1)),
                    se = sd(log(sum_volatiles+1))/sqrt(n())) %>%
