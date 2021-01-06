@@ -235,7 +235,7 @@ ggsave(filename = file.path("Figure_2/thrips_toxicity_vs_trichome_densities.pdf"
 
 
 ggsave(filename = file.path("Figure_2/thrips_toxicity_vs_summed_trichome_densities.pdf"),plot = p.thrips.summed.density, width = 9,height = 7, units = "cm")
-ggsave(filename = file.path("Figure_2/whitefly_toxicity_vs_summed_trichome_densities.pdf"),plot = p.thrips.summed.density, width = 9,height = 7, units = "cm")
+ggsave(filename = file.path("Figure_2/whitefly_toxicity_vs_summed_trichome_densities.pdf"),plot = p.whitelfies.summed.density, width = 9,height = 7, units = "cm")
 
 #################
 # session info
