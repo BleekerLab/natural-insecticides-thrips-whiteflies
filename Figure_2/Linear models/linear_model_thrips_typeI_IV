@@ -1,20 +1,20 @@
 
 Call:
 lm(formula = thrips_relative_survival ~ density, data = density.pheno %>% 
-    filter(., type == "Type I/IV"))
+    filter(., type == "Type I/IV") %>% filter(leaf.side == "adaxial"))
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--31.110 -18.137  -4.296  20.548  45.664 
+-36.640 -15.166  -8.023  19.913  49.144 
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)   54.360      6.374   8.528 1.51e-07 ***
-density       -3.718      1.708  -2.176   0.0439 *  
+(Intercept)   50.880      6.649   7.652 6.65e-07 ***
+density       -3.654      2.967  -1.231    0.235    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 23.54 on 17 degrees of freedom
-Multiple R-squared:  0.2179,	Adjusted R-squared:  0.1719 
-F-statistic: 4.737 on 1 and 17 DF,  p-value: 0.04392
+Residual standard error: 25.51 on 17 degrees of freedom
+Multiple R-squared:  0.0819,	Adjusted R-squared:  0.02789 
+F-statistic: 1.516 on 1 and 17 DF,  p-value: 0.2349
 

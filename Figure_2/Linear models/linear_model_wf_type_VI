@@ -1,7 +1,10 @@
 
 Call:
-lm(formula = wf_relative_survival ~ density, data = density.pheno %>% 
-    filter(., type == "Type VI"))
+lm(formula = wf_relative_survival ~ avg.density, data = density.pheno %>% 
+    select(accession, species.x, type, density, leaf.side, wf_relative_survival) %>% 
+    dplyr::group_by(accession, species.x, type, wf_relative_survival) %>% 
+    dplyr::summarise(avg.density = mean(density)) %>% filter(., 
+    type == "Type VI"))
 
 Residuals:
     Min      1Q  Median      3Q     Max 
@@ -10,7 +13,7 @@ Residuals:
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
 (Intercept)   83.396     10.624   7.850 4.72e-07 ***
-density       -7.193      5.215  -1.379    0.186    
+avg.density   -7.193      5.215  -1.379    0.186    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
