@@ -1,0 +1,23 @@
+
+Call:
+lm(formula = wf_relative_survival ~ sum.types, data = density.pheno %>% 
+    select(accession, species.x, type, density, leaf.side, wf_relative_survival) %>% 
+    dplyr::group_by(accession, species.x, type, wf_relative_survival) %>% 
+    dplyr::summarise(avg.density = mean(density)) %>% dplyr::group_by(accession, 
+    species.x, wf_relative_survival) %>% dplyr::summarise(sum.types = sum(avg.density)))
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-70.34 -10.14  13.84  22.55  31.07 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  66.3003    12.3764   5.357 5.23e-05 ***
+sum.types     0.4206     0.7252   0.580     0.57    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 31.07 on 17 degrees of freedom
+Multiple R-squared:  0.0194,	Adjusted R-squared:  -0.03828 
+F-statistic: 0.3363 on 1 and 17 DF,  p-value: 0.5696
+
