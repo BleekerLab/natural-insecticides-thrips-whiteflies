@@ -18,7 +18,8 @@ my.theme = theme(axis.text.x = element_text(color = "black", size = 6),
 ###############
 # Import data #
 ###############
-volatiles <- read_delim(file = "Figure_3/volatile_analytics/GCMS_normalised_counts.txt", delim = "\t") %>%
+volatiles <- read_delim(file = "Figure_3/volatile_analytics/GCMS_normalised_counts.txt", delim = "\t") 
+volatiles <- volatiles %>%
   mutate(sum_volatiles = rowSums(volatiles[3:ncol(volatiles)])
   ) %>%
   select(accession, sum_volatiles)
