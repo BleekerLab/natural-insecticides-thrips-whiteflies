@@ -1,0 +1,21 @@
+
+Call:
+lm(formula = thrips_relative_survival ~ mean_abundance, data = acylsugars.pheno %>% 
+    dplyr::group_by(accession, species, color, wf_relative_survival, 
+        thrips_relative_survival) %>% dplyr::summarise(mean_abundance = mean(abundance)))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-26.405 -19.611  -4.097  18.165  44.886 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    55.7419585  6.0993949   9.139  5.7e-08 ***
+mean_abundance -0.0005053  0.0001902  -2.657   0.0166 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 22.38 on 17 degrees of freedom
+Multiple R-squared:  0.2934,	Adjusted R-squared:  0.2518 
+F-statistic: 7.058 on 1 and 17 DF,  p-value: 0.01661
+

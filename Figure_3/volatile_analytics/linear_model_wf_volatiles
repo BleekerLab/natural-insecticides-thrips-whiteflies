@@ -1,0 +1,21 @@
+
+Call:
+lm(formula = wf_relative_survival ~ mean_abundance, data = volatiles.pheno %>% 
+    dplyr::group_by(accession, species, color, wf_relative_survival, 
+        thrips_relative_survival) %>% dplyr::summarise(mean_abundance = mean(sum_volatiles)))
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-79.121  -8.192   9.474  16.301  21.484 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)     7.933e+01  6.492e+00  12.219 7.62e-10 ***
+mean_abundance -7.593e-08  2.724e-08  -2.788   0.0126 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 25.99 on 17 degrees of freedom
+Multiple R-squared:  0.3137,	Adjusted R-squared:  0.2734 
+F-statistic: 7.772 on 1 and 17 DF,  p-value: 0.01262
+
