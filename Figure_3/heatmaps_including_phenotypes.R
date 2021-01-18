@@ -65,8 +65,15 @@ dev.off()
 #############
 
 #Load dataset and shape accession names
-volatiles = read.delim("Figure_3/terpenoids_normalized.tsv", header = T,check.names = F) %>% select(., -'13.604_105.0725_blank')
-volatiles = separate(volatiles, sample, into = c("x", "y", "accession")) %>% select(., -c("x","y", "wf", "thrips")) 
+volatiles.raw <- read.delim("Figure_3/volatile_analytics/terpenoids_normalized_all_samples.txt", header = T,check.names = F) %>% select(., -'13.604_105.0725_blank')
+
+volatiles <- volatiles.raw %>% pivot_longer(cols = 3:ncol(volatiles.raw),
+                                 names_to = "metabolite",
+                                 values_to = "abundance") %>% 
+  dplyr::group_by(accession, metabolite) %>%
+  dplyr::summarise(mean_abundance = mean(abundance)) %>%
+  pivot_wider(names_from = metabolite,
+              values_from = mean_abundance)
 
 volatiles.id <- read.delim("Figure_3/volatile_identifications_with_KI.tsv", sep = "\t") %>% select(metabolite, tentative_id)
 
@@ -109,6 +116,8 @@ colors4annotation.2 = list(
 
 
 # Make and save the plot (heatmap including annotations)
+
+{
 pdf(file = "Figure_3/volatile_heatmap.pdf",width = 10,height = 5)
 
 pheatmap(log.volatiles,
@@ -121,3 +130,4 @@ pheatmap(log.volatiles,
 )
 
 dev.off()
+}
