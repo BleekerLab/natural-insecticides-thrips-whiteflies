@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/190165290.svg)](https://zenodo.org/badge/latestdoi/190165290)
+
 # Data and code repository 
 ## "Natural variation in trichome-based anti-insect metabolites from wild tomato species"
 
